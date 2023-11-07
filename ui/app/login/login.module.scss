@@ -1,0 +1,14 @@
+.loginContainer {
+  width: 100%;
+  height: 90vh;
+  display: flex;
+  flex-direction: column;
+  gap: 2em;
+  justify-content: center;
+  align-items: center;
+
+  .loginText {
+    font-size: 3em;
+    font-weight: bold;
+  }
+}

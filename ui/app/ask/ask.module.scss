@@ -1,0 +1,21 @@
+@use "../../variables.scss" as *;
+
+.chatContainer {
+  width: 100%;
+  height: 85vh;
+
+  .chatTitle {
+    padding-bottom: 0.5em;
+  }
+
+  .chatWindow {
+    height: 90%;
+    overflow-y: scroll;
+
+    .chatMessage {
+      border-radius: 8px;
+      padding: 12px;
+      margin-bottom: 8px;
+    }
+  }
+}

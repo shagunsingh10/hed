@@ -1,0 +1,75 @@
+@use "../../variables.scss" as *;
+
+.projectsContainer {
+  width: 100%;
+
+  .screenHeader {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    height: 7vh;
+
+    .screenTitle {
+      font-size: 20px;
+      font-weight: bold;
+    }
+  }
+
+  .projectList {
+    overflow-y: scroll !important;
+    height: 80vh;
+
+    .projectAvatar {
+      font-size: 30px;
+      color: $primaryColor;
+    }
+
+    .projectTitleContainer {
+      .projectTitle {
+        font-size: 20px;
+        padding-bottom: 0.5em;
+        cursor: pointer;
+      }
+
+      .projectTags {
+        padding-bottom: 1em;
+      }
+    }
+
+    .projectDescriptionContainer {
+      .projectMetrics {
+        padding-top: 1em;
+        display: flex;
+        gap: 0.1em;
+
+        * {
+          cursor: pointer;
+        }
+      }
+    }
+  }
+}
+
+.newProjectFormContainer {
+  height: 100%;
+  overflow-y: auto;
+  display: flex;
+  flex: 1;
+  padding: 0.5em;
+  flex-direction: column;
+  justify-content: space-between;
+
+  .form {
+    textarea {
+      resize: none;
+    }
+    height: 65vh;
+  }
+
+  .formButtonGroup {
+    display: flex;
+    gap: 1em;
+    justify-content: flex-end;
+    align-items: flex-end;
+  }
+}
