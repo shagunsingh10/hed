@@ -1,10 +1,12 @@
 "use client";
 
-import { List, Tag, Divider } from "antd";
-import styles from "./projects.module.scss";
-import { ProjectFilled, LikeOutlined, StarOutlined } from "@ant-design/icons";
+import { List, Tag, Card } from "antd";
+import { ProjectFilled } from "@ant-design/icons";
 import useStore from "store";
 import { useEffect } from "react";
+import { useRouter } from "next/navigation";
+
+import styles from "./projects.module.scss";
 
 const ProjectsList = () => {
   const { projects, getProjects } = useStore((state) => ({
@@ -12,12 +14,24 @@ const ProjectsList = () => {
     getProjects: state.getProjects,
   }));
 
+  const { push } = useRouter();
+
   useEffect(() => {
-    getProjects();
-  }, []);
+    if (getProjects) getProjects();
+  }, [getProjects]);
+
+  const handleProjectClick = (id: string) => {
+    sessionStorage.setItem(
+      id,
+      JSON.stringify(projects.find((e) => e.id === id))
+    );
+    push(`projects/${id}`, {
+      scroll: false,
+    });
+  };
 
   return (
-    <div className={styles.projectList}>
+    <Card className={styles.projectList}>
       <List
         itemLayout="horizontal"
         dataSource={projects}
@@ -27,7 +41,12 @@ const ProjectsList = () => {
               avatar={<ProjectFilled className={styles.projectAvatar} />}
               title={
                 <div className={styles.projectTitleContainer}>
-                  <div className={styles.projectTitle}>{item.name}</div>
+                  <div
+                    className={styles.projectTitle}
+                    onClick={() => handleProjectClick(item.id)}
+                  >
+                    {item.name}
+                  </div>
                   <div className={styles.projectTags}>
                     {item.tags.map((tag) => (
                       <Tag key={tag} color="#434343">
@@ -42,20 +61,13 @@ const ProjectsList = () => {
                   <div className={styles.projectDescription}>
                     {item.description}
                   </div>
-                  <div className={styles.projectMetrics}>
-                    <StarOutlined />
-                    {item.stars}
-                    <Divider type="vertical" />
-                    <LikeOutlined />
-                    {item.likes}
-                  </div>
                 </div>
               }
             />
           </List.Item>
         )}
       />
-    </div>
+    </Card>
   );
 };
 

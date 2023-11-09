@@ -20,13 +20,34 @@ const processTags = (project: PrismaProjectRecord): ProjectSlice => {
   };
 };
 
-const GET = async () => {
-  const projects = await prisma.project.findMany();
+const GET = async (
+  request: NextRequest,
+  { params }: { params: { id: string } }
+) => {
+  const id = params.id;
 
-  return NextResponse.json<ApiRes<ProjectSlice[]>>(
+  const project = await prisma.project.findFirst({
+    where: {
+      id: id,
+    },
+  });
+
+  if (!project) {
+    return NextResponse.json<ApiRes<string>>(
+      {
+        success: false,
+        error: "Project not found",
+      },
+      {
+        status: 404,
+      }
+    );
+  }
+
+  return NextResponse.json<ApiRes<ProjectSlice>>(
     {
       success: true,
-      data: projects.map((e) => processTags(e)),
+      data: processTags(project),
     },
     {
       status: 200,
@@ -34,27 +55,4 @@ const GET = async () => {
   );
 };
 
-const POST = async (req: NextRequest) => {
-  const body = await req.json();
-
-  const newProject = await prisma.project.create({
-    data: {
-      name: body.name,
-      description: body.description,
-      tags: body.tags,
-      createdBy: "user1",
-    },
-  });
-
-  return NextResponse.json<ApiRes<ProjectSlice>>(
-    {
-      success: true,
-      data: processTags(newProject),
-    },
-    {
-      status: 201,
-    }
-  );
-};
-
-export { GET, POST };
+export { GET };

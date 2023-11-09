@@ -6,7 +6,7 @@ node_modules/
 /out/
 
 # SQL
-sql/
+.sql/
 
 # Python
 __pycache__/
@@ -26,6 +26,9 @@ env/
 .env
 .env.local
 .env.*.local
+
+# Docker data
+.etc/
 
 # Compiled Python files
 *.pyc

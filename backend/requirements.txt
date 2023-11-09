@@ -1,0 +1,6 @@
+python-dotenv
+celery
+celery[redis]
+redis
+qdrant_client
+llama_index

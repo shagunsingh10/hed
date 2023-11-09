@@ -1,14 +1,21 @@
-.loginContainer {
-  width: 100%;
-  height: 90vh;
-  display: flex;
-  flex-direction: column;
-  gap: 2em;
-  justify-content: center;
-  align-items: center;
+@use "../../variables.scss" as *;
 
-  .loginText {
-    font-size: 3em;
-    font-weight: bold;
+.loginContainer {
+  height: 100vh;
+
+  .content {
+    background-color: $colorBgContainer;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 1em;
+
+    .loginText {
+      font-size: 3em;
+      font-weight: bold;
+      color: $primaryColor;
+      margin-bottom: 1em;
+    }
   }
 }

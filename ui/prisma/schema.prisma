@@ -62,8 +62,6 @@ model Project {
   name        String
   description String?
   tags        String?
-  stars       Int      @default(0)
-  likes       Int      @default(0)
   isActive    Boolean  @default(true)
   createdBy   String
   createdAt   DateTime @default(now())

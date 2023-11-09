@@ -12,8 +12,8 @@ import LoginScreen from "../login";
 import styles from "./layout.module.scss";
 
 export const metadata: Metadata = {
-  title: "K Base",
-  description: "Data security first KMS",
+  title: "Herald",
+  description: "Knowledge management system",
 };
 
 export default function AppLayout({ children }: { children: React.ReactNode }) {

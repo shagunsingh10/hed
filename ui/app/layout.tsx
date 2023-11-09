@@ -10,8 +10,8 @@ import "./globals.css";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "K Base",
-  description: "Data security first KMS",
+  title: "Herald",
+  description: "Knowledge management system",
 };
 
 export default function RootLayout({

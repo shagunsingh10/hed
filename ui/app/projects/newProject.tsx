@@ -63,11 +63,7 @@ const CreateProjectForm: React.FC<createProjectFormProps> = ({
             <Input.TextArea rows={6} placeholder="Enter project description" />
           </Form.Item>
 
-          <Form.Item
-            label="Project Tags"
-            name="projectTags"
-            rules={[{ required: true, message: "Please enter project tags" }]}
-          >
+          <Form.Item label="Project Tags" name="projectTags">
             <Input placeholder="Enter project tags (comma-separated)" />
           </Form.Item>
         </div>

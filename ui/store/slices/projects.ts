@@ -16,8 +16,12 @@ export const createProjectsSlice: StateCreator<
       projects: resData.data,
     });
   },
-  getProjectById: (id) => {
-    return get().projects.find((e) => e.id === id);
+  getProjectById: async (id) => {
+    const cachedProject = sessionStorage.getItem(id);
+    if (cachedProject) return JSON.parse(cachedProject);
+    const res = await fetcher.get(`/api/projects/${id}`);
+    const resData = await res.json();
+    return resData.data;
   },
   createProject: async (data) => {
     const res = await fetcher.post<CreateProjectData>("/api/projects", data);

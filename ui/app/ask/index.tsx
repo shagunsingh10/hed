@@ -1,13 +1,36 @@
 import { useState, useRef, useEffect } from "react";
-import { Card, Input, List, Avatar, Typography } from "antd";
-import { SendOutlined } from "@ant-design/icons";
+import { Card, Input, List, Avatar, Typography, Row, Col, Menu } from "antd";
+import { SendOutlined, FileOutlined } from "@ant-design/icons";
+
+import type { MenuProps } from "antd";
 import styles from "./ask.module.scss";
 
+type MenuItem = Required<MenuProps>["items"][number];
 interface Message {
   id: number;
   sender: string;
   text: string;
 }
+
+function getItem(
+  label: React.ReactNode,
+  key: React.Key,
+  icon?: React.ReactNode,
+  children?: MenuItem[],
+  type?: "group"
+): MenuItem {
+  return {
+    key,
+    icon,
+    children,
+    label,
+    type,
+  } as MenuItem;
+}
+
+const items: MenuItem[] = [1, 2, 3, 4, 5, 6, 7].map((i) =>
+  getItem(`Chat ${i}`, `${i}`, <FileOutlined />)
+);
 
 function generateRandomText() {
   const characters =
@@ -52,7 +75,7 @@ const ChatScreen: React.FC = () => {
 
       const newReply: Message = {
         id: messages.length + 1,
-        sender: "KBase",
+        sender: "Herald",
         text: generateRandomText(),
       };
 
@@ -62,30 +85,43 @@ const ChatScreen: React.FC = () => {
   };
 
   return (
-    <div className={styles.chatContainer}>
-      <Typography.Title level={3} className={styles.chatTitle}>
-        How to train a model?
-      </Typography.Title>
-      <Card className={styles.chatWindow} ref={chatWindowRef}>
-        <List
-          itemLayout="horizontal"
-          dataSource={messages}
-          renderItem={(message) => (
-            <List.Item
-              className={styles.chatMessage}
-              style={{
-                background:
-                  message.sender == "You" ? "transparent" : "#2ed27c2a",
-              }}
-            >
-              <List.Item.Meta
-                avatar={<Avatar>{message.sender[0]}</Avatar>}
-                title={message.sender}
-                description={message.text}
-              />
-            </List.Item>
-          )}
+    <div className={styles.chatScreen}>
+      <div className={styles.chatHistoryContainer}>
+        <Menu
+          className={styles.chatList}
+          defaultSelectedKeys={["1"]}
+          defaultOpenKeys={["1"]}
+          mode="inline"
+          color="secondary"
+          inlineCollapsed={false}
+          items={items}
         />
+      </div>
+      <div className={styles.chatContainer}>
+        <Typography.Title level={3} className={styles.chatTitle}>
+          How to train a model?
+        </Typography.Title>
+        <Card className={styles.chatWindow} ref={chatWindowRef}>
+          <List
+            itemLayout="horizontal"
+            dataSource={messages}
+            renderItem={(message) => (
+              <List.Item
+                className={styles.chatMessage}
+                style={{
+                  background:
+                    message.sender == "You" ? "transparent" : "#2ed27c2a",
+                }}
+              >
+                <List.Item.Meta
+                  avatar={<Avatar>{message.sender[0]}</Avatar>}
+                  title={message.sender}
+                  description={message.text}
+                />
+              </List.Item>
+            )}
+          />
+        </Card>
         <Input.Search
           placeholder="Type your message..."
           enterButton={
@@ -96,14 +132,8 @@ const ChatScreen: React.FC = () => {
           value={inputValue}
           onChange={handleInputChange}
           onSearch={handleSendMessage}
-          style={{
-            position: "fixed",
-            bottom: 0,
-            width: "75%",
-            padding: "16px",
-          }}
         />
-      </Card>
+      </div>
     </div>
   );
 };

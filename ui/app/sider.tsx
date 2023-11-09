@@ -2,12 +2,7 @@
 
 import { Menu } from "antd";
 import { useRouter, usePathname } from "next/navigation";
-import {
-  ProjectOutlined,
-  BulbOutlined,
-  QuestionCircleOutlined,
-  MessageOutlined,
-} from "@ant-design/icons";
+import { ProjectOutlined, QuestionCircleOutlined } from "@ant-design/icons";
 
 import type { MenuProps } from "antd";
 import styles from "./page.module.scss";
@@ -32,9 +27,7 @@ function getItem(
 
 const items: MenuItem[] = [
   getItem("Ask", "/", <QuestionCircleOutlined />),
-  getItem("Chats", "/chats", <MessageOutlined />),
   getItem("Projects", "/projects", <ProjectOutlined />),
-  getItem("Knowledge Groups", "/knowledge-groups", <BulbOutlined />),
 ];
 
 export default function Sider() {
@@ -59,9 +52,9 @@ export default function Sider() {
         />
       </div>
       <footer className={styles.footer}>
-        <p>&copy; 2023 K Base</p>
-        <p>Contact: info@kbase.com</p>
-        <p>Follow us: @kbase</p>
+        <p>&copy; 2023 Herald</p>
+        <p>Contact: info@heraldkms.com</p>
+        <p>Follow us: @keraldkms</p>
       </footer>
     </div>
   );

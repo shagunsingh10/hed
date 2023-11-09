@@ -11,6 +11,7 @@
   "dependencies": {
     "@auth/pg-adapter": "^0.2.3",
     "@prisma/client": "^5.5.2",
+    "amqplib": "^0.10.3",
     "antd": "^5.10.3",
     "next": "14.0.1",
     "next-auth": "^4.24.4",
@@ -21,6 +22,7 @@
     "zustand": "^4.4.6"
   },
   "devDependencies": {
+    "@types/amqplib": "^0.10.4",
     "@types/node": "^20",
     "@types/pg": "^8.10.7",
     "@types/react": "^18",
