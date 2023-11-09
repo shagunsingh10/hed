@@ -50,7 +50,10 @@ services:
       context: ./backend
     volumes:
       - ./.etc/files:/app/files
-    restart: unless-stopped
+      - ./.env:/app/.env
+      - ./.etc/llama_cpp/models:/app/models
+      - ./.etc/tmp:/app/tmp
+
     depends_on:
       redis:
         condition: service_healthy

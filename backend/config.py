@@ -16,13 +16,17 @@ class Config:
     def _load_config(self):
         load_dotenv()
         required_vars = [
-            "BACKEND_SERVICE_QUEUE",
-            "OPENAI_API_KEY",
+            "PYTHON_CONSUMER_QUEUE",
+            "NEXT_ENDPOINT",
+            "LLM_MODEL",
             "REDIS_HOST",
             "REDIS_PORT",
             "QDRANT_URI",
+            "CELERY_DOCREMOVER_WORKER_QUEUE",
+            "CELERY_INGESTION_WORKER_QUEUE",
+            "CELERY_QUERYPROCESSOR_WORKER_QUEUE",
         ]
-        optional_vars = []
+        optional_vars = ["OPENAI_API_KEY", "LLM_MODEL_PATH"]
 
         for var in required_vars:
             value = os.getenv(var)

@@ -14,12 +14,12 @@ const getEnv = (
 
 type configType = {
   dbUrl: string;
-  rabbitMqHost: string;
-  pythonServiceQueue: string;
+  redisHost: string;
+  pythonConsumerQueue: string;
 };
 
 export const config: configType = {
   dbUrl: getEnv("DATABASE_URL"),
-  rabbitMqHost: getEnv("RABBITMQ_HOST"),
-  pythonServiceQueue: getEnv("PYTHON_SERVICE_QUEUE"),
+  redisHost: getEnv("REDIS_HOST"),
+  pythonConsumerQueue: getEnv("PYTHON_CONSUMER_QUEUE"),
 };

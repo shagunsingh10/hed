@@ -7,11 +7,31 @@ ENV PYTHONUNBUFFERED 1
 # Create and set the working directory
 WORKDIR /app
 
-# Copy the contents of the current directory (where Dockerfile is located) into the container at /app
-COPY . /app
+# Install build tools
+RUN apt-get update && apt-get install -y \
+    build-essential \
+    cmake \
+    gcc \
+    g++
+
+# # Download script
+# ADD scripts/download_model.sh /app/download_model.sh
+# RUN chmod +x /app/download_model.sh
+
+# # Download the model if it doesn't exist
+# RUN /app/download_model.sh
+
+# Add requirements.txt
+ADD requirements.txt /app/requirements.txt
 
 # Install dependencies from requirements.txt
 RUN pip install -r requirements.txt
 
+# Copy the contents of the current directory (where Dockerfile is located) into the container at /app
+ADD . /app
+
 # Run the specified commands when the container launches
-CMD celery -A celeryapp.app worker -l info  & python servicequeue.py
+CMD celery -A workers.app worker -Q docremoverqueue -l info & \
+    celery -A workers.app worker -Q ingestorqueue -l info & \
+    celery -A workers.app worker -Q queryprocessorqueue -l info & \
+    python servicequeue.py

@@ -13,4 +13,6 @@ app.conf.task_create_missing_queues = True
 app.conf.task_acks_late = False
 app.conf.broker_connection_retry_on_startup = True
 
-app.autodiscover_tasks(["celeryapp.ingestion"])
+app.autodiscover_tasks(
+    ["workers.ingestor", "workers.doc_remover", "workers.query_processor"]
+)

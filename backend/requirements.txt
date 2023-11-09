@@ -1,6 +1,17 @@
+## utils ##
+retry
 python-dotenv
+
+## redis ##
+redis
+
+## celery ##
 celery
 celery[redis]
-redis
+
+## qdrant ##
 qdrant_client
+
+## llama index ##
 llama_index
+llama-cpp-python

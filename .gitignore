@@ -5,8 +5,11 @@ node_modules/
 /.next/
 /out/
 
-# SQL
+# Local Dev
 .sql/
+.test/
+.dev/
+.venv/
 
 # Python
 __pycache__/
