@@ -1,10 +1,10 @@
 export type CreateProjectData = {
   name: string;
   description: string;
-  tags: string;
+  tags?: string;
 };
 
-export interface ProjectSlice {
+export interface Project {
   id: string;
   name: string;
   tags: string[];
@@ -14,8 +14,8 @@ export interface ProjectSlice {
 }
 
 export interface ProjectsSlice {
-  projects: ProjectSlice[];
+  projects: Project[];
   getProjects: () => void;
-  getProjectById: (id: string) => Promise<ProjectSlice | undefined>;
+  getProjectById: (id: string) => Promise<Project | undefined>;
   createProject: (data: CreateProjectData) => void;
 }

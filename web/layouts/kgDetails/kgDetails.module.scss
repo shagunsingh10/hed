@@ -1,0 +1,36 @@
+@use "../../variables.scss" as *;
+
+.kgDetailsContainer {
+  height: 93.5vh;
+  width: 93vw;
+  position: relative;
+
+  .kgDetailsHead {
+    height: 15vh;
+    margin-bottom: 1vh;
+    overflow-y: auto;
+
+    .kgAvatar {
+      font-size: 7em;
+      color: $primaryColor;
+    }
+
+    .kgTitle {
+      font-weight: bold;
+      font-size: 1.5em;
+      margin-bottom: 0.5em;
+    }
+    .kgDescription {
+      display: -webkit-box;
+      -webkit-line-clamp: 3;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+  }
+
+  .kgDetailsContent {
+    height: 77.5vh;
+    overflow-y: auto;
+    position: relative;
+  }
+}

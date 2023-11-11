@@ -54,17 +54,128 @@ model User {
   emailVerified DateTime?
   image         String?
 
+  ownedAssets Asset[]
+  chats       Chat[]
+  UserRole    UserRole[]
+
   @@map("users")
 }
 
 model Project {
-  id          String   @id @default(cuid())
+  id          String    @id @default(cuid())
   name        String
   description String?
   tags        String?
-  isActive    Boolean  @default(true)
+  isActive    Boolean   @default(true)
   createdBy   String
-  createdAt   DateTime @default(now())
+  createdAt   DateTime  @default(now())
+  updatedBy   DateTime?
+  updatedAt   String?
+
+  knowledgeGroups KnowledgeGroup[]
+  UserRole        UserRole[]
+  Chat            Chat[]
 
   @@map("projects")
+}
+
+model KnowledgeGroup {
+  id          String    @id @default(cuid())
+  name        String
+  description String?
+  tags        String?
+  projectId   String
+  isActive    Boolean   @default(true)
+  createdBy   String
+  createdAt   DateTime  @default(now())
+  updatedBy   DateTime?
+  updatedAt   String?
+
+  Project  Project?   @relation(fields: [projectId], references: [id])
+  assets   Asset[]
+  UserRole UserRole[]
+
+  @@map("knowledge_groups")
+}
+
+model UserRole {
+  id               String  @id @default(cuid())
+  projectId        String
+  knowledgeGroupId String?
+  userId           Int
+  role             String
+
+  Project        Project         @relation(fields: [projectId], references: [id])
+  KnowledgeGroup KnowledgeGroup? @relation(fields: [knowledgeGroupId], references: [id])
+  User           User            @relation(fields: [userId], references: [id])
+
+  @@unique([knowledgeGroupId, userId], name: "UserKnowledgeGroupIndex")
+  @@index([projectId, userId], name: "UserProjectIndex")
+  @@map("user_roles")
+}
+
+model AssetType {
+  id       String  @id @default(cuid())
+  name     String
+  isActive Boolean @default(true)
+
+  assets Asset[]
+
+  @@map("asset_types")
+}
+
+model Asset {
+  id               String   @id @default(cuid())
+  name             String
+  description      String?
+  assetTypeId      String
+  knowledgeGroupId String?
+  isActive         Boolean  @default(true)
+  createdBy        String
+  createdAt        DateTime @default(now())
+  ownerUserId      Int?
+
+  AssetType      AssetType       @relation(fields: [assetTypeId], references: [id])
+  KnowledgeGroup KnowledgeGroup? @relation(fields: [knowledgeGroupId], references: [id])
+  docs           Doc[]
+  User           User?           @relation(fields: [ownerUserId], references: [id])
+
+  @@map("assets")
+}
+
+model Doc {
+  id       String  @id @default(cuid())
+  name     String
+  assetId  String
+  metadata String?
+
+  asset Asset @relation(fields: [assetId], references: [id])
+}
+
+model Chat {
+  id        String   @id @default(cuid())
+  title     String?
+  userId    Int
+  projectId String?
+  isActive  Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt String?
+
+  User    User      @relation(fields: [userId], references: [id])
+  Message Message[]
+  Project Project?  @relation(fields: [projectId], references: [id])
+
+  @@map("chats")
+}
+
+model Message {
+  id         String   @id @default(cuid())
+  content    String
+  isResponse Boolean
+  timestamp  DateTime @default(now())
+  chatId     String
+
+  chat Chat @relation(fields: [chatId], references: [id])
+
+  @@map("messages")
 }

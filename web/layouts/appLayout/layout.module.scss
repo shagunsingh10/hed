@@ -1,0 +1,28 @@
+@use "../../variables.scss" as *;
+
+.layout {
+  height: 100vh;
+
+  .header {
+    height: 4.5vh;
+    background-color: $primaryDark;
+  }
+
+  .content {
+    height: 95.5vh;
+    position: relative;
+    display: flex;
+
+    .sider {
+      height: 95.5vh;
+      width: 3vw;
+      background-color: #1a1c1e;
+    }
+
+    .main_body {
+      height: 93.5vh;
+      width: 93vw;
+      margin: 1em 2em;
+    }
+  }
+}

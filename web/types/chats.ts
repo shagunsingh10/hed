@@ -1,16 +1,25 @@
-interface MessageSlice {
+export interface Message {
   id: string;
+  chatId: string;
+  content: string;
   timestamp: Date;
-  sender: string;
-  body: string;
+  isResponse: boolean;
 }
-
-interface ChatSlice {
+export interface ChatWithoutMessage {
   id: string;
   title: string;
-  messages: MessageSlice[] | undefined;
+  userId: string;
+  projectId?: string;
+}
+
+export interface MessagesSlice {
+  messages: Message[] | undefined;
+  addMessage: (m: Message) => void;
+  loadMessages: (chatId: string) => void;
 }
 
 export interface ChatsSlice {
-  chats: ChatSlice[] | undefined;
+  chats: ChatWithoutMessage[];
+  loadChats: (scope: "generic" | "project") => void;
+  deleteteChat?: () => void;
 }

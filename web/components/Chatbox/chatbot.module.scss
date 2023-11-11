@@ -1,0 +1,59 @@
+@use "../../variables.scss" as *;
+
+.chatScreen {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  position: relative;
+
+  .chatHistoryContainer {
+    width: 20%;
+    height: 100%;
+    padding-right: 1em;
+    overflow-y: hidden;
+
+    .newChatButton {
+      width: 100%;
+      margin-bottom: 2em;
+    }
+
+    .chatList {
+      height: 100%;
+      overflow-y: hidden;
+      background: transparent;
+      border: none;
+      transition: all ease-in-out 0.3s;
+    }
+
+    .chatList:hover {
+      overflow-y: auto;
+    }
+  }
+}
+
+.chatWindow {
+  width: 100%;
+
+  .messageContainer {
+    overflow-y: hidden;
+    transition: all ease-in-out 0.5s;
+
+    .chatMessage {
+      border: none;
+      border-radius: 0.5em;
+      padding: 1em;
+      margin-bottom: 0.5em;
+    }
+  }
+
+  .messageContainer:hover {
+    overflow-y: auto;
+  }
+
+  .typerContainer {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 4em;
+  }
+}

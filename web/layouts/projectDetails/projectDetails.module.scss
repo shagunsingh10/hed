@@ -1,0 +1,36 @@
+@use "../../variables.scss" as *;
+
+.projectDetailsContainer {
+  height: 93.5vh;
+  width: 93vw;
+  position: relative;
+
+  .projectDetailsHead {
+    height: 15vh;
+    margin-bottom: 1vh;
+    overflow-y: auto;
+
+    .projectAvatar {
+      font-size: 7em;
+      color: $primaryColor;
+    }
+
+    .projectTitle {
+      font-weight: bold;
+      font-size: 1.5em;
+      margin-bottom: 0.5em;
+    }
+    .projectDescription {
+      display: -webkit-box;
+      -webkit-line-clamp: 3;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+  }
+
+  .projectDetailsContent {
+    height: 77.5vh;
+    overflow-y: auto;
+    position: relative;
+  }
+}

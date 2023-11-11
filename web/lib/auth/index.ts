@@ -1,14 +1,41 @@
-import { NextRequest, NextResponse } from "next/server";
-import { getServerSession } from "next-auth/next";
-import { authOptions } from "@/app/api/auth/[...nextauth]/route";
-import { Session } from "next-auth";
+import { getToken } from "next-auth/jwt";
+import { prisma } from "../prisma";
+import { NextRequest } from "next/server";
+const secret = process.env.NEXTAUTH_SECRET as string;
 
-const isAuthenticated = async (
-  request: any,
-  res: any
-): Promise<Session | null> => {
-  const session = await getServerSession(request, res, authOptions);
-  return session;
+type user = {
+  id: number;
+  name: string | null;
+  email: string | null;
+} | null;
+
+const isAuthenticated = async (req: NextRequest) => {
+  const jwt = await getToken({ req, secret, raw: true });
+  return jwt;
 };
 
-export { isAuthenticated };
+const getUserInfoFromSessionToken = async (
+  sessionToken: string
+): Promise<user> => {
+  const session = await prisma.session.findFirst({
+    where: {
+      sessionToken: sessionToken,
+    },
+    select: {
+      userId: true,
+    },
+  });
+  const user = await prisma.user.findFirst({
+    where: {
+      id: session?.userId,
+    },
+    select: {
+      id: true,
+      name: true,
+      email: true,
+    },
+  });
+  return user;
+};
+
+export { isAuthenticated, getUserInfoFromSessionToken };

@@ -49,10 +49,9 @@ services:
     build:
       context: ./backend
     volumes:
-      - ./.etc/files:/app/files
-      - ./.env:/app/.env
-      - ./.etc/llama_cpp/models:/app/models
-      - ./.etc/tmp:/app/tmp
+      - ./.etc/files/:/app/files/
+      - ./.etc/llama_cpp/models/:/app/models/
+      - ./.etc/tmp/llama_index/:/tmp/llama_index/
 
     depends_on:
       redis:

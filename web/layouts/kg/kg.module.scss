@@ -1,0 +1,43 @@
+@use "../../variables.scss" as *;
+
+.kgContainer {
+  width: 93vw;
+  height: 65vh;
+  position: relative;
+
+  .screenHeader {
+    display: flex;
+    justify-content: right;
+    align-items: center;
+    padding: 0.5em 0;
+    height: 6vh;
+
+    .screenTitle {
+      font-size: 20px;
+      font-weight: bold;
+    }
+  }
+}
+
+.newKGFormContainer {
+  height: 95%;
+  overflow-y: auto;
+  display: flex;
+  padding: 0.5em;
+  flex-direction: column;
+  justify-content: space-between;
+
+  .formItemsContainer {
+    textarea {
+      resize: none;
+    }
+    height: 45vh;
+  }
+
+  .formButtonGroup {
+    display: flex;
+    gap: 1em;
+    justify-content: flex-end;
+    align-items: flex-end;
+  }
+}

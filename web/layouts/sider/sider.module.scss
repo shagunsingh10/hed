@@ -1,0 +1,46 @@
+@use "../../variables.scss" as *;
+
+.siderContainer {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+
+  .menuContainer {
+    height: 90%;
+    padding-top: 20px;
+
+    * {
+      font-size: 1.2em;
+    }
+
+    .activeNavItem {
+      font-weight: bold;
+      padding: 1em 0.3em;
+      * {
+        color: $primaryColor;
+      }
+    }
+
+    .navItem {
+      display: flex;
+      padding: 1em 0.3em;
+      transition: color 1s;
+    }
+
+    .navItem:hover {
+      transition: color 1s;
+      * {
+        color: $primaryColor;
+      }
+    }
+  }
+
+  .footer {
+    height: 10%;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+    padding-bottom: 0.5vh;
+  }
+}

@@ -1,4 +1,10 @@
 import { createProjectsSlice } from "./projects";
-import { createChatsSlice } from "./chats";
+import { createChatsSlice, createMessagesSlice } from "./chats";
+import { createKgsSlice } from "./kgs";
 
-export { createChatsSlice, createProjectsSlice };
+export {
+  createChatsSlice,
+  createProjectsSlice,
+  createMessagesSlice,
+  createKgsSlice,
+};
