@@ -1,0 +1,19 @@
+[
+  {
+    "job_type": "ingestion",
+    "payload": {
+      "filepaths": [],
+      "filepath_type": "file or directory",
+      "collection_name": "",
+      "asset_id": ""
+    }
+  },
+  {
+    "job_type": "query",
+    "payload": {
+      "query": "string",
+      "chat_id": "string",
+      "collections": [""]
+    }
+  }
+]

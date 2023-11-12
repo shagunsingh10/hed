@@ -47,3 +47,26 @@ html {
     border: transparent;
   }
 }
+
+.customFileInput {
+  max-width: 100%;
+  padding: 0.2em;
+  border-radius: 0.5em;
+  border: 1px solid #555 !important;
+  color: #555;
+}
+
+.customFileInput::file-selector-button {
+  margin-right: 20px;
+  border: none;
+  background: #a02669;
+  padding: 0.3em 1em;
+  border-radius: 0.4em;
+  color: #fff;
+  cursor: pointer;
+  transition: background 0.2s ease-in-out;
+}
+
+.customFileInput::file-selector-button:hover {
+  background: #291321;
+}

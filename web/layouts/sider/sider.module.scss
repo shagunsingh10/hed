@@ -8,9 +8,12 @@
   .menuContainer {
     height: 90%;
     padding-top: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 
     * {
-      font-size: 1.2em;
+      font-size: 1.1em;
     }
 
     .activeNavItem {

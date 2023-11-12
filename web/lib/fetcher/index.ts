@@ -28,15 +28,8 @@ const fetchApi = async (
 };
 
 const fetcher = {
-  get: async (
-    url: string,
-    params?: Record<string, any>,
-    options?: RequestInit
-  ): Promise<any> => {
-    const queryString = params
-      ? `?${new URLSearchParams(params).toString()}`
-      : "";
-    return fetchApi(`${url}${queryString}`, options);
+  get: async (url: string, options?: RequestInit): Promise<any> => {
+    return fetchApi(url, options);
   },
 
   post: async <T>(
@@ -45,12 +38,9 @@ const fetcher = {
     options?: RequestInit
   ): Promise<Response> => {
     return fetchApi(url, {
-      ...options,
       method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
       body: JSON.stringify(data),
+      ...options,
     });
   },
 
@@ -60,42 +50,33 @@ const fetcher = {
     options?: RequestInit
   ): Promise<Response> => {
     return fetchApi(url, {
-      ...options,
       method: "PUT",
-      headers: {
-        "Content-Type": "application/json",
-      },
       body: JSON.stringify(data),
+      ...options,
     });
   },
 
   patch: async <T>(
     url: string,
-    data: T,
+    data?: T,
     options?: RequestInit
   ): Promise<Response> => {
     return fetchApi(url, {
-      ...options,
       method: "PATCH",
-      headers: {
-        "Content-Type": "application/json",
-      },
       body: JSON.stringify(data),
+      ...options,
     });
   },
 
   delete: async <T>(
     url: string,
-    data: T,
+    data?: T,
     options?: RequestInit
   ): Promise<Response> => {
     return fetchApi(url, {
-      ...options,
       method: "DELETE",
-      headers: {
-        "Content-Type": "application/json",
-      },
       body: JSON.stringify(data),
+      ...options,
     });
   },
 };

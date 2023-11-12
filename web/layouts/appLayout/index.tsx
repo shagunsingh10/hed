@@ -5,7 +5,7 @@ import Sider from "../sider";
 import Header from "../header";
 import Loader from "@/components/Loader";
 import LoginScreen from "../login";
-
+import SocketConnector from "@/components/Socket";
 import styles from "./layout.module.scss";
 
 export const metadata: Metadata = {
@@ -26,6 +26,7 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
 
   return (
     <div className={styles.layout}>
+      <SocketConnector />
       <div className={styles.header}>
         <Header />
       </div>

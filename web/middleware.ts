@@ -3,7 +3,7 @@ import { isAuthenticated } from "@/lib/auth";
 import { ApiRes } from "@/types/api";
 
 export const config = {
-  matcher: "/api/((?!auth).*)", // all api routes except auth
+  matcher: "/api/((?!auth|webhooks).*)", // all api routes except auth
 };
 
 export async function middleware(request: NextRequest) {

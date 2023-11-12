@@ -10,7 +10,12 @@ export const getKgsApi = async (projectId: string) => {
 export const createKgApi = async (projectId: string, data: CreateKgData) => {
   const res = await fetcher.post<CreateKgData>(
     `/api/projects/${projectId}/kgs`,
-    data
+    data,
+    {
+      headers: {
+        "Content-Type": "application/json",
+      },
+    }
   );
   const resData = await res.json();
   return resData.data;

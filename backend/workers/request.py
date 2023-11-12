@@ -1,13 +1,11 @@
 import requests
-from requests.exceptions import ConnectionError, HTTPError, ConnectTimeout
+from requests.exceptions import ConnectionError, ConnectTimeout
 from retry import retry
 
 # Define the retry decorator
 retry_decorator = retry(
-    stop_max_attempt_number=5,
-    wait_fixed=1000,
-    retry_on_exception=lambda x: isinstance(x, (ConnectionError, ConnectTimeout))
-    and not isinstance(x, HTTPError),
+    tries=5,
+    exceptions=(ConnectionError, ConnectTimeout),
 )
 
 

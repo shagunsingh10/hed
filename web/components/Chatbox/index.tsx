@@ -3,7 +3,7 @@ import { Menu, Button } from "antd";
 import { MessageOutlined, PlusCircleOutlined } from "@ant-design/icons";
 import useStore from "@/store";
 import ChatWindow from "./chatwindow";
-
+import { useSession } from "next-auth/react";
 import type { MenuProps } from "antd";
 import styles from "./chatbot.module.scss";
 
@@ -31,9 +31,12 @@ type ChatBoxProps = {
 
 const Chatbox: FC<ChatBoxProps> = ({ scope, height, projectId }) => {
   // states
-  const [activeChatId, setActiveChatId] = useState<string>("");
+  const { data: session } = useSession();
   const chats = useStore((state) => state.chats);
   const loadChats = useStore((state) => state.loadChats);
+  const addChat = useStore((state) => state.addChat);
+  const activeChatId = useStore((state) => state.activeChatId);
+  const setActiveChatId = useStore((state) => state.setActiveChatId);
 
   const items: MenuItem[] = chats?.map((chat) =>
     getItem(chat.title, chat.id, <MessageOutlined />)
@@ -44,14 +47,16 @@ const Chatbox: FC<ChatBoxProps> = ({ scope, height, projectId }) => {
     setActiveChatId(id);
   };
 
-  const addNewChat = () => {
+  const addNewChat = async () => {
     // send to backend
-    loadChats(scope); // on success
+    const newChatId = await addChat(projectId);
+    setActiveChatId(newChatId);
+    loadChats(scope, projectId); // on success
   };
 
   useEffect(() => {
-    if (loadChats) loadChats(scope);
-  }, [loadChats, scope]);
+    if (loadChats) loadChats(scope, projectId);
+  }, [loadChats, scope, projectId]);
 
   useEffect(() => {
     if (chats && chats.length > 0) setActiveChatId(chats[0].id);

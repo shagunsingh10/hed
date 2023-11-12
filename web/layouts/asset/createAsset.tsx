@@ -1,8 +1,12 @@
 import { useState, FC } from "react";
-import { Form, Input, Button, Card, message } from "antd";
+import { Form, Input, Button, Card, message, Select } from "antd";
+import Uploader from "@/components/Uploader";
 
 import styles from "./asset.module.scss";
 import useStore from "@/store";
+import Loader from "@/components/Loader";
+
+const { Option } = Select;
 
 type CreateAssetFormProps = {
   projectId: string;
@@ -16,18 +20,24 @@ const CreateAssetForm: FC<CreateAssetFormProps> = ({
   closeAssetCreationForm,
 }) => {
   const [loading, setLoading] = useState(false);
-  const createKg = useStore((state) => state.createKg);
+  const [selecTedAssetType, setSelectedAssetType] = useState<string>("");
+  const [uploadId, setUploadId] = useState<string>();
+
+  const createAsset = useStore((state) => state.createAsset);
+  const assetTypes = useStore((state) => state.assetTypes);
 
   const handleSubmit = async (values: any) => {
     setLoading(true);
     try {
-      createKg(projectId, {
-        projectId: projectId,
+      createAsset(projectId, kgId, {
+        assetTypeId: selecTedAssetType,
+        knowledgeGroupId: kgId,
         name: values.name,
         description: values.description,
         tags: values.tags,
+        uploadId: uploadId,
       });
-      message.success("Knowledge Created Successfully");
+      message.info("Asset created and sent for ingestion");
 
       closeAssetCreationForm();
     } catch (e: any) {
@@ -36,6 +46,18 @@ const CreateAssetForm: FC<CreateAssetFormProps> = ({
       setLoading(false);
     }
   };
+
+  const handleUploadComplete = (uploadId: string) => {
+    setUploadId(uploadId);
+  };
+
+  const handleUploadFailure = () => {
+    message.error("Upload failed! Please try again.");
+  };
+
+  if (!assetTypes || assetTypes.length === 0) {
+    return <Loader />;
+  }
 
   return (
     <Card className={styles.newKGFormContainer}>
@@ -51,30 +73,62 @@ const CreateAssetForm: FC<CreateAssetFormProps> = ({
             rules={[
               {
                 required: true,
-                message: "Please enter a name for this knowledge group.",
+                message: "Please enter a name for this asset.",
               },
             ]}
           >
             <Input placeholder="Name is required" />
           </Form.Item>
 
-          <Form.Item label="KG Description" name="description">
+          <Form.Item label="Asset Description" name="description">
             <Input.TextArea
               rows={6}
               placeholder="Please enter a short description for this KG"
             />
           </Form.Item>
-
           <Form.Item label="Tags" name="tags">
             <Input placeholder="Enter tags asscoiated with this knowledge group (comma-separated)" />
           </Form.Item>
+          <Form.Item
+            label="Asset Type"
+            name="assetType"
+            rules={[
+              {
+                required: true,
+                message: "Please select assetType.",
+              },
+            ]}
+          >
+            <Select showSearch={true} onChange={(e) => setSelectedAssetType(e)}>
+              {assetTypes.map((e) => (
+                <Option key={e.id} value={e.id}>
+                  {e.name}
+                </Option>
+              ))}
+            </Select>
+          </Form.Item>
+          {selecTedAssetType && (
+            <Form.Item label="File (Select file to proceed)" name="file">
+              <Uploader
+                projectId={projectId}
+                kgId={kgId}
+                onSuccessCallback={handleUploadComplete}
+                onFailureCallback={handleUploadFailure}
+              />
+            </Form.Item>
+          )}
         </div>
         <Form.Item>
           <div className={styles.formButtonGroup}>
             <Button color="secondary" htmlType="reset" loading={loading}>
               Cancel
             </Button>
-            <Button type="primary" htmlType="submit" loading={loading}>
+            <Button
+              type="primary"
+              htmlType="submit"
+              loading={loading}
+              disabled={!uploadId}
+            >
               Submit
             </Button>
           </div>

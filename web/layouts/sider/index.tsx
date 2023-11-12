@@ -2,7 +2,6 @@ import { usePathname } from "next/navigation";
 import { ProfileFilled, RobotFilled } from "@ant-design/icons";
 import Link from "next/link";
 import { Tooltip } from "antd";
-
 import styles from "./sider.module.scss";
 
 const items = [

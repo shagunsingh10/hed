@@ -1,29 +1,10 @@
 import { useState, useRef, useEffect, FC } from "react";
-import { Card, Input, List, Avatar } from "antd";
+import { Card, Input, List, Avatar, Space } from "antd";
 import { SendOutlined } from "@ant-design/icons";
 import useStore from "../../store";
 
-import type { Message } from "@/types/chats";
 import styles from "./chatbot.module.scss";
-import { createId } from "@paralleldrive/cuid2";
-
-function generateRandomText() {
-  const characters =
-    "ABCDEFGHIJKLMNOPQRSTUVWXYZ    abcdefghijklmnopqrstuvwxyz0123456789          ";
-  const minLength = 40;
-  const maxLength = 200;
-  const length =
-    Math.floor(Math.random() * (maxLength - minLength + 1)) + minLength;
-
-  let randomString = "";
-
-  for (let i = 0; i < length; i++) {
-    const randomIndex = Math.floor(Math.random() * characters.length);
-    randomString += characters.charAt(randomIndex);
-  }
-
-  return randomString;
-}
+import { globalDateFormatParser } from "@/lib/functions";
 
 type ChatWindowProps = {
   chatId: string;
@@ -34,7 +15,7 @@ const ChatWindow: FC<ChatWindowProps> = ({ chatId, height }) => {
   // states
   const [inputValue, setInputValue] = useState<string>("");
   const messages = useStore((state) => state.messages);
-  const addMessage = useStore((state) => state.addMessage);
+  const postQuery = useStore((state) => state.postQuery);
   const loadMessages = useStore((state) => state.loadMessages);
   const chatWindowRef = useRef<HTMLDivElement>(null);
 
@@ -43,27 +24,10 @@ const ChatWindow: FC<ChatWindowProps> = ({ chatId, height }) => {
     setInputValue(e.target.value);
   };
 
-  const handleSendMessage = () => {
+  const handleSendMessage = async () => {
     if (inputValue.trim() !== "") {
       // handle logic for sending query & adding replies (using websockets)
-      const newMessage: Message = {
-        id: createId(),
-        chatId: chatId,
-        timestamp: new Date(),
-        isResponse: false,
-        content: inputValue,
-      };
-
-      const newReply: Message = {
-        id: createId(),
-        chatId: chatId,
-        timestamp: new Date(),
-        isResponse: true,
-        content: generateRandomText(),
-      };
-
-      addMessage(newMessage);
-      addMessage(newReply);
+      postQuery(chatId, inputValue);
       setInputValue("");
     }
   };
@@ -98,6 +62,12 @@ const ChatWindow: FC<ChatWindowProps> = ({ chatId, height }) => {
             >
               <List.Item.Meta
                 avatar={<Avatar>{message.isResponse ? "H" : "Y"}</Avatar>}
+                title={
+                  <Space>
+                    {message.isResponse ? "Herald" : "You"} (
+                    {globalDateFormatParser(message.timestamp)})
+                  </Space>
+                }
                 description={message.content}
               />
             </List.Item>

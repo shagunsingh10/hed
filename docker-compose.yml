@@ -9,6 +9,8 @@ services:
     user: ${POSTGRES_USER}
     ports:
       - "${POSTGRES_PORT}:${POSTGRES_PORT}"
+    volumes:
+      - ./.etc/postgres-data:/var/lib/postgresql
     restart: unless-stopped
     command: -p ${POSTGRES_PORT}
     healthcheck:
@@ -49,12 +51,25 @@ services:
     build:
       context: ./backend
     volumes:
-      - ./.etc/files/:/app/files/
       - ./.etc/llama_cpp/models/:/app/models/
       - ./.etc/tmp/llama_index/:/tmp/llama_index/
-
+      - ./.etc/uploads/:/app/uploads/
     depends_on:
       redis:
         condition: service_healthy
       qdrant:
         condition: service_healthy
+
+  # web:
+  #   build:
+  #     context: ./web
+  #   ports:
+  #     - "3000:3000"
+  #   volumes:
+  #     - ./.etc/uploads/:/app/uploads/
+  #     - ./web:/app
+  #   depends_on:
+  #     redis:
+  #       condition: service_healthy
+  #     qdrant:
+  #       condition: service_healthy

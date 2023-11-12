@@ -8,7 +8,11 @@ export const getProjectsApi = async () => {
 };
 
 export const createProjectApi = async (data: CreateProjectData) => {
-  const res = await fetcher.post<CreateProjectData>("/api/projects", data);
+  const res = await fetcher.post<CreateProjectData>("/api/projects", data, {
+    headers: {
+      "Content-Type": "application/json",
+    },
+  });
   const resData = await res.json();
   return resData.data;
 };

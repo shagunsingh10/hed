@@ -1,3 +1,6 @@
+export interface PostMessage {
+  content: string;
+}
 export interface Message {
   id: string;
   chatId: string;
@@ -7,19 +10,24 @@ export interface Message {
 }
 export interface ChatWithoutMessage {
   id: string;
-  title: string;
-  userId: string;
-  projectId?: string;
+  title: string | null;
+  userId: number;
+  projectId: string | null;
+  createdAt: Date;
 }
 
 export interface MessagesSlice {
   messages: Message[] | undefined;
   addMessage: (m: Message) => void;
+  postQuery: (chatId: string, query: string) => void;
   loadMessages: (chatId: string) => void;
 }
 
 export interface ChatsSlice {
   chats: ChatWithoutMessage[];
-  loadChats: (scope: "generic" | "project") => void;
+  activeChatId: string;
+  setActiveChatId: (chatId: string) => void;
+  loadChats: (scope: "generic" | "project", projectId?: string) => void;
+  addChat: (projectId?: string) => Promise<string>;
   deleteteChat?: () => void;
 }

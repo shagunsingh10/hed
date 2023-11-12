@@ -25,7 +25,7 @@ export default function App({ Component, pageProps }: AppProps) {
             colorInfo: PRIMARY_COLOR,
             colorBgBase: COLOR_BG_BASE,
           },
-          algorithm: [theme.darkAlgorithm],
+          algorithm: [theme.darkAlgorithm, theme.compactAlgorithm],
         }}
       >
         <SessionProvider>

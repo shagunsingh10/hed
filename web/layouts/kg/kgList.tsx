@@ -3,7 +3,8 @@ import { Space, Table, Tag, Input, message } from "antd";
 import useStore from "@/store";
 import { DeleteOutlined } from "@ant-design/icons";
 import styles from "./kg.module.scss";
-import { PRIMARY_COLOR } from "@/constants";
+import { PRIMARY_COLOR_DARK } from "@/constants";
+import { globalDateFormatParser } from "@/lib/functions";
 
 import type { ColumnsType } from "antd/es/table";
 import type { Kg } from "@/types/kgs";
@@ -21,7 +22,7 @@ const KgList: React.FC<KgListProps> = ({ projectId }) => {
   const [value, setValue] = useState("");
 
   const FilterByNameInput = (
-    <Space>
+    <Space style={{ display: "flex", justifyContent: "space-between" }}>
       Name
       <Input
         placeholder="Search Knowledge Group"
@@ -51,7 +52,7 @@ const KgList: React.FC<KgListProps> = ({ projectId }) => {
         render: (_, record) => (
           <Link
             href={`/projects/${projectId}/kgs/${record.id}`}
-            style={{ color: PRIMARY_COLOR, fontWeight: "bold" }}
+            style={{ fontWeight: "bold" }}
           >
             {record.name}
           </Link>
@@ -60,13 +61,13 @@ const KgList: React.FC<KgListProps> = ({ projectId }) => {
       {
         title: "Tags",
         dataIndex: "tags",
+        align: "center",
         key: "tags",
         render: (_, { tags }) => (
           <>
             {tags?.map((tag) => {
-              let color = tag.length > 5 ? "geekblue" : "green";
               return (
-                <Tag color={color} key={tag}>
+                <Tag color={PRIMARY_COLOR_DARK} key={tag}>
                   {tag.toUpperCase()}
                 </Tag>
               );
@@ -77,12 +78,16 @@ const KgList: React.FC<KgListProps> = ({ projectId }) => {
       {
         title: "Created By",
         dataIndex: "createdBy",
+        align: "center",
         key: "createdBy",
       },
       {
         title: "Created At",
         dataIndex: "createdAt",
-        key: "createdAt",
+        align: "center",
+        render: (_, record) => (
+          <Space>{globalDateFormatParser(new Date(record.createdAt))}</Space>
+        ),
       },
       {
         title: "Action",

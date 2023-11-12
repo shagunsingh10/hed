@@ -40,7 +40,7 @@ const AssetScreen: React.FC<AssetScreenProps> = ({ projectId, kgId }) => {
           projectId={projectId}
         />
       ) : (
-        <AssetList projectId={projectId} />
+        <AssetList projectId={projectId} kgId={kgId} />
       )}
     </div>
   );

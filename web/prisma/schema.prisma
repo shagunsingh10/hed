@@ -116,6 +116,7 @@ model UserRole {
 
 model AssetType {
   id       String  @id @default(cuid())
+  key      String
   name     String
   isActive Boolean @default(true)
 
@@ -129,16 +130,19 @@ model Asset {
   name             String
   description      String?
   assetTypeId      String
-  knowledgeGroupId String?
+  tags             String?
+  knowledgeGroupId String
+  uploadId         String?
+  status           String   @default("pending")
+  ownerUserId      Int
   isActive         Boolean  @default(true)
   createdBy        String
   createdAt        DateTime @default(now())
-  ownerUserId      Int?
 
-  AssetType      AssetType       @relation(fields: [assetTypeId], references: [id])
-  KnowledgeGroup KnowledgeGroup? @relation(fields: [knowledgeGroupId], references: [id])
+  AssetType      AssetType      @relation(fields: [assetTypeId], references: [id])
+  KnowledgeGroup KnowledgeGroup @relation(fields: [knowledgeGroupId], references: [id])
   docs           Doc[]
-  User           User?           @relation(fields: [ownerUserId], references: [id])
+  User           User           @relation(fields: [ownerUserId], references: [id])
 
   @@map("assets")
 }

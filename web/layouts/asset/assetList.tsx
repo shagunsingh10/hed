@@ -1,27 +1,34 @@
 import { useEffect, useMemo, useState } from "react";
 import { Space, Table, Tag, Input, message } from "antd";
 import useStore from "@/store";
-import { DeleteOutlined } from "@ant-design/icons";
+import {
+  DeleteOutlined,
+  CheckCircleFilled,
+  ExclamationCircleFilled,
+  CloseCircleFilled,
+} from "@ant-design/icons";
 import styles from "./asset.module.scss";
-import { PRIMARY_COLOR } from "@/constants";
 
 import type { ColumnsType } from "antd/es/table";
-import type { Kg } from "@/types/kgs";
-import Link from "next/link";
+import type { Asset } from "@/types/assets";
+import { PRIMARY_COLOR_DARK } from "@/constants";
+import { globalDateFormatParser } from "@/lib/functions";
 
 type KgListProps = {
   projectId: string;
+  kgId: string;
 };
 
-const KgList: React.FC<KgListProps> = ({ projectId }) => {
-  const kgs = useStore((state) => state.kgs);
-  const getKgs = useStore((state) => state.getKgs);
+const KgList: React.FC<KgListProps> = ({ projectId, kgId }) => {
+  const assets = useStore((state) => state.assets);
+  const getAssetTypes = useStore((state) => state.getAssetTypes);
+  const loadAssets = useStore((state) => state.loadAssets);
 
-  const [dataSource, setDataSource] = useState(kgs);
+  const [dataSource, setDataSource] = useState<Asset[]>(assets);
   const [value, setValue] = useState("");
 
   const FilterByNameInput = (
-    <Space>
+    <Space style={{ display: "flex", justifyContent: "space-between" }}>
       Name
       <Input
         placeholder="Search Asset"
@@ -29,7 +36,7 @@ const KgList: React.FC<KgListProps> = ({ projectId }) => {
         onChange={(e) => {
           const currValue = e.target.value;
           setValue(currValue);
-          const filteredData = kgs.filter((entry) =>
+          const filteredData = assets.filter((entry) =>
             entry.name.includes(currValue)
           );
           setDataSource(filteredData);
@@ -42,31 +49,32 @@ const KgList: React.FC<KgListProps> = ({ projectId }) => {
     message.info("Delete feature coming soon...");
   };
 
-  const columns: ColumnsType<Kg> = useMemo(
+  const deepDiveAsset = () => {
+    message.info("Deep dive inside an asset coming soon...");
+  };
+
+  const columns: ColumnsType<Asset> = useMemo(
     () => [
       {
         title: FilterByNameInput,
         dataIndex: "name",
         key: "name",
         render: (_, record) => (
-          <Link
-            href={`/projects/${projectId}/kgs/${record.id}`}
-            style={{ color: PRIMARY_COLOR, fontWeight: "bold" }}
-          >
+          <b style={{ cursor: "pointer" }} onClick={deepDiveAsset}>
             {record.name}
-          </Link>
+          </b>
         ),
       },
       {
         title: "Tags",
         dataIndex: "tags",
+        align: "center",
         key: "tags",
         render: (_, { tags }) => (
           <>
             {tags?.map((tag) => {
-              let color = tag.length > 5 ? "geekblue" : "green";
               return (
-                <Tag color={color} key={tag}>
+                <Tag color={PRIMARY_COLOR_DARK} key={tag}>
                   {tag.toUpperCase()}
                 </Tag>
               );
@@ -77,12 +85,37 @@ const KgList: React.FC<KgListProps> = ({ projectId }) => {
       {
         title: "Created By",
         dataIndex: "createdBy",
+        align: "center",
         key: "createdBy",
       },
       {
         title: "Created At",
         dataIndex: "createdAt",
-        key: "createdAt",
+        align: "center",
+        render: (_, record) => (
+          <Space>{globalDateFormatParser(new Date(record.createdAt))}</Space>
+        ),
+      },
+      {
+        title: "Status",
+        dataIndex: "status",
+        align: "center",
+        render: (_, { status }) => {
+          let color = "green";
+          if (status === "failed") color = "red";
+          if (status === "pending") color = "yellow";
+          return (
+            <Tag color={color} key={status}>
+              {status === "pending" && <ExclamationCircleFilled />}
+              {status === "success" && <CheckCircleFilled />}
+              {status === "failed" && <CloseCircleFilled />}
+
+              <span style={{ marginLeft: "0.5em" }}>
+                {status.toUpperCase()}
+              </span>
+            </Tag>
+          );
+        },
       },
       {
         title: "Action",
@@ -104,10 +137,13 @@ const KgList: React.FC<KgListProps> = ({ projectId }) => {
   );
 
   useEffect(() => {
-    if (getKgs) getKgs(projectId);
-  }, [getKgs]);
+    if (loadAssets && getAssetTypes) {
+      loadAssets(projectId, kgId);
+      getAssetTypes();
+    }
+  }, [loadAssets, getAssetTypes]);
 
-  useEffect(() => setDataSource(kgs), [kgs]);
+  useEffect(() => setDataSource(assets), [assets]);
 
   return (
     <Table

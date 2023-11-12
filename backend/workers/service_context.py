@@ -2,6 +2,7 @@ from llama_index import ServiceContext
 from llama_index.embeddings import HuggingFaceEmbedding
 from llama_index.llms import LlamaCPP
 from llama_index.llms.llama_utils import completion_to_prompt, messages_to_prompt
+
 from config import config
 
 MODEL = config.get("LLM_MODEL")
