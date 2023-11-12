@@ -16,3 +16,5 @@ qdrant_client
 ## llama index ##
 llama_index
 llama-cpp-python
+transformers
+torch

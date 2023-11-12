@@ -14,7 +14,7 @@ services:
     restart: unless-stopped
     command: -p ${POSTGRES_PORT}
     healthcheck:
-      test: ["CMD", "pg_isready", "-p", "${POSTGRES_PORT}"]
+      test: [ "CMD", "pg_isready", "-p", "${POSTGRES_PORT}" ]
       interval: 5s
       timeout: 5s
       retries: 3
@@ -28,7 +28,7 @@ services:
       - ./.etc/qdrant_storage:/qdrant/storage:z
     restart: unless-stopped
     healthcheck:
-      test: ["CMD", "true"]
+      test: [ "CMD", "true" ]
       interval: 5s
       timeout: 5s
       retries: 3
@@ -42,7 +42,7 @@ services:
     volumes:
       - ./.etc/redis-data:/data
     healthcheck:
-      test: ["CMD", "redis-cli", "ping"]
+      test: [ "CMD", "redis-cli", "ping" ]
       interval: 5s
       timeout: 2s
       retries: 3
@@ -51,8 +51,8 @@ services:
     build:
       context: ./backend
     volumes:
-      - ./.etc/llama_cpp/models/:/app/models/
-      - ./.etc/tmp/llama_index/:/tmp/llama_index/
+      - ./.etc/files/:/app/files/
+      - ./.etc/llama_index/:/tmp/llama_index/
       - ./.etc/uploads/:/app/uploads/
     depends_on:
       redis:
@@ -67,7 +67,6 @@ services:
   #     - "3000:3000"
   #   volumes:
   #     - ./.etc/uploads/:/app/uploads/
-  #     - ./web:/app
   #   depends_on:
   #     redis:
   #       condition: service_healthy

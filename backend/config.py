@@ -26,6 +26,8 @@ class Config:
             "CELERY_INGESTION_WORKER_QUEUE",
             "CELERY_QUERYPROCESSOR_WORKER_QUEUE",
             "NEXT_API_KEY",
+            "LLM_MODEL_DOWNLOAD_URL"
+            
         ]
         optional_vars = ["OPENAI_API_KEY", "LLM_MODEL_PATH"]
 
