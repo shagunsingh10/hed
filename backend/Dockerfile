@@ -31,7 +31,7 @@ RUN pip install -r requirements.txt
 ADD . /app
 
 # Run the specified commands when the container launches
-CMD celery -A services.doc_remover.app worker -c 1 -Q docremoverqueue -l info & \
-    celery -A services.ingestion.app worker -c 1 -Q ingestorqueue -l info & \
-    celery -A services.query_processor.app worker -c 1 -Q queryprocessorqueue -l info & \
+CMD celery -A services.doc_remover.app worker -c 4 -Q docremoverqueue -n docremoverworker@%h -l info & \
+    celery -A services.ingestion.app worker -c 4 -Q ingestorqueue -n ingestionworker@%h -l info & \
+    celery -A services.query_processor.app worker -c 4 -Q queryprocessorqueue -n queryworker@%h -l info & \
     python servicequeue.py

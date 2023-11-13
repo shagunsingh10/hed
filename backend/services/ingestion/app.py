@@ -1,5 +1,8 @@
 from celery import Celery
 
+## QUICK_HACK FOR CELERY TO IDENTIFY MODULES - NEED TO FIX ##
+import llms
+import utils
 from config import config
 
 REDIS_HOST = config.get("REDIS_HOST")

@@ -27,12 +27,8 @@ class Config:
             "CELERY_QUERYPROCESSOR_WORKER_QUEUE",
         ]
         optional_vars = [
-            "USE_LOCAL_LLAMA_CPP_EMBED_MODEL",
-            "LLM_MODEL_PATH",
-            "LLM_MODEL_DOWNLOAD_URL",
+            "USE_OLLAMA",
             "OPENAI_API_KEY",
-            "USE_LOCAL_HUGGING_FACE_EMBED_MODEL",
-            "EMBED_MODEL_NAME",
         ]
 
         for var in required_vars:

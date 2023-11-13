@@ -3,6 +3,7 @@ version: "3"
 services:
   postgres:
     image: "postgres:latest"
+    container_name: herald-postgres
     environment:
       - POSTGRES_USER=${POSTGRES_USER}
       - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
@@ -21,6 +22,7 @@ services:
 
   qdrant:
     image: "qdrant/qdrant:latest"
+    container_name: herald-qdrant
     ports:
       - "6333:6333"
       - "6334:6334"
@@ -35,21 +37,31 @@ services:
 
   redis:
     image: redis:6.2-alpine
-    restart: always
+    container_name: herald-redis
     ports:
       - "6379:6379"
     command: redis-server --save 20 1 --loglevel warning
     volumes:
       - ./.etc/redis-data:/data
+    restart: unless-stopped
     healthcheck:
       test: ["CMD", "redis-cli", "ping"]
       interval: 5s
       timeout: 2s
       retries: 3
 
+  ollama:
+    image: ollama/ollama
+    container_name: ollama
+    ports:
+      - "11434:11434"
+    volumes:
+      - ./.etc/ollama:/root/.ollama
+
   backend:
     build:
       context: ./backend
+    container_name: herald-backend
     volumes:
       - ./.etc/llama_index/:/tmp/llama_index/
       - ./.etc/uploads/:/app/uploads/

@@ -7,10 +7,10 @@ from llama_index.storage.storage_context import StorageContext
 from llama_index.vector_stores.qdrant import QdrantVectorStore
 
 from config import config
+from llms.servicecontext import service_context
+from utils import make_request
 
 from .app import app
-from services.requester import make_request
-from .service_context import service_context
 
 logger = logging.getLogger("ingestion-service")
 
