@@ -2,6 +2,7 @@
 retry
 python-dotenv
 requests
+structlog
 
 ## redis ##
 redis

@@ -1,5 +1,5 @@
 import json
-import logging
+import structlog
 
 import qdrant_client
 from llama_index import VectorStoreIndex
@@ -13,7 +13,7 @@ from utils import make_request
 
 from .app import app
 
-logger = logging.getLogger("ingestion-service")
+logger = structlog.get_logger(name="ingestion-service")
 
 ## Ingestion Worker ##
 QUEUE = config.get("CELERY_QUERYPROCESSOR_WORKER_QUEUE")
@@ -33,7 +33,9 @@ def create_combined_query_engine(collections):
                 valid_collections.append(c)
         except Exception as e:
             collections.remove(c)
-            logger.error("Error while loading collection: ", str(e))
+            logger.warning(
+                f"Error in loading collection {c}: {str(e)}. Ignoring this collection."
+            )
     query_indexes = [
         VectorStoreIndex.from_vector_store(
             vector_store=vd, service_context=service_context
@@ -68,13 +70,11 @@ def post_response(chat_id, response):
         "apiKey": config.get("NEXT_API_KEY"),
         "chatId": chat_id,
     }
-    logger.info("making request to endpoint: /api/webhooks/chat-response")
-    res = make_request(
+    make_request(
         f"{config.get('NEXT_ENDPOINT')}/api/webhooks/chat-response",
         method="put",
         json=data,
     )
-    logger.info("Response: ", res)
 
 
 ## TASKS ##
@@ -85,24 +85,23 @@ def process_query(msg):
         query = payload.get("query", None)
         collections = payload.get("collections", None)
         chat_id = payload.get("chat_id", None)
-        logger.info("MESSAGE: ", json.dumps({"1": query, "2": collections}))
         if not query or not collections:
             logger.warn("Invalid arguments recieved. Ignoring task.")
             return
         combined_engine = create_combined_query_engine(collections)
-        logger.info(f"query -> {query}")
+        logger.info(f"Recieved a query -> {query}")
         response = combined_engine.query(query)
         post_response(chat_id, response)
-        logger.info(f"Query: {query} \nSources: {collections}\nResponse: {response}\n")
+        logger.info(f'Recieved a response for query "{query}": {response}\n')
 
     except Exception as e:
-        logger.error("An error occurred:", exc_info=True)
-        logger.warn(
-            f"RETRYING........... {process_query.request.retries}",
-            type(process_query.request.retries),
+        logger.warning(
+            f"An error occurred but {2-process_query.request.retries} retries left:",
+            exc_info=e,
         )
         if process_query.request.retries == 2:
             post_response(chat_id, "Some error occurred in generating response.")
+            logger.exception("An error occurred:", exc_info=e)
             raise Exception(f"An error occurred: {e}") from e
         else:
             process_query.retry()

@@ -1,9 +1,9 @@
-import logging
+import structlog
 
 from config import config
 from servicequeue import consume_queue
 
-logger = logging.getLogger("backend-service-queue")
+logger = structlog.get_logger(name="backend-service-queue")
 
 
 if __name__ == "__main__":
@@ -12,8 +12,8 @@ if __name__ == "__main__":
         REDIS_HOST = config.get("REDIS_HOST")
         REDIS_PORT = config.get("REDIS_PORT")
         consume_queue(REDIS_HOST, REDIS_PORT, PYTHON_CONSUMER_QUEUE)
-        logging.info("Starting the redis queue consumer")
+        logger.info("Starting the redis queue consumer")
     except KeyboardInterrupt:
         logger.warn("Keyboard interrupt")
     finally:
-        logging.info("Shutting down the rabbitmq consumer")
+        logger.info("Shutting down the redis consumer")

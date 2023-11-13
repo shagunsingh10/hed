@@ -1,5 +1,5 @@
 import json
-import logging
+import structlog
 
 import qdrant_client
 from llama_index import SimpleDirectoryReader, VectorStoreIndex
@@ -12,7 +12,7 @@ from utils import make_request
 
 from .app import app
 
-logger = logging.getLogger("ingestion-service")
+logger = structlog.get_logger(name="ingestion-service")
 
 ## Ingestion Worker ##
 QUEUE = config.get("CELERY_INGESTION_WORKER_QUEUE")
@@ -80,10 +80,13 @@ def ingest_files(msg):
         save_documents_to_db(documents, collection_name)
         update_status_to_db(asset_id, "success")
     except Exception as e:
-        logger.error("An error occurred:", exc_info=True)
+        logger.warning(
+            f"An error occurred but {2-ingest_files.request.retries} retries left:",
+            exc_info=e,
+        )
         if ingest_files.request.retries == 2:
             update_status_to_db(asset_id, "failed")
-            logger.error("An error occurred:", exc_info=True)
+            logger.exception("An error occurred:", exc_info=e)
             raise Exception(f"An error occurred: {e}") from e
         else:
             ingest_files.retry()

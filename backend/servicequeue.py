@@ -1,5 +1,5 @@
 import json
-import logging
+import structlog
 
 import redis
 from retry import retry
@@ -8,7 +8,7 @@ from services.doc_remover.tasks import remove_doc
 from services.ingestion.tasks import ingest_files
 from services.query_processor.tasks import process_query
 
-logger = logging.getLogger("backend-service-queue")
+logger = structlog.get_logger(name="backend-service-queue")
 
 
 @retry(exceptions=redis.exceptions.ConnectionError, tries=3, delay=2, backoff=2)
