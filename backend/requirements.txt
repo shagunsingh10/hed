@@ -15,3 +15,4 @@ qdrant_client
 
 ## llama index ##
 llama_index
+langchain # for ollama embed model
