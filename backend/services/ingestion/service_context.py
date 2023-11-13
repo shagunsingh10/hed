@@ -1,5 +1,4 @@
 from llama_index import ServiceContext, set_global_service_context
-from llama_index.embeddings import HuggingFaceEmbedding
 
 from config import config
 
@@ -8,6 +7,8 @@ def get_service_context(use_local_embed_model=False, embed_model_name=None):
     service_context = None
     if use_local_embed_model:
         if embed_model_name:
+            from llama_index.embeddings import HuggingFaceEmbedding
+
             service_context = ServiceContext.from_defaults(
                 embed_model=HuggingFaceEmbedding(model_name=embed_model_name)
             )

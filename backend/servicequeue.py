@@ -5,9 +5,9 @@ import redis
 from retry import retry
 
 from config import config
-from workers.doc_remover import remove_doc
-from workers.ingestor import ingest_files
-from workers.query_processor import process_query
+from services.doc_remover.tasks import remove_doc
+from services.ingestion.tasks import ingest_files
+from services.query_processor.tasks import process_query
 
 logger = logging.getLogger("backend-service-queue")
 

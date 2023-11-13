@@ -1,7 +1,6 @@
 import os
 
 from llama_index import ServiceContext, set_global_service_context
-from llama_index.embeddings import HuggingFaceEmbedding
 from llama_index.llms import LlamaCPP
 from llama_index.llms.llama_utils import completion_to_prompt, messages_to_prompt
 
@@ -10,12 +9,14 @@ from config import config
 
 def get_local_embed_model(embed_model_name=None):
     if embed_model_name:
+        from llama_index.embeddings import HuggingFaceEmbedding
+
         return HuggingFaceEmbedding(model_name=embed_model_name)
     else:
         return "local"
 
 
-def get_local_llm_model(model_path=None, model_url=None):
+def get_local_llm_model(model_path, model_url=None):
     if not model_path or not os.path.exists(model_path):
         model_path = model_url
     if not model_path:
@@ -77,7 +78,7 @@ service_context = get_service_context(
     USE_LOCAL_HUGGING_FACE_EMBED_MODEL, EMBED_MODEL_NAME
 )
 
-
+print(USE_LOCAL_LLAMA_CPP_EMBED_MODEL, config.get("USE_LOCAL_HUGGING_FACE_EMBED_MODEL"))
 service_context = get_service_context(
     USE_LOCAL_LLAMA_CPP_EMBED_MODEL,
     LLM_MODEL_PATH,
