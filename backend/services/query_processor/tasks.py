@@ -10,7 +10,7 @@ from llama_index.vector_stores.qdrant import QdrantVectorStore
 from config import config
 
 from .app import app
-from .request import make_request
+from services.requester import make_request
 from .service_context import service_context
 
 logger = logging.getLogger("ingestion-service")

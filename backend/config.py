@@ -18,18 +18,22 @@ class Config:
         required_vars = [
             "PYTHON_CONSUMER_QUEUE",
             "NEXT_ENDPOINT",
-            "LLM_MODEL",
+            "NEXT_API_KEY",
             "REDIS_HOST",
             "REDIS_PORT",
             "QDRANT_URI",
             "CELERY_DOCREMOVER_WORKER_QUEUE",
             "CELERY_INGESTION_WORKER_QUEUE",
             "CELERY_QUERYPROCESSOR_WORKER_QUEUE",
-            "NEXT_API_KEY",
-            "LLM_MODEL_DOWNLOAD_URL"
-            
         ]
-        optional_vars = ["OPENAI_API_KEY", "LLM_MODEL_PATH"]
+        optional_vars = [
+            "USE_LOCAL_LLAMA_CPP_EMBED_MODEL",
+            "LLM_MODEL_PATH",
+            "LLM_MODEL_DOWNLOAD_URL",
+            "OPENAI_API_KEY",
+            "USE_LOCAL_HUGGING_FACE_EMBED_MODEL",
+            "EMBED_MODEL_NAME",
+        ]
 
         for var in required_vars:
             value = os.getenv(var)
