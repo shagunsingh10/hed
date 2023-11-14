@@ -19,15 +19,18 @@ export interface ChatWithoutMessage {
 export interface MessagesSlice {
   messages: Message[] | undefined;
   addMessage: (m: Message) => void;
-  postQuery: (chatId: string, query: string) => void;
-  loadMessages: (chatId: string) => void;
+  postQuery: (chatId: string, query: string) => Promise<void>;
+  loadMessages: (chatId: string) => Promise<void>;
 }
 
 export interface ChatsSlice {
   chats: ChatWithoutMessage[];
   activeChatId: string;
   setActiveChatId: (chatId: string) => void;
-  loadChats: (scope: "generic" | "project", projectId?: string) => void;
+  loadChats: (
+    scope: "generic" | "project",
+    projectId?: string
+  ) => Promise<void>;
   addChat: (projectId?: string) => Promise<string>;
   deleteteChat?: () => void;
 }

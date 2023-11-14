@@ -1,11 +1,13 @@
-import { List, Tag, Skeleton } from "antd";
+import { Empty, Tag } from "antd";
 import useStore from "@/store";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-
+import { Card, Skeleton } from "antd";
 import styles from "./projects.module.scss";
 
-const ProjectsList = ({ visible }: { visible: boolean }) => {
+const { Meta } = Card;
+
+const ProjectsGrid = ({ visible }: { visible: boolean }) => {
   const [loading, setLoading] = useState(false);
   const projects = useStore((state) => state.projects);
   const getProjects = useStore((state) => state.getProjects);
@@ -15,7 +17,7 @@ const ProjectsList = ({ visible }: { visible: boolean }) => {
   useEffect(() => {
     if (getProjects) {
       setLoading(true);
-      getProjects().finally(() => setLoading(false));
+      getProjects().then(() => setLoading(false));
     }
   }, [getProjects]);
 
@@ -31,24 +33,22 @@ const ProjectsList = ({ visible }: { visible: boolean }) => {
 
   return (
     <div
-      className={styles.projectList}
+      className={styles.projectCardsContainer}
       style={{
         opacity: `${visible ? 1 : 0}`,
         height: `${visible ? "" : "0"}`,
+        padding: `${visible ? "" : "0"}`,
       }}
     >
-      <List
-        itemLayout="horizontal"
-        dataSource={projects}
-        renderItem={(item, index) => (
-          <Skeleton
-            loading={loading}
-            avatar
-            active
-            style={{ padding: "2em 0" }}
+      {projects?.length > 0 ? (
+        projects.map((item, key) => (
+          <Card
+            key={key}
+            className={styles.projectCard}
+            onClick={() => handleProjectClick(item.id)}
           >
-            <List.Item key={index} style={{ padding: "2em 0" }}>
-              <List.Item.Meta
+            <Skeleton loading={loading} avatar active>
+              <Meta
                 avatar={
                   <img
                     src="/images/project-icon.jpg"
@@ -60,12 +60,7 @@ const ProjectsList = ({ visible }: { visible: boolean }) => {
                 }
                 title={
                   <div className={styles.projectTitleContainer}>
-                    <div
-                      className={styles.projectTitle}
-                      onClick={() => handleProjectClick(item.id)}
-                    >
-                      {item.name}
-                    </div>
+                    <div className={styles.projectTitle}>{item.name}</div>
                     <div className={styles.projectTags}>
                       {item.tags.map((tag) => (
                         <Tag key={tag} color="#434343">
@@ -83,12 +78,14 @@ const ProjectsList = ({ visible }: { visible: boolean }) => {
                   </div>
                 }
               />
-            </List.Item>
-          </Skeleton>
-        )}
-      />
+            </Skeleton>
+          </Card>
+        ))
+      ) : (
+        <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} />
+      )}
     </div>
   );
 };
 
-export default ProjectsList;
+export default ProjectsGrid;

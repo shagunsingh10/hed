@@ -5,7 +5,8 @@
 
   .header {
     height: 4.5vh;
-    background-color: $primaryDark;
+    background-color: $headerColor;
+    box-shadow: 0px 1px 1px rgba(0, 0, 0, 0.3);
   }
 
   .content {
@@ -16,7 +17,8 @@
     .sider {
       height: 95.5vh;
       width: 3vw;
-      background-color: #1a1c1e;
+      background-color: $siderColor;
+      box-shadow: inset 0px 1px 1px rgba(0, 0, 0, 0.3);
     }
 
     .main_body {

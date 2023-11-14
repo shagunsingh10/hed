@@ -1,24 +1,17 @@
-import logging
 import structlog
+import logging
 
 structlog.configure(
     processors=[
-        # Prepare event dict for `ProcessorFormatter`.
-        structlog.stdlib.ProcessorFormatter.wrap_for_formatter,
+        structlog.processors.add_log_level,
+        structlog.processors.format_exc_info,
+        structlog.processors.TimeStamper(fmt="%Y-%m-%d %H:%M:%S", utc=True),
+        structlog.dev.ConsoleRenderer(),
     ],
-    logger_factory=structlog.stdlib.LoggerFactory(),
+    wrapper_class=structlog.make_filtering_bound_logger(logging.INFO),
+    cache_logger_on_first_use=True,
 )
-
-formatter = structlog.stdlib.ProcessorFormatter(
-    processors=[structlog.dev.ConsoleRenderer()],
-)
-
-handler = logging.StreamHandler()
-handler.setFormatter(formatter)
 
 
 def get_logger(name: str = None):
-    root_logger = logging.getLogger(name)
-    root_logger.addHandler(handler)
-    root_logger.setLevel(logging.INFO)
-    return root_logger
+    return structlog.getLogger(name)

@@ -5,8 +5,8 @@
     "Roboto Mono", "Oxygen Mono", "Ubuntu Monospace", "Source Code Pro",
     "Fira Mono", "Droid Sans Mono", "Courier New", monospace;
 
-  --foreground-color: rgba(200, 200, 200, 0.75);
-  --background-color: #131416;
+  --foreground-color: rgba(200, 200, 200, 0.9);
+  --background-color: #242629;
 }
 
 * {
@@ -49,6 +49,7 @@ html {
 }
 
 .customFileInput {
+  width: 100%;
   max-width: 100%;
   padding: 0.2em;
   border-radius: 0.5em;
@@ -59,7 +60,7 @@ html {
 .customFileInput::file-selector-button {
   margin-right: 20px;
   border: none;
-  background: #a02669;
+  background: #fa5560;
   padding: 0.3em 1em;
   border-radius: 0.4em;
   color: #fff;
@@ -68,5 +69,5 @@ html {
 }
 
 .customFileInput::file-selector-button:hover {
-  background: #291321;
+  background: #fa55607a;
 }

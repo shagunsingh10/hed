@@ -28,7 +28,7 @@ const KGScreen: React.FC<KGScreenProps> = ({ projectId }) => {
         {!createKgTab && (
           <Button type="primary" onClick={handleKgCreateButton}>
             <PlusCircleOutlined />
-            Create new knowledge group
+            Create Knowledge Group
           </Button>
         )}
       </div>

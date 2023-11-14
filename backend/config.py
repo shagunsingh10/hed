@@ -16,15 +16,15 @@ class Config:
     def _load_config(self):
         load_dotenv()
         required_vars = [
-            "PYTHON_CONSUMER_QUEUE",
             "NEXT_ENDPOINT",
             "NEXT_API_KEY",
             "REDIS_HOST",
             "REDIS_PORT",
             "QDRANT_URI",
-            "CELERY_DOCREMOVER_WORKER_QUEUE",
-            "CELERY_INGESTION_WORKER_QUEUE",
-            "CELERY_QUERYPROCESSOR_WORKER_QUEUE",
+            "PYTHON_CONSUMER_QUEUE",
+            "CELERY_SHREDDER_QUEUE",
+            "CELERY_INGESTOR_QUEUE",
+            "CELERY_RETRIEVER_QUEUE",
         ]
         optional_vars = [
             "USE_OLLAMA",

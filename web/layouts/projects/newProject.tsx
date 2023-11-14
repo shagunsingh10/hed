@@ -73,7 +73,7 @@ const CreateProjectForm: React.FC<createProjectFormProps> = ({
               Cancel
             </Button>
             <Button type="primary" htmlType="submit" loading={loading}>
-              Submit
+              Create
             </Button>
           </div>
         </Form.Item>

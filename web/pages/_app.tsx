@@ -5,7 +5,12 @@ import { Inter } from "next/font/google";
 import { ConfigProvider, theme } from "antd";
 import { SessionProvider } from "next-auth/react";
 import AppLayout from "@/layouts/appLayout";
-import { PRIMARY_COLOR, COLOR_BG_BASE } from "../constants";
+import {
+  PRIMARY_COLOR,
+  COLOR_BG_BASE,
+  BORDER_RADIUS,
+  COLOR_OUTLINE,
+} from "../constants";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -24,6 +29,8 @@ export default function App({ Component, pageProps }: AppProps) {
             colorPrimary: PRIMARY_COLOR,
             colorInfo: PRIMARY_COLOR,
             colorBgBase: COLOR_BG_BASE,
+            borderRadius: BORDER_RADIUS,
+            controlOutline: COLOR_OUTLINE,
           },
           algorithm: [theme.darkAlgorithm, theme.compactAlgorithm],
         }}

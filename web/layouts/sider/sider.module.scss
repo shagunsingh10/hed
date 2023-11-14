@@ -11,30 +11,30 @@
     display: flex;
     flex-direction: column;
     align-items: center;
+    gap: 1.5em;
 
     * {
-      font-size: 1.1em;
+      font-size: 1.08em;
     }
 
     .activeNavItem {
+      cursor: pointer;
       font-weight: bold;
-      padding: 1em 0.3em;
-      * {
-        color: $primaryColor;
-      }
+      background-color: $primaryColor;
+      border-radius: 10%;
+      padding: 15%;
     }
 
     .navItem {
+      cursor: pointer;
       display: flex;
-      padding: 1em 0.3em;
       transition: color 1s;
+      padding: 15%;
+      border-radius: 10%;
     }
 
     .navItem:hover {
-      transition: color 1s;
-      * {
-        color: $primaryColor;
-      }
+      background-color: $primaryDark;
     }
   }
 

@@ -4,6 +4,9 @@ import Link from "next/link";
 import { Tooltip } from "antd";
 import styles from "./sider.module.scss";
 
+const getParentPath = (path: string) =>
+  path === "/" ? path : `/${path.split("/")[1]}`;
+
 const items = [
   { title: "Ask", path: "/", icon: <RobotFilled /> },
   { title: "Projects", path: "/projects", icon: <ProfileFilled /> },
@@ -19,7 +22,9 @@ export default function Sider() {
           <Tooltip placement="right" title={e.title} key={e.path}>
             <div
               className={
-                pathname == e.path ? styles.activeNavItem : styles.navItem
+                getParentPath(pathname) == e.path
+                  ? styles.activeNavItem
+                  : styles.navItem
               }
             >
               <Link href={e.path}>{e.icon}</Link>

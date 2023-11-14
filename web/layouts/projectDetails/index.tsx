@@ -24,14 +24,14 @@ const ProjectDetailsScreen = () => {
 
   const tabs = [
     {
-      title: "Chat",
-      icon: <MailOutlined />,
-      content: <Chatbox scope="project" projectId={projectId} height="65vh" />,
-    },
-    {
       title: "Knowledge Groups",
       icon: <BookOutlined />,
       content: <KGScreen projectId={projectId} />,
+    },
+    {
+      title: "Chat",
+      icon: <MailOutlined />,
+      content: <Chatbox scope="project" projectId={projectId} height="65vh" />,
     },
     { title: "Users", icon: <UserOutlined />, content: <ProjectUsers /> },
   ];
@@ -56,10 +56,16 @@ const ProjectDetailsScreen = () => {
   return (
     <div className={styles.projectDetailsContainer}>
       <Row className={styles.projectDetailsHead}>
-        <Col span={3}>
-          <AppstoreFilled className={styles.projectAvatar} />
+        <Col span={2}>
+          <img
+            src="/images/project-icon.jpg"
+            alt="project"
+            height={70}
+            width={70}
+            style={{ borderRadius: "0.5em" }}
+          />
         </Col>
-        <Col span={21}>
+        <Col span={22}>
           <span className={styles.projectTitle}>{project?.name}</span>
           <span className={styles.projectDescription}>
             {project?.description}

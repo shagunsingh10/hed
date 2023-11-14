@@ -29,7 +29,7 @@ const AssetScreen: React.FC<AssetScreenProps> = ({ projectId, kgId }) => {
         {!createAssetTab && (
           <Button type="primary" onClick={handleAssetCreateButton}>
             <PlusCircleOutlined />
-            Create new asset
+            Add Asset
           </Button>
         )}
       </div>

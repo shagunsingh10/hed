@@ -9,7 +9,7 @@ class HeraldOllamaEmbeddings(BaseEmbedding):
 
     def __init__(
         self,
-        base_url: str = "http://172.17.0.1:11434",
+        base_url: str = "http://34.16.183.205:11434",
         model_name: str = "llama2",
         **kwargs: Any,
     ) -> None:
@@ -39,4 +39,3 @@ class HeraldOllamaEmbeddings(BaseEmbedding):
     def _get_text_embeddings(self, texts: List[str]) -> List[List[float]]:
         embeddings = self._model.embed_documents(texts)
         return embeddings
-

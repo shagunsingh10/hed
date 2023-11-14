@@ -1,17 +1,14 @@
 import json
-import structlog
 
 import qdrant_client
 from llama_index.vector_stores.qdrant import QdrantVectorStore
-
+from celery.exceptions import Reject
 from config import config
 
-from .app import app
+from .worker import worker, logger
 
-logger = structlog.get_logger("docremover-service")
-
-## Ingestion Worker ##
-QUEUE = config.get("CELERY_DOCREMOVER_WORKER_QUEUE")
+## QUEUE ##
+QUEUE = config.get("CELERY_SHREDDER_QUEUE")
 
 
 ## Util Functions ##
@@ -23,7 +20,7 @@ def delete_document(doc_id, collection_name):
 
 
 ## TASKS ##
-@app.task(queue=QUEUE, max_retries=3, time_limit=20)
+@worker.task(queue=QUEUE, max_retries=3, time_limit=20)
 def remove_doc(msg):
     try:
         payload = json.loads(msg)
@@ -32,11 +29,10 @@ def remove_doc(msg):
         delete_document(doc_id, collection_name)
     except Exception as e:
         logger.warning(
-            f"An error occurred but {3-remove_doc.request.retries} retries left:",
-            exc_info=e,
+            f"An error occurred in task but {3-remove_doc.request.retries} retries left. Error: {str(e)}"
         )
         if remove_doc.request.retries == 3:
-            logger.exception("An error occurred:", exc_info=e)
-            raise Exception(f"An error occurred: {e}") from e
+            logger.exception(f"Task failed: {str(e)}")
+            raise Reject()
         else:
             remove_doc.retry()

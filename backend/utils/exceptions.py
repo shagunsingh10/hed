@@ -1,0 +1,2 @@
+class HeraldAppException(Exception):
+    pass

@@ -1,21 +1,20 @@
 import json
-import structlog
 
 import qdrant_client
 from llama_index import SimpleDirectoryReader, VectorStoreIndex
 from llama_index.storage.storage_context import StorageContext
 from llama_index.vector_stores.qdrant import QdrantVectorStore
+from celery.exceptions import Reject
 
 from config import config
 from llms.servicecontext import service_context
 from utils import make_request
 
-from .app import app
+from .worker import worker, logger
 
-logger = structlog.get_logger(name="ingestion-service")
 
-## Ingestion Worker ##
-QUEUE = config.get("CELERY_INGESTION_WORKER_QUEUE")
+## QUEUE ##
+QUEUE = config.get("CELERY_INGESTOR_QUEUE")
 
 
 ## Util Functions ##
@@ -44,7 +43,8 @@ def save_documents_to_db(documents, collection_name):
 
 def update_docs_information(documents, collection_name):
     docsinfo = [{"id": d.id_, "filepath": d.metadata["file_path"]} for d in documents]
-    print(docsinfo)
+    logger.info(docsinfo)
+    # process docinfos
 
 
 def update_status_to_db(collection_name, status):
@@ -63,7 +63,7 @@ def update_status_to_db(collection_name, status):
 
 
 ## TASKS ##
-@app.task(queue=QUEUE, max_retries=2, default_retry_delay=1, time_limit=300)
+@worker.task(queue=QUEUE, max_retries=2, default_retry_delay=1, time_limit=300)
 def ingest_files(msg):
     try:
         payload = json.loads(msg)
@@ -81,12 +81,11 @@ def ingest_files(msg):
         update_status_to_db(asset_id, "success")
     except Exception as e:
         logger.warning(
-            f"An error occurred but {2-ingest_files.request.retries} retries left:",
-            exc_info=e,
+            f"An error occurred in task but {2-ingest_files.request.retries} retries left. Error: {str(e)}"
         )
         if ingest_files.request.retries == 2:
             update_status_to_db(asset_id, "failed")
-            logger.exception("An error occurred:", exc_info=e)
-            raise Exception(f"An error occurred: {e}") from e
+            logger.exception(f"Task Failed: {str(e)}")
+            raise Reject()
         else:
             ingest_files.retry()

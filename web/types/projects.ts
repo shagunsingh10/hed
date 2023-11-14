@@ -15,7 +15,7 @@ export interface Project {
 
 export interface ProjectsSlice {
   projects: Project[];
-  getProjects: () => void;
+  getProjects: () => Promise<void>;
   getProjectById: (id: string) => Promise<Project | undefined>;
   createProject: (data: CreateProjectData) => void;
 }

@@ -1,27 +1,11 @@
 import { useEffect, useState, FC } from "react";
-import { Menu, Button } from "antd";
+import { Menu, Button, Divider, Drawer } from "antd";
 import { MessageOutlined, PlusCircleOutlined } from "@ant-design/icons";
 import useStore from "@/store";
 import ChatWindow from "./chatwindow";
 import { useSession } from "next-auth/react";
 import type { MenuProps } from "antd";
 import styles from "./chatbot.module.scss";
-
-type MenuItem = Required<MenuProps>["items"][number];
-
-function getItem(
-  label: React.ReactNode,
-  key: React.Key,
-  icon?: React.ReactNode,
-  type?: "group"
-): MenuItem {
-  return {
-    key,
-    icon,
-    label,
-    type,
-  } as MenuItem;
-}
 
 type ChatBoxProps = {
   scope: "generic" | "project";
@@ -31,20 +15,25 @@ type ChatBoxProps = {
 
 const Chatbox: FC<ChatBoxProps> = ({ scope, height, projectId }) => {
   // states
-  const { data: session } = useSession();
+  const [chatHistoryOpen, setChatHistoryOpen] = useState<boolean>(false);
+
   const chats = useStore((state) => state.chats);
   const loadChats = useStore((state) => state.loadChats);
   const addChat = useStore((state) => state.addChat);
   const activeChatId = useStore((state) => state.activeChatId);
   const setActiveChatId = useStore((state) => state.setActiveChatId);
 
-  const items: MenuItem[] = chats?.map((chat) =>
-    getItem(chat.title, chat.id, <MessageOutlined />)
-  );
-
   //functions
   const handleChatClick = (id: any) => {
     setActiveChatId(id);
+  };
+
+  const handleCloseChatHistory = () => {
+    setChatHistoryOpen(false);
+  };
+
+  const handleOpenChatHistory = () => {
+    setChatHistoryOpen(true);
   };
 
   const addNewChat = async () => {
@@ -64,7 +53,7 @@ const Chatbox: FC<ChatBoxProps> = ({ scope, height, projectId }) => {
 
   return (
     <div className={styles.chatScreen} style={{ height }}>
-      <div className={styles.chatHistoryContainer}>
+      <div className={styles.chatButtons}>
         <Button
           className={styles.newChatButton}
           type="primary"
@@ -73,14 +62,39 @@ const Chatbox: FC<ChatBoxProps> = ({ scope, height, projectId }) => {
           <PlusCircleOutlined />
           New Chat
         </Button>
+        <Button
+          className={styles.newChatButton}
+          type="primary"
+          onClick={handleOpenChatHistory}
+        >
+          <MessageOutlined />
+          Chat History
+        </Button>
+      </div>
+      <Drawer
+        title="Chat History"
+        className={styles.chatHistoryContainer}
+        placement="right"
+        open={chatHistoryOpen}
+        onClose={handleCloseChatHistory}
+      >
         <Menu
           className={styles.chatList}
           defaultActiveFirst={true}
           mode="vertical"
-          items={items}
           onClick={(e) => handleChatClick(e.key)}
-        />
-      </div>
+        >
+          {chats.map((chat, id) => (
+            <Menu.Item
+              icon={<MessageOutlined />}
+              key={id}
+              className={styles.chatListItem}
+            >
+              {chat.title}
+            </Menu.Item>
+          ))}
+        </Menu>
+      </Drawer>
       <ChatWindow chatId={activeChatId} height={height} />
     </div>
   );

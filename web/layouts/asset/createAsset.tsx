@@ -1,5 +1,15 @@
 import { useState, FC } from "react";
-import { Form, Input, Button, Card, message, Select } from "antd";
+import {
+  Form,
+  Input,
+  Button,
+  Card,
+  message,
+  Select,
+  Row,
+  Col,
+  Typography,
+} from "antd";
 import Uploader from "@/components/Uploader";
 
 import styles from "./asset.module.scss";
@@ -67,56 +77,85 @@ const CreateAssetForm: FC<CreateAssetFormProps> = ({
         layout="vertical"
       >
         <div className={styles.formItemsContainer}>
-          <Form.Item
-            label="Name"
-            name="name"
-            rules={[
-              {
-                required: true,
-                message: "Please enter a name for this asset.",
-              },
-            ]}
-          >
-            <Input placeholder="Name is required" />
-          </Form.Item>
+          <Row>
+            <Col span={11}>
+              <Typography.Title level={3}>Asset</Typography.Title>
+              <Form.Item
+                label="Asset Type"
+                name="assetType"
+                rules={[
+                  {
+                    required: true,
+                    message: "Please select assetType.",
+                  },
+                ]}
+              >
+                <Select
+                  showSearch={true}
+                  onChange={(e) => setSelectedAssetType(e)}
+                >
+                  {assetTypes.map((e) => (
+                    <Option key={e.id} value={e.id}>
+                      {e.name}
+                    </Option>
+                  ))}
+                </Select>
+              </Form.Item>
+              {selecTedAssetType && (
+                <Form.Item label="File (Select file to proceed)" name="file">
+                  <Uploader
+                    projectId={projectId}
+                    kgId={kgId}
+                    onSuccessCallback={handleUploadComplete}
+                    onFailureCallback={handleUploadFailure}
+                  />
+                </Form.Item>
+              )}
+            </Col>
+            <Col span={2} />
+            <Col span={11}>
+              <Typography.Title level={3}>Metadata</Typography.Title>
+              <Form.Item
+                label="Name"
+                name="name"
+                rules={[
+                  {
+                    required: true,
+                    message: "Please enter a name for this asset.",
+                  },
+                ]}
+              >
+                <Input placeholder="Name is required" />
+              </Form.Item>
 
-          <Form.Item label="Asset Description" name="description">
-            <Input.TextArea
-              rows={6}
-              placeholder="Please enter a short description for this KG"
-            />
-          </Form.Item>
-          <Form.Item label="Tags" name="tags">
-            <Input placeholder="Enter tags asscoiated with this knowledge group (comma-separated)" />
-          </Form.Item>
-          <Form.Item
-            label="Asset Type"
-            name="assetType"
-            rules={[
-              {
-                required: true,
-                message: "Please select assetType.",
-              },
-            ]}
-          >
-            <Select showSearch={true} onChange={(e) => setSelectedAssetType(e)}>
-              {assetTypes.map((e) => (
-                <Option key={e.id} value={e.id}>
-                  {e.name}
-                </Option>
-              ))}
-            </Select>
-          </Form.Item>
-          {selecTedAssetType && (
-            <Form.Item label="File (Select file to proceed)" name="file">
-              <Uploader
-                projectId={projectId}
-                kgId={kgId}
-                onSuccessCallback={handleUploadComplete}
-                onFailureCallback={handleUploadFailure}
-              />
-            </Form.Item>
-          )}
+              <Form.Item label="Asset Description" name="description">
+                <Input.TextArea
+                  rows={6}
+                  placeholder="Please enter a short description for this KG"
+                />
+              </Form.Item>
+              <Form.Item label="Tags" name="tags">
+                <Input placeholder="Enter tags asscoiated with this asset (comma-separated)" />
+              </Form.Item>
+              <Form.Item label="Authors" name="poc">
+                <Select
+                  showSearch={true}
+                  placeholder="Select authors of this asset"
+                  mode="multiple"
+                >
+                  {[
+                    { id: "Bob@abc.com", name: "Bob@abc.com" },
+                    { id: "Sam@abc.com", name: "Sam@abc.com" },
+                    { id: "Shivam@abc.com", name: "Shivam@abc.com" },
+                  ].map((e) => (
+                    <Option key={e.id} value={e.id}>
+                      {e.name}
+                    </Option>
+                  ))}
+                </Select>
+              </Form.Item>
+            </Col>
+          </Row>
         </div>
         <Form.Item>
           <div className={styles.formButtonGroup}>
@@ -129,7 +168,7 @@ const CreateAssetForm: FC<CreateAssetFormProps> = ({
               loading={loading}
               disabled={!uploadId}
             >
-              Submit
+              Add
             </Button>
           </div>
         </Form.Item>

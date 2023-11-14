@@ -1,25 +1,23 @@
 import json
-import structlog
 
 import qdrant_client
 from llama_index import VectorStoreIndex
 from llama_index.query_engine import SubQuestionQueryEngine
 from llama_index.tools import QueryEngineTool, ToolMetadata
 from llama_index.vector_stores.qdrant import QdrantVectorStore
-
+from celery.exceptions import Reject
 from config import config
 from llms.servicecontext import service_context
 from utils import make_request
 
-from .app import app
-
-logger = structlog.get_logger(name="ingestion-service")
-
-## Ingestion Worker ##
-QUEUE = config.get("CELERY_QUERYPROCESSOR_WORKER_QUEUE")
+from .worker import worker, logger
 
 
-## Util Functions ##
+## QUEUE ##
+QUEUE = config.get("CELERY_RETRIEVER_QUEUE")
+
+
+## UTIL FUNCTIONS ##
 def create_combined_query_engine(collections):
     client = qdrant_client.QdrantClient(config.get("QDRANT_URI"), prefer_grpc=True)
     vds = []
@@ -78,7 +76,7 @@ def post_response(chat_id, response):
 
 
 ## TASKS ##
-@app.task(queue=QUEUE, max_retries=2, default_retry_delay=1, time_limit=200)
+@worker.task(queue=QUEUE, max_retries=2, default_retry_delay=1, time_limit=200)
 def process_query(msg):
     try:
         payload = json.loads(msg)
@@ -92,16 +90,15 @@ def process_query(msg):
         logger.info(f"Recieved a query -> {query}")
         response = combined_engine.query(query)
         post_response(chat_id, response)
-        logger.info(f'Recieved a response for query "{query}": {response}\n')
 
     except Exception as e:
         logger.warning(
-            f"An error occurred but {2-process_query.request.retries} retries left:",
+            f"An error occurred in task but {2-process_query.request.retries} retries left. Error: {str(e)}",
             exc_info=e,
         )
         if process_query.request.retries == 2:
             post_response(chat_id, "Some error occurred in generating response.")
-            logger.exception("An error occurred:", exc_info=e)
-            raise Exception(f"An error occurred: {e}") from e
+            logger.exception(f"Task Failed: {str(e)}")
+            raise Reject()
         else:
             process_query.retry()

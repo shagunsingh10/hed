@@ -45,10 +45,16 @@ const KgDetailsScreen = () => {
   return (
     <div className={styles.kgDetailsContainer}>
       <Row className={styles.kgDetailsHead}>
-        <Col span={3}>
-          <ReadFilled className={styles.kgAvatar} />
+        <Col span={2}>
+          <img
+            src="/images/kg1.jpg"
+            alt="project"
+            height={70}
+            width={70}
+            style={{ borderRadius: "0.5em" }}
+          />
         </Col>
-        <Col span={21}>
+        <Col span={22}>
           <span className={styles.kgTitle}>{kg?.name}</span>
           <span className={styles.kgDescription}>{kg?.description}</span>
         </Col>

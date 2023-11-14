@@ -4,9 +4,9 @@ import structlog
 import redis
 from retry import retry
 
-from services.doc_remover.tasks import remove_doc
-from services.ingestion.tasks import ingest_files
-from services.query_processor.tasks import process_query
+from services.shredder.tasks import remove_doc
+from services.ingestor.tasks import ingest_files
+from services.retriever.tasks import process_query
 
 logger = structlog.get_logger(name="backend-service-queue")
 
