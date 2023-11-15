@@ -1,6 +1,7 @@
 @use "../../variables.scss" as *;
 
 .loginContainer {
+  background-image: url("/images/bgIcons.svg");
   height: 100vh;
   display: flex;
   justify-content: center;
@@ -12,11 +13,25 @@
     justify-content: center;
     padding: 1em;
 
-    .loginText {
-      font-size: 3em;
-      font-weight: bold;
-      color: $primaryColor;
-      margin-bottom: 1em;
+    .loginCard {
+      height: 50vh;
+      background: $siderColor;
+      border-radius: 0.4em;
+      border: 1px solid $siderColor;
+      padding: 5em;
+      box-shadow: 1px 1px 8px rgba(0, 0, 0, 0.3);
+
+      .loginText {
+        font-size: 3em;
+        font-weight: bold;
+        color: $primaryDark;
+        margin-bottom: 2em;
+      }
+
+      button {
+        border: 1px solid $primaryColor;
+        color: $primaryColor;
+      }
     }
   }
 }

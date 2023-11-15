@@ -1,17 +1,18 @@
-import structlog
 import logging
+from rich.logging import RichHandler
 
-structlog.configure(
-    processors=[
-        structlog.processors.add_log_level,
-        structlog.processors.format_exc_info,
-        structlog.processors.TimeStamper(fmt="%Y-%m-%d %H:%M:%S", utc=True),
-        structlog.dev.ConsoleRenderer(),
-    ],
-    wrapper_class=structlog.make_filtering_bound_logger(logging.INFO),
-    cache_logger_on_first_use=True,
-)
+from rich.traceback import install
+
+install(show_locals=True)
 
 
 def get_logger(name: str = None):
-    return structlog.getLogger(name)
+    FORMAT = "%(message)s"
+    logging.basicConfig(
+        level=logging.INFO,
+        format=FORMAT,
+        datefmt="[%Y-%m-%d %H:%M:%S]",
+        handlers=[RichHandler()],
+    )
+    logger = logging.getLogger("rich")
+    return logger

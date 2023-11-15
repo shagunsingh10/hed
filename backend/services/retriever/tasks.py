@@ -1,20 +1,21 @@
 import json
 
 import qdrant_client
+from celery.exceptions import Reject
 from llama_index import VectorStoreIndex
 from llama_index.query_engine import SubQuestionQueryEngine
 from llama_index.tools import QueryEngineTool, ToolMetadata
 from llama_index.vector_stores.qdrant import QdrantVectorStore
-from celery.exceptions import Reject
+
 from config import config
-from llms.servicecontext import service_context
+from servicecontext import get_service_context
 from utils import make_request
 
-from .worker import worker, logger
-
+from .worker import logger, worker
 
 ## QUEUE ##
 QUEUE = config.get("CELERY_RETRIEVER_QUEUE")
+service_context = get_service_context()
 
 
 ## UTIL FUNCTIONS ##

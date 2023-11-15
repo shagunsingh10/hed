@@ -2,7 +2,8 @@
 retry
 python-dotenv
 requests
-structlog
+rich
+PyYAML
 
 ## redis ##
 redis

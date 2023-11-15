@@ -1,11 +1,12 @@
 import json
 
 import qdrant_client
-from llama_index.vector_stores.qdrant import QdrantVectorStore
 from celery.exceptions import Reject
+from llama_index.vector_stores.qdrant import QdrantVectorStore
+
 from config import config
 
-from .worker import worker, logger
+from .worker import logger, worker
 
 ## QUEUE ##
 QUEUE = config.get("CELERY_SHREDDER_QUEUE")

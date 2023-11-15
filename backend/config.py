@@ -27,7 +27,6 @@ class Config:
             "CELERY_RETRIEVER_QUEUE",
         ]
         optional_vars = [
-            "USE_OLLAMA",
             "OPENAI_API_KEY",
         ]
 

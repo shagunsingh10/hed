@@ -1,7 +1,8 @@
 from typing import Any, List
-from llama_index.embeddings.base import BaseEmbedding
-from langchain.embeddings import OllamaEmbeddings as LangchainOllamaEmbeddings
+
+from langchain.embeddings import OllamaEmbeddings
 from llama_index.bridge.pydantic import PrivateAttr
+from llama_index.embeddings.base import BaseEmbedding
 
 
 class HeraldOllamaEmbeddings(BaseEmbedding):
@@ -9,11 +10,11 @@ class HeraldOllamaEmbeddings(BaseEmbedding):
 
     def __init__(
         self,
-        base_url: str = "http://34.16.183.205:11434",
-        model_name: str = "llama2",
+        base_url: str = "http://localhost:11434",
+        model: str = "llama2",
         **kwargs: Any,
     ) -> None:
-        self._model = LangchainOllamaEmbeddings(base_url=base_url, model=model_name)
+        self._model = OllamaEmbeddings(base_url=base_url, model=model)
         super().__init__(**kwargs)
 
     @classmethod

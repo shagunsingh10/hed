@@ -1,0 +1,9 @@
+llm_name: koboldcpp
+llm_kwargs:
+  base_url: http://localhost:5000
+  temperature: 0.8
+
+embed_model_name: herald_ollama
+embed_model_kwargs:
+  base_url: http://localhost:11434
+  model: llama2
