@@ -1,5 +1,14 @@
 import { useState, useRef, useEffect, FC } from "react";
-import { Input, List, Avatar, Space, Skeleton, Typography, Button } from "antd";
+import {
+  Input,
+  List,
+  Avatar,
+  Space,
+  Skeleton,
+  Typography,
+  Button,
+  message,
+} from "antd";
 import { SendOutlined, BulbOutlined, SyncOutlined } from "@ant-design/icons";
 import useStore from "../../store";
 import { CHAT_MESSAGE_BG, COLOR_BG_TEXT } from "@/constants";
@@ -7,17 +16,19 @@ import styles from "./chatbot.module.scss";
 import { globalDateFormatParser } from "@/lib/functions";
 
 type ChatWindowProps = {
-  chatId: string;
+  chatId?: string;
   height: string;
+  projectId?: string;
 };
 
-const ChatWindow: FC<ChatWindowProps> = ({ chatId, height }) => {
+const ChatWindow: FC<ChatWindowProps> = ({ chatId, height, projectId }) => {
   // states
   const [inputValue, setInputValue] = useState<string>("");
   const [loading, setLoading] = useState<boolean>(false);
 
   const messages = useStore((state) => state.messages);
   const postQuery = useStore((state) => state.postQuery);
+  const addChat = useStore((state) => state.addChat);
   const loadMessages = useStore((state) => state.loadMessages);
   const chatWindowRef = useRef<HTMLDivElement>(null);
 
@@ -28,9 +39,34 @@ const ChatWindow: FC<ChatWindowProps> = ({ chatId, height }) => {
 
   const handleSendMessage = async () => {
     if (inputValue.trim() !== "") {
-      // handle logic for sending query & adding replies (using websockets)
-      postQuery(chatId, inputValue);
+      if (!chatId) {
+        addChat(projectId).then((chatId) => {
+          postQuery(chatId, inputValue);
+        });
+      } else {
+        postQuery(chatId, inputValue);
+      }
       setInputValue("");
+    }
+  };
+
+  const handleRegenerate = () => {
+    const lastUserMessage = messages?.find((e) => e.isResponse === false);
+    if (!lastUserMessage || !chatId) {
+      message.error("No message to regenerate");
+    } else {
+      postQuery(chatId, lastUserMessage.content);
+    }
+  };
+
+  const handleEnter = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
+    if (e.altKey && e.key === "Enter") {
+      setInputValue((prev) => prev + "\n");
+      return;
+    }
+    if (e.key === "Enter") {
+      e.preventDefault();
+      handleSendMessage();
     }
   };
 
@@ -97,6 +133,8 @@ const ChatWindow: FC<ChatWindowProps> = ({ chatId, height }) => {
           size="large"
           className={styles.chatInput}
           onChange={handleInputChange}
+          // onPressEnter={handleEnter}
+          onKeyDown={handleEnter}
           value={inputValue}
           placeholder="Type your message..."
           autoSize={{ minRows: 1, maxRows: 6 }}
@@ -114,7 +152,7 @@ const ChatWindow: FC<ChatWindowProps> = ({ chatId, height }) => {
           className={styles.sendButton}
           color="secondary"
           size="large"
-          // onClick={handleSendMessage}
+          onClick={handleRegenerate}
           icon={<SyncOutlined />}
         />
       </div>

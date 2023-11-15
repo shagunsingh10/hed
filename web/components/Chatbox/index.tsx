@@ -47,9 +47,9 @@ const Chatbox: FC<ChatBoxProps> = ({ scope, height, projectId }) => {
     if (loadChats) loadChats(scope, projectId);
   }, [loadChats, scope, projectId]);
 
-  useEffect(() => {
-    if (chats && chats.length > 0) setActiveChatId(chats[0].id);
-  }, [chats]);
+  // useEffect(() => {
+  //   if (chats && chats.length > 0) setActiveChatId(chats[0].id);
+  // }, [chats]);
 
   return (
     <div className={styles.chatScreen} style={{ height }}>
@@ -82,12 +82,12 @@ const Chatbox: FC<ChatBoxProps> = ({ scope, height, projectId }) => {
           className={styles.chatList}
           defaultActiveFirst={true}
           mode="vertical"
-          onClick={(e) => handleChatClick(e.key)}
         >
           {chats.map((chat, id) => (
             <Menu.Item
               icon={<MessageOutlined />}
               key={id}
+              onClick={() => handleChatClick(chat.id)}
               className={styles.chatListItem}
             >
               {chat.title}
@@ -95,7 +95,7 @@ const Chatbox: FC<ChatBoxProps> = ({ scope, height, projectId }) => {
           ))}
         </Menu>
       </Drawer>
-      <ChatWindow chatId={activeChatId} height={height} />
+      <ChatWindow chatId={activeChatId} height={height} projectId={projectId} />
     </div>
   );
 };

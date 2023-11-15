@@ -43,16 +43,15 @@ const handler = async (
 
       // send response to user via socket
       const io = res.socket.server.io;
-      console.log(response);
       if (chatUser?.User.email && io) {
         getSocketClientId(chatUser.User.email).then((socketId) => {
-          console.log({ socketId });
-          io.to(socketId).emit("chat-response", {
-            chatId: chatId,
-            response: response,
-            messageId: message.id,
-            timestamp: message.timestamp,
-          });
+          if (socketId)
+            io.to(socketId).emit("chat-response", {
+              chatId: chatId,
+              response: response,
+              messageId: message.id,
+              timestamp: message.timestamp,
+            });
         });
       }
 

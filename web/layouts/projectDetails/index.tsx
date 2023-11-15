@@ -1,6 +1,7 @@
-import { Row, Tabs, Col, Typography, message } from "antd";
+import { Row, Tabs, Col, message } from "antd";
 import {
-  AppstoreFilled,
+  UpCircleOutlined,
+  DownCircleOutlined,
   UserOutlined,
   BookOutlined,
   MailOutlined,
@@ -21,6 +22,7 @@ const ProjectDetailsScreen = () => {
   const getProjectById = useStore((state) => state.getProjectById);
   const [project, setProject] = useState<Project>();
   const [loading, setLoading] = useState<boolean>(false);
+  const [isFullScreen, setIsFullScreen] = useState<boolean>(false);
 
   const tabs = [
     {
@@ -31,7 +33,13 @@ const ProjectDetailsScreen = () => {
     {
       title: "Chat",
       icon: <MailOutlined />,
-      content: <Chatbox scope="project" projectId={projectId} height="65vh" />,
+      content: (
+        <Chatbox
+          scope="project"
+          projectId={projectId}
+          height={isFullScreen ? "81vh" : "65vh"}
+        />
+      ),
     },
     { title: "Users", icon: <UserOutlined />, content: <ProjectUsers /> },
   ];
@@ -55,18 +63,29 @@ const ProjectDetailsScreen = () => {
 
   return (
     <div className={styles.projectDetailsContainer}>
-      <Row className={styles.projectDetailsHead}>
+      <div className={styles.fullScreenToggle}>
+        {isFullScreen ? (
+          <DownCircleOutlined onClick={() => setIsFullScreen(false)} />
+        ) : (
+          <UpCircleOutlined onClick={() => setIsFullScreen(true)} />
+        )}
+      </div>
+
+      <Row
+        className={`${styles.projectDetailsHead} ${
+          isFullScreen ? styles.hidden : ""
+        }`}
+      >
         <Col span={2}>
           <img
             src="/images/project-icon.jpg"
             alt="project"
             height={70}
             width={70}
-            style={{ borderRadius: "0.5em" }}
           />
         </Col>
         <Col span={22}>
-          <span className={styles.projectTitle}>{project?.name}</span>
+          <span className={styles.projectTitle}>{project?.name} </span>
           <span className={styles.projectDescription}>
             {project?.description}
           </span>

@@ -22,7 +22,6 @@ const CreateProjectForm: React.FC<createProjectFormProps> = ({
         description: values.projectDescription,
         tags: values.projectTags,
       });
-      console.log("ss");
       message.success("Project Created Successfully");
       closeProjectCreationForm();
     } catch (e: any) {

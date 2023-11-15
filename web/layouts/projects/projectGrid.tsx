@@ -1,11 +1,9 @@
-import { Empty, Tag } from "antd";
+import { Empty, Row, Tag, Col } from "antd";
 import useStore from "@/store";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { Card, Skeleton } from "antd";
 import styles from "./projects.module.scss";
-
-const { Meta } = Card;
 
 const ProjectsGrid = ({ visible }: { visible: boolean }) => {
   const [loading, setLoading] = useState(false);
@@ -48,8 +46,8 @@ const ProjectsGrid = ({ visible }: { visible: boolean }) => {
             onClick={() => handleProjectClick(item.id)}
           >
             <Skeleton loading={loading} avatar active>
-              <Meta
-                avatar={
+              <Row>
+                <Col span={8}>
                   <img
                     src="/images/project-icon.jpg"
                     alt="project"
@@ -57,8 +55,8 @@ const ProjectsGrid = ({ visible }: { visible: boolean }) => {
                     width={70}
                     style={{ borderRadius: "0.5em" }}
                   />
-                }
-                title={
+                </Col>
+                <Col span={16}>
                   <div className={styles.projectTitleContainer}>
                     <div className={styles.projectTitle}>{item.name}</div>
                     <div className={styles.projectTags}>
@@ -69,15 +67,15 @@ const ProjectsGrid = ({ visible }: { visible: boolean }) => {
                       ))}
                     </div>
                   </div>
-                }
-                description={
-                  <div className={styles.projectDescriptionContainer}>
-                    <div className={styles.projectDescription}>
-                      {item.description}
-                    </div>
+                </Col>
+              </Row>
+              <Row>
+                <div className={styles.projectDescriptionContainer}>
+                  <div className={styles.projectDescription}>
+                    {item.description}
                   </div>
-                }
-              />
+                </div>
+              </Row>
             </Skeleton>
           </Card>
         ))

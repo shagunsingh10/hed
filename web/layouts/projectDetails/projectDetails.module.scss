@@ -5,10 +5,18 @@
   width: 93vw;
   position: relative;
 
+  .fullScreenToggle {
+    padding: 0.5em;
+    display: flex;
+    justify-content: flex-end;
+  }
+
   .projectDetailsHead {
     height: 15vh;
     margin-bottom: 1vh;
-    overflow-y: auto;
+    overflow-y: hidden;
+    opacity: 1;
+    transition: all 0.5s ease, opacity 0.5s ease;
 
     .projectAvatar {
       font-size: 7em;
@@ -19,6 +27,12 @@
       font-weight: bold;
       font-size: 1.5em;
       margin-bottom: 0.5em;
+      display: flex;
+      justify-content: space-between;
+
+      :nth-last-child(1) {
+        cursor: pointer;
+      }
     }
     .projectDescription {
       display: -webkit-box;
@@ -29,8 +43,14 @@
     }
   }
 
+  .hidden {
+    height: 0;
+    opacity: 0;
+    pointer-events: none;
+  }
+
   .projectDetailsContent {
-    height: 77.5vh;
+    height: 90.5vh;
     overflow-y: auto;
     position: relative;
   }

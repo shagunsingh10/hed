@@ -55,7 +55,6 @@ const TusUploader: FC<TusUploaderProps> = ({
     }
     if (error || isAborted) {
       // removeItem();
-      // console.log(upload.url.split("/").slice(-1)[0]);
       setLoading(false);
       if (onFailureCallback)
         onFailureCallback(...(onFailureCallbackArgs || []));

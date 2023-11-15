@@ -37,6 +37,7 @@ export const createChatsSlice: StateCreator<
     const newChat: ChatWithoutMessage = await addNewChatApi(projectId);
     set({
       chats: [...get().chats, newChat],
+      activeChatId: newChat.id,
     });
     return newChat.id;
   },

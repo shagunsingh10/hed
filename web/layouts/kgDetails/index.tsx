@@ -1,5 +1,10 @@
 import { Row, Col, message, Tabs } from "antd";
-import { ReadFilled, UserOutlined, FileDoneOutlined } from "@ant-design/icons";
+import {
+  UpCircleOutlined,
+  DownCircleOutlined,
+  UserOutlined,
+  FileDoneOutlined,
+} from "@ant-design/icons";
 import { useParams } from "next/navigation";
 import useStore from "@/store";
 import Loader from "@/components/Loader";
@@ -14,6 +19,7 @@ const KgDetailsScreen = () => {
   const { projectId, kgId }: { projectId: string; kgId: string } = useParams();
   const [kg, setkg] = useState<Kg>();
   const [loading, setLoading] = useState<boolean>(false);
+  const [isFullScreen, setIsFullScreen] = useState<boolean>(false);
   const getKgById = useStore((state) => state.getKgById);
 
   const tabs = [
@@ -44,7 +50,18 @@ const KgDetailsScreen = () => {
 
   return (
     <div className={styles.kgDetailsContainer}>
-      <Row className={styles.kgDetailsHead}>
+      <div className={styles.fullScreenToggle}>
+        {isFullScreen ? (
+          <DownCircleOutlined onClick={() => setIsFullScreen(false)} />
+        ) : (
+          <UpCircleOutlined onClick={() => setIsFullScreen(true)} />
+        )}
+      </div>
+      <Row
+        className={`${styles.kgDetailsHead} ${
+          isFullScreen ? styles.hidden : ""
+        }`}
+      >
         <Col span={2}>
           <img
             src="/images/kg1.jpg"

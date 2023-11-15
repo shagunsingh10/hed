@@ -71,3 +71,9 @@ html {
 .customFileInput::file-selector-button:hover {
   background: #fa55607a;
 }
+
+/* ANTD MODS */
+.ant-tabs-tab {
+  border-top-right-radius: 0.4em !important;
+  border-top-left-radius: 0.4em !important;
+}

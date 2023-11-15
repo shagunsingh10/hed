@@ -24,8 +24,8 @@ const Loader: FC<Loaderprops> = ({ message }) => {
       }}
     >
       <Spin
-        size="large"
-        indicator={<LoadingOutlined style={{ fontSize: 44 }} spin />}
+        size="small"
+        indicator={<LoadingOutlined style={{ fontSize: 20 }} spin />}
       />
       <span>{message}</span>
     </div>

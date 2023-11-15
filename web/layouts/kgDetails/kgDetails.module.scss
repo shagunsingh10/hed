@@ -5,10 +5,18 @@
   width: 93vw;
   position: relative;
 
+  .fullScreenToggle {
+    padding: 0.5em;
+    display: flex;
+    justify-content: flex-end;
+  }
+
   .kgDetailsHead {
     height: 15vh;
     margin-bottom: 1vh;
-    overflow-y: auto;
+    transition: all 0.5s ease, opacity 0.5s ease;
+    overflow: hidden;
+    opacity: 1;
 
     .kgAvatar {
       font-size: 7em;
@@ -27,6 +35,12 @@
       overflow: hidden;
       overflow-wrap: break-word;
     }
+  }
+
+  .hidden {
+    height: 0;
+    opacity: 0;
+    pointer-events: none;
   }
 
   .kgDetailsContent {

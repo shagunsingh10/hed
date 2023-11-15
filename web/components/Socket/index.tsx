@@ -68,8 +68,6 @@ const SocketConnector = () => {
     [addMessage, updateAssetStatus, activeChatId]
   );
 
-  console.log(socket?.listeners("chat-response"));
-
   useEffect(() => {
     if (!socket && session) connectSocket(session);
   }, [session]);
