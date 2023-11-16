@@ -8,10 +8,10 @@
 #   base_url: http://34.16.147.32:11434
 #   model: llama2
 
-llm_name: openai
+llm_name: kobold
 llm_kwargs:
   model: "gpt-3.5-turbo"
-  query_url: https://retirement-paid-frost-turkish.trycloudflare.com/v1
+  base_url: https://entrance-futures-relief-managing.trycloudflare.com
 
 embed_model_name: herald
 embed_model_kwargs:

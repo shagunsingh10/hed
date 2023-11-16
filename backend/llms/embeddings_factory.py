@@ -52,8 +52,8 @@ from langchain.embeddings.vertexai import VertexAIEmbeddings
 from langchain.embeddings.voyageai import VoyageEmbeddings
 from langchain.embeddings.xinference import XinferenceEmbeddings
 
-from llms.custom.heraldembeddings import HeraldEmbeddings
-from llms.custom.ollamaembeddings import HeraldOllamaEmbeddings
+from llms.embeddings.heraldembeddings import HeraldEmbeddings
+from llms.embeddings.ollamaembeddings import HeraldOllamaEmbeddings
 from utils.exceptions import LLMInstatiateError
 
 # from langchain.embeddings.open_clip import OpenCLIPEmbeddings

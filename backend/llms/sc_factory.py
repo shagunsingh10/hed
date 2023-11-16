@@ -16,6 +16,7 @@ class ServiceContextFactory:
         embed_model = ServiceContextFactory.embeddings_factory.get_embeddings_model(
             embed_model_name, **embed_model_kwargs
         )
-        service_context = ServiceContext.from_defaults(llm=llm, embed_model=embed_model)
+        # service_context = ServiceContext.from_defaults(llm=llm, embed_model=embed_model)
+        service_context = ServiceContext.from_defaults(llm=llm)
         set_global_service_context(service_context)
         return service_context

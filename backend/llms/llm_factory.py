@@ -25,7 +25,7 @@ from llama_index.llms.replicate import Replicate
 from llama_index.llms.vertex import Vertex
 from llama_index.llms.watsonx import WatsonX
 from llama_index.llms.xinference import Xinference
-
+from llms.query.koboldcpp import KoboldCPP
 from utils.exceptions import LLMInstatiateError
 
 
@@ -60,6 +60,7 @@ class LLMFactory:
         "vertex": Vertex,
         "watsonx": WatsonX,
         "xinference": Xinference,
+        "kobold": KoboldCPP,
     }
 
     @staticmethod
