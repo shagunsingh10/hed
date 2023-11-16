@@ -1,9 +1,8 @@
-import structlog
-
 from config import config
 from servicequeue import consume_queue
+from utils.logger import get_logger
 
-logger = structlog.get_logger(name="backend-service-queue")
+logger = get_logger(name="backend-service-queue")
 
 
 if __name__ == "__main__":

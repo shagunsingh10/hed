@@ -16,6 +16,8 @@ llm_kwargs = config.get("llm_kwargs", {})
 embed_model_name = config.get("embed_model_name", "")
 embed_model_kwargs = config.get("embed_model_kwargs", {})
 
+print(embed_model_kwargs, llm_kwargs)
+
 
 def get_service_context():
     return ServiceContextFactory.get_service_context(

@@ -1,9 +1,19 @@
-llm_name: koboldcpp
-llm_kwargs:
-  base_url: http://localhost:5000
-  temperature: 0.8
+# llm_name: koboldcpp
+# llm_kwargs:
+#   base_url: https://focuses-valid-rivers-winds.trycloudflare.com
+#   temperature: 0.8
 
-embed_model_name: herald_ollama
+# embed_model_name: herald_ollama
+# embed_model_kwargs:
+#   base_url: http://34.16.147.32:11434
+#   model: llama2
+
+llm_name: openai
+llm_kwargs:
+  model: "gpt-3.5-turbo"
+  query_url: https://retirement-paid-frost-turkish.trycloudflare.com/v1
+
+embed_model_name: herald
 embed_model_kwargs:
-  base_url: http://localhost:11434
-  model: llama2
+  model: "gpt-3.5-turbo"
+  embed_url: https://retirement-paid-frost-turkish.trycloudflare.com/v1/embeddings

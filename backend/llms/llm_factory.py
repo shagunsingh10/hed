@@ -5,7 +5,6 @@ from llama_index.llms.azure_openai import AzureOpenAI
 from llama_index.llms.bedrock import Bedrock
 from llama_index.llms.clarifai import Clarifai
 from llama_index.llms.cohere import Cohere
-from llama_index.llms.custom import CustomLLM
 from llama_index.llms.everlyai import EverlyAI
 from llama_index.llms.gradient import GradientBaseModelLLM, GradientModelAdapterLLM
 from llama_index.llms.huggingface import HuggingFaceInferenceAPI, HuggingFaceLLM
@@ -28,8 +27,6 @@ from llama_index.llms.watsonx import WatsonX
 from llama_index.llms.xinference import Xinference
 
 from utils.exceptions import LLMInstatiateError
-
-from .custom.koboldcpp import KoboldCPP
 
 
 class LLMFactory:
@@ -63,7 +60,6 @@ class LLMFactory:
         "vertex": Vertex,
         "watsonx": WatsonX,
         "xinference": Xinference,
-        "koboldcpp": KoboldCPP,
     }
 
     @staticmethod
