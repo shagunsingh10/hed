@@ -6,8 +6,10 @@ from llama_index.llms.bedrock import Bedrock
 from llama_index.llms.clarifai import Clarifai
 from llama_index.llms.cohere import Cohere
 from llama_index.llms.everlyai import EverlyAI
-from llama_index.llms.gradient import GradientBaseModelLLM, GradientModelAdapterLLM
-from llama_index.llms.huggingface import HuggingFaceInferenceAPI, HuggingFaceLLM
+from llama_index.llms.gradient import (GradientBaseModelLLM,
+                                       GradientModelAdapterLLM)
+from llama_index.llms.huggingface import (HuggingFaceInferenceAPI,
+                                          HuggingFaceLLM)
 from llama_index.llms.konko import Konko
 from llama_index.llms.langchain import LangChainLLM
 from llama_index.llms.litellm import LiteLLM
@@ -25,8 +27,10 @@ from llama_index.llms.replicate import Replicate
 from llama_index.llms.vertex import Vertex
 from llama_index.llms.watsonx import WatsonX
 from llama_index.llms.xinference import Xinference
-from llms.query.koboldcpp import KoboldCPP
-from utils.exceptions import LLMInstatiateError
+
+from llms.kobold import KoboldCPP
+
+# from utils.exceptions import LLMInstatiateError
 
 
 class LLMFactory:

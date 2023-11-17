@@ -4,3 +4,7 @@ class HeraldAppException(Exception):
 
 class LLMInstatiateError(Exception):
     pass
+
+
+class UnsupportedReaderError(Exception):
+    pass

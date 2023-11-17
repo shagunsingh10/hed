@@ -6,9 +6,9 @@ from llama_index import VectorStoreIndex
 from llama_index.query_engine import SubQuestionQueryEngine
 from llama_index.tools import QueryEngineTool, ToolMetadata
 from llama_index.vector_stores.qdrant import QdrantVectorStore
+from servicecontext import get_service_context
 
 from config import config
-from servicecontext import get_service_context
 from utils import make_request
 
 from .worker import logger, worker

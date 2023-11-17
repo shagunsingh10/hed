@@ -1,9 +1,9 @@
 import logging
 
 from rich.logging import RichHandler
-from rich.traceback import install
 
-install(show_locals=True)
+# from rich.traceback import install
+# install(show_locals=True)
 
 
 def get_logger(name: str = None):
@@ -14,5 +14,5 @@ def get_logger(name: str = None):
         datefmt="[%Y-%m-%d %H:%M:%S]",
         handlers=[RichHandler()],
     )
-    logger = logging.getLogger("rich")
+    logger = logging.getLogger(name)
     return logger

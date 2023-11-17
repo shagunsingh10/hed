@@ -25,7 +25,7 @@ const CreateKGForm: FC<createKgFormProps> = ({
         description: values.description,
         tags: values.tags,
       });
-      message.success("Knowledge Created Successfully");
+      message.success("Knowledge Created Successfully", 0);
 
       closeKgCreationForm();
     } catch (e: any) {

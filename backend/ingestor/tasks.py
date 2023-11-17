@@ -5,9 +5,9 @@ from celery.exceptions import Reject
 from llama_index import SimpleDirectoryReader, VectorStoreIndex
 from llama_index.storage.storage_context import StorageContext
 from llama_index.vector_stores.qdrant import QdrantVectorStore
+from servicecontext import get_service_context
 
 from config import config
-from servicecontext import get_service_context
 from utils import make_request
 
 from .worker import logger, worker
