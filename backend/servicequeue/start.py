@@ -1,7 +1,9 @@
-from config import appconfig
-from servicequeue.redis import RedisClient
 import os
 import sys
+import traceback
+
+from config import appconfig
+from servicequeue.redis import RedisClient
 
 provider = appconfig.get("SERVICE_QUEUE_PROVIDER")
 service_queue_name = appconfig.get("SERVICE_QUEUE_NAME")
@@ -20,7 +22,8 @@ if __name__ == "__main__":
             client.close()
             print("KeyboardInterrupt: Shutting down the redis consumer.")
         except Exception as e:
-            print(f"Closing server due to an internal error: {e}")
+            traceback.print_exc()
+            print(f"Closing server due to an internal error: {str(e)}")
         finally:
             try:
                 sys.exit(130)

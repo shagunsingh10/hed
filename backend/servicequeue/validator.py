@@ -25,4 +25,4 @@ class MessageValidator:
                 "payload": payload_obj.dict(),
             }
         except Exception as e:
-            logger.exception(f"Invalid payload. Error: {e}", exc_info=False)
+            logger.error(f"Invalid payload. Error: {e}")

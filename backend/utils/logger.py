@@ -1,18 +1,25 @@
 import logging
 
-from rich.logging import RichHandler
+from loguru import logger
 
-# from rich.traceback import install
-# install(show_locals=True)
+
+class InterceptHandler(logging.Handler):
+    def emit(self, record):
+        try:
+            level = logger.level(record.levelname).name
+        except ValueError:
+            level = record.levelno
+
+        frame, depth = logging.currentframe(), 2
+        while frame.f_code.co_filename == logging.__file__:
+            frame = frame.f_back
+            depth += 1
+
+        logger.opt(depth=depth, exception=record.exc_info).log(
+            level, record.getMessage()
+        )
 
 
 def get_logger(name: str = None):
-    FORMAT = "%(message)s"
-    logging.basicConfig(
-        level=logging.INFO,
-        format=FORMAT,
-        datefmt="[%Y-%m-%d %H:%M:%S]",
-        handlers=[RichHandler()],
-    )
-    logger = logging.getLogger(name)
+    logging.basicConfig(handlers=[InterceptHandler()], level=logging.INFO)
     return logger

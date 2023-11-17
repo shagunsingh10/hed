@@ -1,5 +1,4 @@
 import requests
-from requests.exceptions import ConnectionError, ConnectTimeout
 
 
 def make_request(url, method="get", max_retries=3, **kwargs):
@@ -24,7 +23,7 @@ def make_request(url, method="get", max_retries=3, **kwargs):
             response = getattr(requests, method)(url, **kwargs)
             response.raise_for_status()
             return response
-        except ConnectionError | ConnectTimeout as e:
+        except Exception as e:
             if tries == max_retries:
                 raise ConnectionError(e)
             else:

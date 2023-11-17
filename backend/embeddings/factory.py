@@ -120,19 +120,25 @@ class EmbeddingsFactory:
         else:
             raise ValueError(f"{model_name} embeddings model is not supported yet.")
 
-    def get__model(self):
+    def get_model(self):
         return self.model
 
-    def embed_documents(self, text: str, **kwargs) -> Embedding:
-        return self.model.get_text_embedding(text, **kwargs)
+    def embed_documents(self, documents: list[str], **kwargs) -> Embedding:
+        return self.model.embed_documents(documents, **kwargs)
+
+    def embed_document(self, document: str, **kwargs) -> Embedding:
+        return self.model.embed_documents(document, **kwargs)
 
     def embed_query(self, query: str, **kwargs) -> Embedding:
-        return self.model.get_query_embedding(query, **kwargs)
+        return self.model.embed_query(query, **kwargs)
 
-    def embed_nodes(self, nodes: list[BaseNode], **kwargs) -> list[BaseNode]:
-        for node in nodes:
-            node_embedding = self.model.get_text_embedding(
-                node.get_content(metadata_mode="all")
-            )
-            node.embedding = node_embedding
-        return node
+    def embed_nodes(self, nodes: list[BaseNode], **kwargs) -> dict[str, list[BaseNode]]:
+        text = [node.text for node in nodes]
+        embeddings = self.model.embed_documents(text)
+        assert len(nodes) == len(embeddings)
+        for node, embedding in zip(nodes, embeddings):
+            node.embedding = embedding
+        dim = 0
+        if len(nodes) > 0:
+            dim = len(nodes[0].embedding)
+        return {"nodes": nodes, "dim": dim}

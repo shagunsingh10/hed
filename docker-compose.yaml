@@ -93,6 +93,8 @@ services:
   backend:
     build:
       context: ./backend
+    environment:
+      LOGURU_COLORIZE: "true"
     volumes:
       - ./.etc/llama_index/:/tmp/llama_index/
       - ./.etc/uploads/:/app/uploads/

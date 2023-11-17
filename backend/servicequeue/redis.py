@@ -1,6 +1,7 @@
+import time
+
 import redis
 from retry import retry
-import time
 
 from servicequeue.base import BaseQueueClient
 from servicequeue.processor import MessageProcessor

@@ -61,14 +61,15 @@ class NodeParser:
     @staticmethod
     def get_nodes_from_documents(
         documents: list[Document],
-        chunk_size: Optional[int] = None,
-        chunk_overlap: Optional[int] = None,
         **kwargs,
     ) -> list[BaseNode]:
         docs: dict[str, list[Document]] = {}
 
-        for document in documents.iter_rows():
-            ext = document.metadata["extension"]
+        for document in documents:
+            ext = "generic"
+            filename = document.metadata.get("filename")
+            if filename:
+                ext = filename.split(".")[-1]
             if ext in supported_languages:
                 if docs.get(ext):
                     docs[supported_languages[ext]].append(document)
@@ -76,21 +77,17 @@ class NodeParser:
                     docs[supported_languages[ext]] = [document]
             else:
                 if docs.get("generic"):
-                    docs[supported_languages["generic"]].append(document)
+                    docs["generic"].append(document)
                 else:
-                    docs[supported_languages["generic"]] = [document]
+                    docs["generic"] = [document]
 
         all_nodes: list[BaseNode] = []
         for language in docs:
             if language == "generic":
-                np = SimpleNodeParser.from_defaults(
-                    chunk_size=chunk_size, chunk_overlap=chunk_overlap, **kwargs
-                )
+                np = SimpleNodeParser.from_defaults(**kwargs)
             else:
                 np = SimpleNodeParser.from_defaults(
                     text_splitter=CodeSplitter(language=language),
-                    chunk_size=chunk_size,
-                    chunk_overlap=chunk_overlap,
                     **kwargs,
                 )
             nodes = np.get_nodes_from_documents(docs[language])

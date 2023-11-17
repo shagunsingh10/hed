@@ -22,7 +22,7 @@ class Config:
             "NEXT_API_KEY",
             "REDIS_HOST",
             "REDIS_PORT",
-            "QDRANT_URI",
+            "MILVUS_URI",
             "SERVICE_QUEUE_PROVIDER",
             "SERVICE_QUEUE_NAME",
             "CELERY_CLEANER_QUEUE",

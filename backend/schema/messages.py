@@ -1,13 +1,13 @@
-from typing import List
+from typing import Any, Dict, List
 
 from pydantic import BaseModel
 
 
 class IngestionPayload(BaseModel):
-    filepaths: List[str]
-    filepath_type: str
-    collection_name: str
+    asset_type: str
     asset_id: str
+    collection_name: str
+    reader_kwargs: Dict[str, Any]
 
 
 class QueryPayload(BaseModel):

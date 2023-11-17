@@ -1,6 +1,6 @@
 from celery import Celery
-from kombu import Queue
 from celery.signals import setup_logging
+from kombu import Queue
 
 import utils
 from config import appconfig
@@ -8,7 +8,7 @@ from config import appconfig
 logger = utils.get_logger("ingestor")
 
 app = Celery(
-    "ingestor",
+    "herald",
     broker=f"redis://{appconfig.get('REDIS_HOST')}:{appconfig.get('REDIS_PORT')}/0",
 )
 
@@ -26,8 +26,8 @@ app.conf.task_default_exchange_type = "topic"
 app.conf.task_default_routing_key = "task.default"
 
 
-@setup_logging.connect()
-def config_loggers(*args, **kwargs):
+@setup_logging.connect
+def setup_logging(*args, **kwargs):
     pass
 
 

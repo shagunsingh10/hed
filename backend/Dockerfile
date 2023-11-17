@@ -27,6 +27,9 @@ ADD requirements.txt /app/requirements.txt
 # Install dependencies from requirements.txt
 RUN pip install -r requirements.txt
 
+RUN pip install pymilvus
+RUN pip install pyarrow
+
 # Copy the contents of the current directory (where Dockerfile is located) into the container at /app
 ADD . /app
 
@@ -35,4 +38,7 @@ CMD celery -A celeryapp.app worker -c 1 -Q ingestorqueue -n ingestionworker@%h -
     celery -A celeryapp.app worker -c 1 -Q retrieverqueue -n queryworker@%h -l info & \
     python -m servicequeue.start
 
-# celery -A celeryapp.worker worker -c 1 -Q cleanerqueue -n docremoverworker@%h -l info & \
+# CMD celery -A celeryapp.app multi start 2 -Q:1 ingestorqueue -Q:2 retrieverqueue -c:1 1 -c:2 1 & \
+#     python -m servicequeue.start
+
+

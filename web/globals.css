@@ -77,3 +77,8 @@ html {
   border-top-right-radius: 0.4em !important;
   border-top-left-radius: 0.4em !important;
 }
+
+.ant-message-notice-content {
+  background-color: #1d1f21 !important;
+  color: var(--foreground-color);
+}

@@ -13,8 +13,10 @@ supported_types: dict[str, BaseReader] = {
 
 class ReaderFactory:
     @staticmethod
-    def load_data(reader_type: str, **kwargs) -> list[Document]:
-        if reader_type not in supported_types:
-            raise UnsupportedReaderError(f"Reader {reader_type} is not supported yet")
-        reader = supported_types[reader_type]
-        return reader.load(**kwargs)
+    def load_data(asset) -> list[Document]:
+        if asset["asset_type"] not in supported_types:
+            raise UnsupportedReaderError(
+                f"Reader {asset['asset_type']} is not supported yet"
+            )
+        reader = supported_types[asset["asset_type"]]
+        return reader.load(**asset["reader_kwargs"])
