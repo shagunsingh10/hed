@@ -91,6 +91,7 @@ const handler = async (
               query: content,
               collections: collections.map((e) => e.id),
               chat_id: chatId,
+              user: user?.email,
             },
           })
         );

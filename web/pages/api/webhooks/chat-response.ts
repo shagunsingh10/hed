@@ -11,48 +11,50 @@ const handler = async (
 ) => {
   switch (req.method) {
     case "PUT":
-      const response = req.body.response as string;
       const chatId = req.body.chatId as string;
       const apiKey = req.body.apiKey as string;
+      const user = req.body.user as string;
+      const complete = req.body.complete as string;
+      const chunk = req.body.chunk as string;
 
       if (apiKey != appConfig.serviceApiKey) {
         return res.status(401).json({ success: false });
       }
 
-      const [message, chatUser] = await prisma.$transaction([
-        prisma.message.create({
+      if (!complete) {
+        // send response to user via socket
+        const io = res.socket.server.io;
+        if (user && io) {
+          getSocketClientId(user).then((socketId) => {
+            if (socketId)
+              io.to(socketId).emit("chat-response", {
+                chatId: chatId,
+                response: chunk,
+                complete: false,
+              });
+          });
+        }
+      } else {
+        const message = await prisma.message.create({
           data: {
             chatId: chatId,
-            content: response,
+            content: chunk,
             isResponse: true,
           },
-        }),
-        prisma.chat.findFirst({
-          where: {
-            id: chatId,
-          },
-          select: {
-            User: {
-              select: {
-                email: true,
-              },
-            },
-          },
-        }),
-      ]);
-
-      // send response to user via socket
-      const io = res.socket.server.io;
-      if (chatUser?.User.email && io) {
-        getSocketClientId(chatUser.User.email).then((socketId) => {
-          if (socketId)
-            io.to(socketId).emit("chat-response", {
-              chatId: chatId,
-              response: response,
-              messageId: message.id,
-              timestamp: message.timestamp,
-            });
         });
+        const io = res.socket.server.io;
+        if (user && io) {
+          getSocketClientId(user).then((socketId) => {
+            if (socketId)
+              io.to(socketId).emit("chat-response", {
+                chatId: chatId,
+                response: chunk,
+                messageId: message.id,
+                timestamp: message.timestamp,
+                complete: true,
+              });
+          });
+        }
       }
 
       res.status(201).json({

@@ -41,11 +41,11 @@ class QueryProcessor:
             similarity_top_k=similarity_top_k,
             query_mode="default",
         )
-        logger.warning(f"LLM KWARGS: {llm_kwargs}")
         llm = LLMFactory.get_llm(llm, **llm_kwargs)
         service_context = ServiceContext.from_defaults(llm=llm)
         response_synthesizer = get_response_synthesizer(
-            service_context=service_context, text_qa_template=strict_context_qa_template
+            service_context=service_context,
+            text_qa_template=strict_context_qa_template,
         )
         query_engine = RetrieverQueryEngine.from_args(
             retriever, response_synthesizer=response_synthesizer
@@ -54,6 +54,42 @@ class QueryProcessor:
         logger.debug(f"{response}\n Sources: [{get_sources(response)}]")
         # print_source_nodes(response)
         return f"{response}\n        (Sources: {get_sources(response)})"
+
+    @staticmethod
+    def get_answer_stream(
+        query: str,
+        collections: list[str],
+        llm,
+        embed_model,
+        vector_store,
+        embed_model_kwargs={},
+        llm_kwargs={},
+        vector_store_kwargs={},
+        min_similarity_score=0.5,
+        similarity_top_k=5,
+    ):
+        retriever = HeraldRetriever(
+            collections,
+            embed_model,
+            embed_model_kwargs,
+            vector_store,
+            vector_store_kwargs,
+            min_similarity_score=min_similarity_score,
+            similarity_top_k=similarity_top_k,
+            query_mode="default",
+        )
+        llm = LLMFactory.get_llm(llm, **llm_kwargs)
+        service_context = ServiceContext.from_defaults(llm=llm)
+        response_synthesizer = get_response_synthesizer(
+            service_context=service_context,
+            text_qa_template=strict_context_qa_template,
+            streaming=True,
+        )
+        query_engine = RetrieverQueryEngine.from_args(
+            retriever, response_synthesizer=response_synthesizer, streaming=True
+        )
+        streaming_response = query_engine.query(query)
+        return streaming_response
 
 
 # def print_source_nodes(response):

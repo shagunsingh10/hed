@@ -13,4 +13,5 @@ class IngestionPayload(BaseModel):
 class QueryPayload(BaseModel):
     query: str
     chat_id: str
+    user: str
     collections: List[str]

@@ -8,12 +8,14 @@ import {
   Typography,
   Button,
   message,
+  Spin,
 } from "antd";
 import { SendOutlined, BulbOutlined, SyncOutlined } from "@ant-design/icons";
 import useStore from "../../store";
 import { CHAT_MESSAGE_BG, COLOR_BG_TEXT } from "@/constants";
 import styles from "./chatbot.module.scss";
 import { globalDateFormatParser } from "@/lib/functions";
+import { Message } from "@/types/chats";
 
 type ChatWindowProps = {
   chatId?: string;
@@ -30,7 +32,16 @@ const ChatWindow: FC<ChatWindowProps> = ({ chatId, height, projectId }) => {
   const postQuery = useStore((state) => state.postQuery);
   const addChat = useStore((state) => state.addChat);
   const loadMessages = useStore((state) => state.loadMessages);
+  const waitingForResponse = useStore((state) => state.waitingForResponse);
   const chatWindowRef = useRef<HTMLDivElement>(null);
+
+  const waitingForResponseMessage: Message = {
+    id: "waiting-for-response",
+    chatId: chatId || "",
+    content: "",
+    timestamp: new Date(),
+    isResponse: true,
+  };
 
   // functions
   const handleInputChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
@@ -90,7 +101,11 @@ const ChatWindow: FC<ChatWindowProps> = ({ chatId, height, projectId }) => {
         <Skeleton loading={loading} avatar active>
           <List
             itemLayout="horizontal"
-            dataSource={messages}
+            dataSource={
+              waitingForResponse
+                ? [...(messages || []), waitingForResponseMessage]
+                : messages
+            }
             locale={{
               emptyText: (
                 <Typography.Title level={2} style={{ color: COLOR_BG_TEXT }}>
@@ -119,7 +134,11 @@ const ChatWindow: FC<ChatWindowProps> = ({ chatId, height, projectId }) => {
                           : "transparent",
                       }}
                     >
-                      {message.content}
+                      {message.id === "waiting-for-response" ? (
+                        <Spin size="small" spinning={true} />
+                      ) : (
+                        message.content
+                      )}
                     </Space>
                   }
                 />
@@ -138,6 +157,7 @@ const ChatWindow: FC<ChatWindowProps> = ({ chatId, height, projectId }) => {
           value={inputValue}
           placeholder="Type your message..."
           autoSize={{ minRows: 1, maxRows: 6 }}
+          disabled={waitingForResponse}
         />
         <Button
           title="Send"
@@ -146,6 +166,7 @@ const ChatWindow: FC<ChatWindowProps> = ({ chatId, height, projectId }) => {
           size="large"
           onClick={handleSendMessage}
           icon={<SendOutlined />}
+          disabled={waitingForResponse}
         />
         <Button
           title="Regerenrate"
@@ -154,6 +175,7 @@ const ChatWindow: FC<ChatWindowProps> = ({ chatId, height, projectId }) => {
           size="large"
           onClick={handleRegenerate}
           icon={<SyncOutlined />}
+          disabled={waitingForResponse}
         />
       </div>
     </div>

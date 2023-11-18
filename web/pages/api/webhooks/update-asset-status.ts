@@ -53,10 +53,11 @@ const handler = async (
       for (const member of knowledgeGroupMembers) {
         if (member.User.email && io) {
           getSocketClientId(member.User.email).then((socketId) => {
-            io.to(socketId).emit("update-asset-status", {
-              assetId: assetId,
-              status: status,
-            });
+            if (socketId)
+              io.to(socketId).emit("update-asset-status", {
+                assetId: assetId,
+                status: status,
+              });
           });
         }
       }

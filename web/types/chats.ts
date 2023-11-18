@@ -7,6 +7,7 @@ export interface Message {
   content: string;
   timestamp: Date;
   isResponse: boolean;
+  complete?: boolean;
 }
 export interface ChatWithoutMessage {
   id: string;
@@ -17,6 +18,8 @@ export interface ChatWithoutMessage {
 }
 
 export interface MessagesSlice {
+  waitingForResponse: boolean;
+  streaming: boolean;
   messages: Message[] | undefined;
   addMessage: (m: Message) => void;
   postQuery: (chatId: string, query: string) => Promise<void>;

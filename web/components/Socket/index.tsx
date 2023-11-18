@@ -52,13 +52,14 @@ const SocketConnector = () => {
 
       socket.on(
         "chat-response",
-        ({ chatId, messageId, timestamp, response }) => {
+        ({ chatId, messageId, timestamp, response, complete }) => {
           addMessage({
             chatId: chatId,
             id: messageId,
-            timestamp: timestamp,
+            timestamp: timestamp || new Date(),
             content: response,
             isResponse: true,
+            complete: complete,
           });
         }
       );

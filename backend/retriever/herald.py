@@ -37,14 +37,17 @@ class HeraldRetriever(BaseRetriever):
         start_time = time.time()
         nodes_futures = []
         for collection in self._collections:
-            vector_store_client = VectorStoreFactory(
-                vector_store=self._vector_store,
-                collection_name=collection,
-                **self._vector_store_kwargs,
-            )
-            nodes_futures.append(
-                vector_store_client.async_search_nodes_from_embeddings(embeddings)
-            )
+            try:
+                vector_store_client = VectorStoreFactory(
+                    vector_store=self._vector_store,
+                    collection_name=collection,
+                    **self._vector_store_kwargs,
+                )
+                nodes_futures.append(
+                    vector_store_client.async_search_nodes_from_embeddings(embeddings)
+                )
+            except ValueError:
+                logger.warning(f"Ignoring collection {collection} as it doesn't exist.")
         query_results = await asyncio.gather(*nodes_futures)
         logger.debug(
             f"Time taken to get nodes from collections async way: [{round(time.time()-start_time, 4)} s]"
