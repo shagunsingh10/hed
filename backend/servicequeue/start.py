@@ -2,20 +2,17 @@ import os
 import sys
 import traceback
 
-from config import appconfig
+from serviceconfig import serviceconfig
 from servicequeue.redis import RedisClient
 
-provider = appconfig.get("SERVICE_QUEUE_PROVIDER")
-service_queue_name = appconfig.get("SERVICE_QUEUE_NAME")
+provider = serviceconfig.get("service_queue_provider")
+service_queue_name = serviceconfig.get("service_queue_name")
+service_queue_provider_kwargs = serviceconfig.get("service_queue_provider_kwargs")
 
 
 if __name__ == "__main__":
     if provider.lower() == "redis":
-        print(appconfig.get("REDIS_HOST"))
-        client = RedisClient(
-            redis_host=appconfig.get("REDIS_HOST"),
-            redis_port=appconfig.get("REDIS_PORT"),
-        )
+        client = RedisClient(**service_queue_provider_kwargs)
         try:
             client.start_consuming(queue_name=service_queue_name)
         except KeyboardInterrupt:

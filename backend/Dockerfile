@@ -29,13 +29,14 @@ RUN pip install -r requirements.txt
 
 RUN pip install pymilvus
 RUN pip install pyarrow
+RUN pip install Jinja2
 
 # Copy the contents of the current directory (where Dockerfile is located) into the container at /app
 ADD . /app
 
 # Run the specified commands when the container launches
 CMD celery -A celeryapp.app worker -c 1 -Q ingestorqueue -n ingestionworker@%h -l info & \
-    celery -A celeryapp.app worker -c 1 -Q retrieverqueue -n queryworker@%h -l info & \
+    celery -A celeryapp.app worker -c 1 -Q queryqueue -n queryworker@%h -l info & \
     python -m servicequeue.start
 
 # CMD celery -A celeryapp.app multi start 2 -Q:1 ingestorqueue -Q:2 retrieverqueue -c:1 1 -c:2 1 & \

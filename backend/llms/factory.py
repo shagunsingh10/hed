@@ -6,10 +6,8 @@ from llama_index.llms.bedrock import Bedrock
 from llama_index.llms.clarifai import Clarifai
 from llama_index.llms.cohere import Cohere
 from llama_index.llms.everlyai import EverlyAI
-from llama_index.llms.gradient import (GradientBaseModelLLM,
-                                       GradientModelAdapterLLM)
-from llama_index.llms.huggingface import (HuggingFaceInferenceAPI,
-                                          HuggingFaceLLM)
+from llama_index.llms.gradient import GradientBaseModelLLM, GradientModelAdapterLLM
+from llama_index.llms.huggingface import HuggingFaceInferenceAPI, HuggingFaceLLM
 from llama_index.llms.konko import Konko
 from llama_index.llms.langchain import LangChainLLM
 from llama_index.llms.litellm import LiteLLM
@@ -31,46 +29,45 @@ from llama_index.llms.xinference import Xinference
 from llms.kobold import KoboldCPP
 
 # from utils.exceptions import LLMInstatiateError
+supported_llm_mappings = {
+    "ai21": AI21,
+    "anthropic": Anthropic,
+    "anyscale": Anyscale,
+    "azure_openai": AzureOpenAI,
+    "bedrock": Bedrock,
+    "clarifai": Clarifai,
+    "cohere": Cohere,
+    "everlyai": EverlyAI,
+    "gradient_base_model": GradientBaseModelLLM,
+    "gradient_model_adapter": GradientModelAdapterLLM,
+    "huggingface_inference_api": HuggingFaceInferenceAPI,
+    "huggingface": HuggingFaceLLM,
+    "konko": Konko,
+    "langchain": LangChainLLM,
+    "litellm": LiteLLM,
+    "llama_cpp": LlamaCPP,
+    "localai": LocalAI,
+    "mock": MockLLM,
+    "monsterapi": MonsterLLM,
+    "ollama": Ollama,
+    "openai": OpenAI,
+    "openai_like": OpenAILike,
+    "palm": PaLM,
+    "portkey": Portkey,
+    "predibase": PredibaseLLM,
+    "replicate": Replicate,
+    "vertex": Vertex,
+    "watsonx": WatsonX,
+    "xinference": Xinference,
+    "kobold": KoboldCPP,
+}
 
 
 class LLMFactory:
-    supported_llm_mappings = {
-        "ai21": AI21,
-        "anthropic": Anthropic,
-        "anyscale": Anyscale,
-        "azure_openai": AzureOpenAI,
-        "bedrock": Bedrock,
-        "clarifai": Clarifai,
-        "cohere": Cohere,
-        "everlyai": EverlyAI,
-        "gradient_base_model": GradientBaseModelLLM,
-        "gradient_model_adapter": GradientModelAdapterLLM,
-        "huggingface_inference_api": HuggingFaceInferenceAPI,
-        "huggingface": HuggingFaceLLM,
-        "konko": Konko,
-        "langchain": LangChainLLM,
-        "litellm": LiteLLM,
-        "llama_cpp": LlamaCPP,
-        "localai": LocalAI,
-        "mock": MockLLM,
-        "monsterapi": MonsterLLM,
-        "ollama": Ollama,
-        "openai": OpenAI,
-        "openai_like": OpenAILike,
-        "palm": PaLM,
-        "portkey": Portkey,
-        "predibase": PredibaseLLM,
-        "replicate": Replicate,
-        "vertex": Vertex,
-        "watsonx": WatsonX,
-        "xinference": Xinference,
-        "kobold": KoboldCPP,
-    }
-
     @staticmethod
     def get_llm(name, **kwargs):
-        if name.lower() in LLMFactory.supported_llm_mappings:
-            llm_class = LLMFactory.supported_llm_mappings[name.lower()]
+        if name.lower() in supported_llm_mappings:
+            llm_class = supported_llm_mappings[name.lower()]
             llm = llm_class(**kwargs)
             # try:
             #     llm.complete(prompt="Test...")

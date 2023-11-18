@@ -19,4 +19,4 @@ try:
     worker.autodiscover_tasks(["cleaner.tasks"])
 except Exception as e:
     logger.exception(str(e))
-    raise utils.HeraldAppException(str(e), exc_info=True)
+    raise utils.HeraldAppException(str(e))

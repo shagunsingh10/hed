@@ -1,7 +1,8 @@
 from llama_index import Document
+from abc import ABC, abstractmethod
 
 
-class BaseReader:
-    @staticmethod
-    def load(self, **kwargs) -> list[Document]:
-        raise NotImplementedError("load method must be implemented by a subclass.")
+class BaseReader(ABC):
+    @abstractmethod
+    def load(self) -> list[Document]:
+        pass

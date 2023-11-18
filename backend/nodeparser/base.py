@@ -1,8 +1,10 @@
-from typing import Optional
-
 from llama_index.node_parser import SimpleNodeParser
 from llama_index.schema import BaseNode, Document
 from llama_index.text_splitter import CodeSplitter
+import time
+from utils.logger import get_logger
+from llama_index.vector_stores import VectorStoreQueryResult
+from llama_index.schema import NodeWithScore
 
 supported_languages = {
     ".bash": "bash",
@@ -56,6 +58,8 @@ supported_languages = {
     ".yaml": "yaml",
 }
 
+logger = get_logger("node-parser")
+
 
 class NodeParser:
     @staticmethod
@@ -63,6 +67,7 @@ class NodeParser:
         documents: list[Document],
         **kwargs,
     ) -> list[BaseNode]:
+        start_time = time.time()
         docs: dict[str, list[Document]] = {}
 
         for document in documents:
@@ -93,4 +98,26 @@ class NodeParser:
             nodes = np.get_nodes_from_documents(docs[language])
             all_nodes.extend(nodes)
 
+        logger.debug(
+            f"Time taken to convert documents to nodes: [{round(time.time() - start_time, 4)} s]"
+        )
         return all_nodes
+
+    @staticmethod
+    def get_scored_nodes_from_query_results(
+        query_results: list[VectorStoreQueryResult],
+        min_similarity_score: int = 0.5,
+        max_sources: int = 5,
+    ) -> list[NodeWithScore]:
+        nodes_with_score = []
+        for result in query_results:
+            for index, node in enumerate(result.nodes):
+                score = 0
+                if result.similarities is not None:
+                    score = result.similarities[index]
+                if score > min_similarity_score:
+                    nodes_with_score.append(NodeWithScore(node=node, score=score))
+        sorted_nodes_with_score = sorted(
+            nodes_with_score, key=lambda x: x.score, reverse=True
+        )
+        return sorted_nodes_with_score[: min(len(sorted_nodes_with_score), max_sources)]

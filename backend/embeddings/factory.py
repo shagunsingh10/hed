@@ -1,10 +1,10 @@
 from langchain.embeddings.aleph_alpha import (
     AlephAlphaAsymmetricSemanticEmbedding,
-    AlephAlphaSymmetricSemanticEmbedding)
+    AlephAlphaSymmetricSemanticEmbedding,
+)
 from langchain.embeddings.awa import AwaEmbeddings
 from langchain.embeddings.azure_openai import AzureOpenAIEmbeddings
-from langchain.embeddings.baidu_qianfan_endpoint import \
-    QianfanEmbeddingsEndpoint
+from langchain.embeddings.baidu_qianfan_endpoint import QianfanEmbeddingsEndpoint
 from langchain.embeddings.bedrock import BedrockEmbeddings
 from langchain.embeddings.cache import CacheBackedEmbeddings
 from langchain.embeddings.clarifai import ClarifaiEmbeddings
@@ -15,14 +15,16 @@ from langchain.embeddings.edenai import EdenAiEmbeddings
 from langchain.embeddings.elasticsearch import ElasticsearchEmbeddings
 from langchain.embeddings.embaas import EmbaasEmbeddings
 from langchain.embeddings.ernie import ErnieEmbeddings
-from langchain.embeddings.fake import (DeterministicFakeEmbedding,
-                                       FakeEmbeddings)
+from langchain.embeddings.fake import DeterministicFakeEmbedding, FakeEmbeddings
 from langchain.embeddings.google_palm import GooglePalmEmbeddings
 from langchain.embeddings.gpt4all import GPT4AllEmbeddings
 from langchain.embeddings.gradient_ai import GradientEmbeddings
 from langchain.embeddings.huggingface import (
-    HuggingFaceBgeEmbeddings, HuggingFaceEmbeddings,
-    HuggingFaceInferenceAPIEmbeddings, HuggingFaceInstructEmbeddings)
+    HuggingFaceBgeEmbeddings,
+    HuggingFaceEmbeddings,
+    HuggingFaceInferenceAPIEmbeddings,
+    HuggingFaceInstructEmbeddings,
+)
 from langchain.embeddings.huggingface_hub import HuggingFaceHubEmbeddings
 from langchain.embeddings.javelin_ai_gateway import JavelinAIGatewayEmbeddings
 from langchain.embeddings.jina import JinaEmbeddings
@@ -40,9 +42,10 @@ from langchain.embeddings.openai import OpenAIEmbeddings
 from langchain.embeddings.sagemaker_endpoint import SagemakerEndpointEmbeddings
 from langchain.embeddings.self_hosted import SelfHostedEmbeddings
 from langchain.embeddings.self_hosted_hugging_face import (
-    SelfHostedHuggingFaceEmbeddings, SelfHostedHuggingFaceInstructEmbeddings)
-from langchain.embeddings.sentence_transformer import \
-    SentenceTransformerEmbeddings
+    SelfHostedHuggingFaceEmbeddings,
+    SelfHostedHuggingFaceInstructEmbeddings,
+)
+from langchain.embeddings.sentence_transformer import SentenceTransformerEmbeddings
 from langchain.embeddings.spacy_embeddings import SpacyEmbeddings
 from langchain.embeddings.tensorflow_hub import TensorflowHubEmbeddings
 from langchain.embeddings.vertexai import VertexAIEmbeddings
@@ -53,8 +56,10 @@ from llama_index.schema import BaseNode
 
 from embeddings.herald import HeraldEmbeddings
 from embeddings.ollama import HeraldOllamaEmbeddings
+import time
 
 # from langchain.embeddings.open_clip import OpenCLIPEmbeddings
+from utils.logger import get_logger
 
 supported_models: dict[str, BaseEmbedding] = {
     "aleph_alpha_asymmetric": AlephAlphaAsymmetricSemanticEmbedding,
@@ -110,6 +115,8 @@ supported_models: dict[str, BaseEmbedding] = {
     "herald": HeraldEmbeddings,
 }
 
+logger = get_logger("embedder")
+
 
 class EmbeddingsFactory:
     def __init__(self, model_name, **kwargs):
@@ -130,9 +137,15 @@ class EmbeddingsFactory:
         return self.model.embed_documents(document, **kwargs)
 
     def embed_query(self, query: str, **kwargs) -> Embedding:
-        return self.model.embed_query(query, **kwargs)
+        start_time = time.time()
+        embeddings = self.model.embed_query(query, **kwargs)
+        logger.debug(
+            f"Time taken to embed query: [{round(time.time() - start_time, 4)} s]"
+        )
+        return embeddings
 
     def embed_nodes(self, nodes: list[BaseNode], **kwargs) -> dict[str, list[BaseNode]]:
+        start_time = time.time()
         text = [node.text for node in nodes]
         embeddings = self.model.embed_documents(text)
         assert len(nodes) == len(embeddings)
@@ -141,4 +154,7 @@ class EmbeddingsFactory:
         dim = 0
         if len(nodes) > 0:
             dim = len(nodes[0].embedding)
+        logger.debug(
+            f"Time taken to embed nodes: [{round(time.time() - start_time, 4)} s]"
+        )
         return {"nodes": nodes, "dim": dim}

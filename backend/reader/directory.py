@@ -4,8 +4,10 @@ from reader.base import BaseReader
 
 
 class DirectoryReader(BaseReader):
-    @staticmethod
-    def load(**kwargs) -> list[Document]:
-        return SimpleDirectoryReader(
+    def __init__(self, **kwargs):
+        self.reader = SimpleDirectoryReader(
             input_dir=kwargs.get("directory"), recursive=True
-        ).load_data()
+        )
+
+    def load(self) -> list[Document]:
+        return self.reader.load_data()

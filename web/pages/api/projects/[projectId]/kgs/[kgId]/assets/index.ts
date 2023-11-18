@@ -122,12 +122,12 @@ const handler = async (
           JSON.stringify({
             job_type: "ingestion",
             payload: {
-              filepaths: [
-                `${appConfig.assetUploadPath}/${projectId}/${kgId}/${body.uploadId}`,
-              ],
-              type: assetType.key,
               collection_name: kgId,
               asset_id: newA.id,
+              asset_type: assetType.key,
+              reader_kwargs: {
+                directory: `${appConfig.assetUploadPath}/${projectId}/${kgId}/${body.uploadId}`,
+              },
             },
           })
         );

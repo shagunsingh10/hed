@@ -4,6 +4,8 @@ from reader.base import BaseReader
 
 
 class FilesReader(BaseReader):
-    @staticmethod
-    def load(**kwargs) -> list[Document]:
-        return SimpleDirectoryReader(input_files=kwargs.get("filepaths")).load_data()
+    def __init__(self, **kwargs) -> list[Document]:
+        self.reader = SimpleDirectoryReader(input_files=kwargs.get("filepaths"))
+
+    def load(self) -> list[Document]:
+        return self.reader.load_data()

@@ -1,15 +1,15 @@
 from celery import Celery
 from celery.signals import setup_logging
 from kombu import Queue
-
 import utils
-from config import appconfig
+from serviceconfig import serviceconfig
 
 logger = utils.get_logger("ingestor")
 
+
 app = Celery(
     "herald",
-    broker=f"redis://{appconfig.get('REDIS_HOST')}:{appconfig.get('REDIS_PORT')}/0",
+    broker=serviceconfig.get("celery_broker_uri"),
 )
 
 app.conf.task_create_missing_queues = True
@@ -42,4 +42,4 @@ try:
     )
 except Exception as e:
     logger.exception(str(e))
-    raise utils.HeraldAppException(str(e), exc_info=True)
+    raise utils.HeraldAppException(str(e))

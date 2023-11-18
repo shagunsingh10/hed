@@ -3,28 +3,35 @@ from typing import Any, Callable, Dict, Iterator, Optional, Sequence
 from llama_index.bridge.pydantic import Field, PrivateAttr
 from llama_index.callbacks import CallbackManager
 from llama_index.constants import DEFAULT_CONTEXT_WINDOW, DEFAULT_NUM_OUTPUTS
-from llama_index.llms.base import (ChatMessage, ChatResponse, ChatResponseGen,
-                                   CompletionResponse, CompletionResponseGen,
-                                   LLMMetadata, llm_chat_callback,
-                                   llm_completion_callback)
+from llama_index.llms.base import (
+    ChatMessage,
+    ChatResponse,
+    ChatResponseGen,
+    CompletionResponse,
+    CompletionResponseGen,
+    LLMMetadata,
+    llm_chat_callback,
+    llm_completion_callback,
+)
 from llama_index.llms.custom import CustomLLM
 from llama_index.llms.generic_utils import completion_response_to_chat_response
-from llama_index.llms.generic_utils import \
-    messages_to_prompt as generic_messages_to_prompt
-from llama_index.llms.generic_utils import \
-    stream_completion_response_to_chat_response
+from llama_index.llms.generic_utils import (
+    messages_to_prompt as generic_messages_to_prompt,
+)
+from llama_index.llms.generic_utils import stream_completion_response_to_chat_response
+from requests import Response
 
 
 class KoboldCPP(CustomLLM):
     base_url: str = Field(description="Base url the model is hosted under.")
-    model: str = Field(description="The Ollama model to use.")
+    model: str = Field(description="The Kobold model to use.")
     temperature: float = Field(description="The temperature to use for sampling.")
     context_window: int = Field(
         description="The maximum number of context tokens for the model."
     )
     prompt_key: str = Field(description="The key to use for the prompt in API calls.")
     additional_kwargs: Dict[str, Any] = Field(
-        default_factory=dict, description="Additional kwargs for the Ollama API."
+        default_factory=dict, description="Additional kwargs for the Kobold API."
     )
 
     _messages_to_prompt: Callable = PrivateAttr()
@@ -57,7 +64,7 @@ class KoboldCPP(CustomLLM):
 
     @classmethod
     def class_name(cls) -> str:
-        return "Ollama_llm"
+        return "Kobold_llm"
 
     @property
     def metadata(self) -> LLMMetadata:
@@ -131,9 +138,6 @@ class KoboldCPP(CustomLLM):
                 **all_kwargs,
             },
         )
-        print("\n\n##############\n\n")
-        print("RESPONSE: ", response)
-        print("\n\n##############\n\n")
         response.encoding = "utf-8"
         if response.status_code != 200:
             optional_detail = response.json().get("error")
@@ -142,11 +146,11 @@ class KoboldCPP(CustomLLM):
                 f" Details: {optional_detail}"
             )
 
-        def gen(resp: Iterator[Any]) -> CompletionResponseGen:
+        def gen(resp: Response) -> CompletionResponseGen:
             text = ""
             response = resp.json()
             print(response)
             text += response["results"][0]["text"]
-            yield CompletionResponse(text=text, raw=response)
+            yield CompletionResponse(text=text, delta=text)
 
         return gen(response)

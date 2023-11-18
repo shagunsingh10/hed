@@ -1,0 +1,28 @@
+llm: openai
+llm_kwargs:
+  # base_url: https://madagascar-although-appliances-management.trycloudflare.com
+
+embed_model: openai
+# embed_model_kwargs:
+#   model: "gpt-3.5-turbo"
+#   embed_url: https://retirement-paid-frost-turkish.trycloudflare.com/v1/embeddings
+
+vector_store: milvus
+vector_store_kwargs:
+  uri: "http://172.17.0.1:19530"
+  token: ""
+
+service_queue_provider: redis
+service_queue_name: pythonconsumerqueue
+service_queue_provider_kwargs:
+  redis_host: redis
+  redis_port: 6379
+
+max_sources: 5
+min_similarity_score: 0.7
+
+celery_broker_uri: redis://redis:6379/0
+celery_worker_queues:
+  cleaner_queue: cleanerqueue
+  ingestor_queue: ingestorqueue
+  query_queue: queryqueue

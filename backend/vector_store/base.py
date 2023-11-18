@@ -9,7 +9,12 @@ class BaseVectorStore(ABC):
 
     @abstractmethod
     def save_nodes(self, nodes_with_embeddings: list[BaseNode], **kwargs):
-        """Ingest data into Milvus
-        @returns list[Document] - Lists of documents
-        """
-        raise NotImplementedError("load method must be implemented by a subclass.")
+        pass
+
+    @abstractmethod
+    def search_nodes_from_embeddings(self, embeddings, **kwargs):
+        pass
+
+    @abstractmethod
+    async def async_search_nodes_from_embeddings(self, embeddings, **kwargs):
+        pass
