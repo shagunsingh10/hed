@@ -14,7 +14,6 @@ const CustomTable: RefTable = (props) => {
     height -= nodeBounds?.top || 0;
     height -= 55; // header
     if (props.footer) height -= 48; // footer
-    setTableHeight(height);
   }, [ref, window]);
 
   console.log({ tableHeight });

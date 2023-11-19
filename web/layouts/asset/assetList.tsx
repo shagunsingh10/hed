@@ -155,17 +155,19 @@ const KgList: React.FC<KgListProps> = ({ projectId, kgId }) => {
   useEffect(() => setDataSource(assets), [assets]);
 
   return (
-    <Table
-      className={styles.kgList}
-      columns={columns}
-      dataSource={dataSource}
-      scroll={{ y: 480 }}
-      size="large"
-      showSorterTooltip={true}
-      sortDirections={["ascend", "descend"]}
-      pagination={false}
-      sticky={true}
-    />
+    <>
+      <Table
+        className={styles.kgList}
+        columns={columns}
+        dataSource={dataSource}
+        scroll={{ y: 480 }}
+        size="large"
+        showSorterTooltip={true}
+        sortDirections={["ascend", "descend"]}
+        pagination={false}
+        sticky={true}
+      />
+    </>
   );
 };
 

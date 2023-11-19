@@ -3,7 +3,6 @@ import { Avatar, Dropdown } from "antd";
 import {
   UserOutlined,
   BellOutlined,
-  GlobalOutlined,
   LogoutOutlined,
   MailOutlined,
 } from "@ant-design/icons";
@@ -41,7 +40,6 @@ export default function Header() {
       </div>
       {status == "authenticated" && (
         <div className={styles.rightContainer}>
-          <GlobalOutlined />
           <Dropdown
             menu={{ items: notificationItems }}
             placement="bottomRight"

@@ -36,7 +36,7 @@ a {
 html {
   color-scheme: dark;
   ::-webkit-scrollbar {
-    width: 9px;
+    width: 7px;
   }
   ::-webkit-scrollbar-track {
     background: transparent;

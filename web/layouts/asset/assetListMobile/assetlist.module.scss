@@ -1,0 +1,29 @@
+@use "../../../variables.scss" as *;
+
+.assetInfoContainer {
+  height: 100%;
+  overflow: auto;
+
+  .assetInfoCard {
+    width: 100%;
+    background-color: $siderColor;
+    padding: 1em;
+    height: 10vh;
+    border-radius: 0.4em;
+    box-shadow: 0px 1px 1px rgba(0, 0, 0, 0.3);
+
+    .assetCreatedBy {
+      opacity: 0.3;
+      font-size: 0.9em;
+    }
+
+    .assetType {
+      opacity: 0.6;
+      font-size: 0.9em;
+    }
+    .assetInfoTitle {
+      font-size: 1.3em;
+      font-weight: bold;
+    }
+  }
+}

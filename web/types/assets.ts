@@ -23,7 +23,8 @@ export type Asset = {
   uploadId?: string;
   status: string;
   ownerUserId: number;
-  createdAt: Date;
+  createdAt: string;
+  createdBy?: string;
   knowledgeGroupName?: string;
 };
 

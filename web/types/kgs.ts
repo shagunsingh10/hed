@@ -12,7 +12,7 @@ export interface Kg {
   tags: string[];
   description: string | null;
   createdBy: string;
-  createdAt: Date;
+  createdAt: string;
 }
 
 export interface KgsSlice {

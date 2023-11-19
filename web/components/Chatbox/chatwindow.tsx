@@ -156,10 +156,9 @@ const ChatWindow: FC<ChatWindowProps> = ({ chatId, height, projectId }) => {
       </div>
       <div className={styles.chatInputContainer}>
         <Input.TextArea
-          size="large"
+          size="middle"
           className={styles.chatInput}
           onChange={handleInputChange}
-          // onPressEnter={handleEnter}
           onKeyDown={handleEnter}
           value={inputValue}
           placeholder="Type your message..."
@@ -169,8 +168,7 @@ const ChatWindow: FC<ChatWindowProps> = ({ chatId, height, projectId }) => {
         <Button
           title="Send"
           className={styles.sendButton}
-          color="secondary"
-          size="large"
+          size="middle"
           onClick={handleSendMessage}
           icon={<SendOutlined />}
           disabled={waitingForResponse}
@@ -178,8 +176,7 @@ const ChatWindow: FC<ChatWindowProps> = ({ chatId, height, projectId }) => {
         <Button
           title="Regerenrate"
           className={styles.sendButton}
-          color="secondary"
-          size="large"
+          size="middle"
           onClick={handleRegenerate}
           icon={<SyncOutlined />}
           disabled={waitingForResponse}

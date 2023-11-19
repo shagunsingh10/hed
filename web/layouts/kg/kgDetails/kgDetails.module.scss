@@ -12,16 +12,14 @@
   }
 
   .kgDetailsHead {
-    height: 15vh;
+    height: 12vh;
     margin-bottom: 1vh;
     transition: all 0.5s ease, opacity 0.5s ease;
     overflow: hidden;
     opacity: 1;
 
     .kgAvatar {
-      font-size: 7em;
       color: $primaryColor;
-      border-radius: 0.4em;
     }
 
     .kgTitle {
@@ -30,6 +28,7 @@
       margin-bottom: 0.5em;
     }
     .kgDescription {
+      opacity: 0.5;
       display: -webkit-box;
       -webkit-line-clamp: 3;
       -webkit-box-orient: vertical;
@@ -45,8 +44,39 @@
   }
 
   .kgDetailsContent {
-    height: 77.5vh;
+    height: calc(100% - 12vh);
     overflow-y: auto;
     position: relative;
+  }
+
+  .kgDetailsContent > * {
+    height: 100%;
+  }
+
+  .kgDetailsContent > * > * > * {
+    height: 100%;
+  }
+
+  .kgDetailsContent > * > * > * > * {
+    height: 90%;
+  }
+}
+
+/* Media query for screens smaller than a certain width, e.g., tablets and phones */
+@media screen and (max-width: 768px) {
+  .kgDetailsContainer {
+    width: auto;
+
+    .fullScreenToggle {
+      display: none;
+    }
+
+    .kgDetailsHead {
+      height: 10vh;
+
+      .kgAvatar {
+        display: none;
+      }
+    }
   }
 }

@@ -1,10 +1,11 @@
 @use "../../variables.scss" as *;
 
 .chatScreen {
-  width: 100%;
+  height: 100%;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
+  padding-bottom: 2em;
 
   .chatButtons {
     display: flex;
@@ -13,9 +14,10 @@
   }
 }
 
+// main chat window
 .chatWindow {
   width: 100%;
-  height: 90%;
+  height: auto;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
@@ -24,7 +26,6 @@
   .messageContainer {
     overflow-y: hidden;
     transition: all ease-in-out 0.5s;
-    // padding: 0em 2em 1em 2em;
     overflow-y: auto;
 
     .chatMessage {
@@ -65,7 +66,7 @@
     .chatInput {
       width: 70%;
       resize: vertical;
-      font-size: 0.95em;
+      font-size: 0.9em;
       box-shadow: rgba(0, 0, 0, 0.24) 3px 3px 8px;
     }
 
@@ -78,6 +79,7 @@
   }
 }
 
+// chat history
 .chatList {
   height: 100%;
   overflow-y: hidden;
@@ -93,4 +95,25 @@
 
 .chatList:hover {
   overflow-y: auto;
+}
+
+/* Media query for screens smaller than a certain width, e.g., tablets and phones */
+@media screen and (max-width: 768px) {
+  .chatScreen {
+    padding-bottom: 0;
+  }
+
+  .chatWindow {
+    .chatInputContainer {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 0.5em;
+
+      .chatInput {
+        width: 95%;
+        font-size: 0.9em;
+      }
+    }
+  }
 }

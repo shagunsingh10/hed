@@ -1,10 +1,8 @@
 import { useEffect, useState, FC } from "react";
-import { Menu, Button, Divider, Drawer } from "antd";
+import { Menu, Button, Drawer } from "antd";
 import { MessageOutlined, PlusCircleOutlined } from "@ant-design/icons";
 import useStore from "@/store";
 import ChatWindow from "./chatwindow";
-import { useSession } from "next-auth/react";
-import type { MenuProps } from "antd";
 import styles from "./chatbot.module.scss";
 
 type ChatBoxProps = {
@@ -24,20 +22,7 @@ const Chatbox: FC<ChatBoxProps> = ({ scope, height, projectId }) => {
   const setActiveChatId = useStore((state) => state.setActiveChatId);
 
   //functions
-  const handleChatClick = (id: any) => {
-    setActiveChatId(id);
-  };
-
-  const handleCloseChatHistory = () => {
-    setChatHistoryOpen(false);
-  };
-
-  const handleOpenChatHistory = () => {
-    setChatHistoryOpen(true);
-  };
-
   const addNewChat = async () => {
-    // send to backend
     const newChatId = await addChat(projectId);
     setActiveChatId(newChatId);
     loadChats(scope, projectId); // on success
@@ -47,12 +32,8 @@ const Chatbox: FC<ChatBoxProps> = ({ scope, height, projectId }) => {
     if (loadChats) loadChats(scope, projectId);
   }, [loadChats, scope, projectId]);
 
-  // useEffect(() => {
-  //   if (chats && chats.length > 0) setActiveChatId(chats[0].id);
-  // }, [chats]);
-
   return (
-    <div className={styles.chatScreen} style={{ height }}>
+    <div className={styles.chatScreen}>
       <div className={styles.chatButtons}>
         <Button
           className={styles.newChatButton}
@@ -67,7 +48,7 @@ const Chatbox: FC<ChatBoxProps> = ({ scope, height, projectId }) => {
           className={styles.newChatButton}
           type="primary"
           ghost
-          onClick={handleOpenChatHistory}
+          onClick={() => setChatHistoryOpen(true)}
         >
           <MessageOutlined />
           Chat History
@@ -78,7 +59,7 @@ const Chatbox: FC<ChatBoxProps> = ({ scope, height, projectId }) => {
         className={styles.chatHistoryContainer}
         placement="right"
         open={chatHistoryOpen}
-        onClose={handleCloseChatHistory}
+        onClose={() => setChatHistoryOpen(false)}
       >
         <Menu
           className={styles.chatList}
@@ -89,7 +70,7 @@ const Chatbox: FC<ChatBoxProps> = ({ scope, height, projectId }) => {
             <Menu.Item
               icon={<MessageOutlined />}
               key={id}
-              onClick={() => handleChatClick(chat.id)}
+              onClick={() => setActiveChatId(chat.id)}
               className={styles.chatListItem}
             >
               {chat.title}

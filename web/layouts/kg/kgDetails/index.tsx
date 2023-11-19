@@ -11,13 +11,14 @@ import useStore from "@/store";
 import Loader from "@/components/Loader";
 import { useEffect, useState } from "react";
 import { Kg } from "@/types/kgs";
-
 import styles from "./kgDetails.module.scss";
 import KgUsers from "../kgUsers";
 import AssetScreen from "../../asset";
 import CreateAssetForm from "@/layouts/asset/createAsset";
+import { useMediaQuery } from "@/hooks/useMediaQuery";
 
 const KgDetailsScreen = () => {
+  const smallScreen = useMediaQuery(768);
   const { projectId, kgId }: { projectId: string; kgId: string } = useParams();
   const [kg, setkg] = useState<Kg>();
   const [loading, setLoading] = useState<boolean>(false);
@@ -69,7 +70,7 @@ const KgDetailsScreen = () => {
           isFullScreen ? styles.hidden : ""
         }`}
       >
-        <Col span={2}>
+        <Col span={2} className={styles.kgAvatar}>
           <img
             src="/images/kg1.jpg"
             alt="project"
@@ -85,13 +86,12 @@ const KgDetailsScreen = () => {
       </Row>
       <div className={styles.kgDetailsContent}>
         <Tabs
-          style={{ width: "100%" }}
           defaultActiveKey="1"
           type="card"
           size={"small"}
           tabBarGutter={10}
-          tabPosition="left"
-          tabBarStyle={{ marginRight: "0.5em", width: "10vw" }}
+          tabPosition={smallScreen ? "top" : "left"}
+          tabBarStyle={{ marginRight: "0.5em" }}
           items={tabs.map((tab, i) => {
             return {
               label: (

@@ -49,16 +49,7 @@ const ProjectsGrid = ({ visible }: { visible: boolean }) => {
               <Row
                 style={{ display: "flex", alignItems: "center", padding: 0 }}
               >
-                {/* <Col span={3}>
-                  <img
-                    src="/images/project-icon.jpg"
-                    alt="project"
-                    height={40}
-                    width={40}
-                    style={{ borderRadius: "0.5em" }}
-                  />
-                </Col> */}
-                <Col span={16}>
+                <Col span={24}>
                   <div className={styles.projectTitleContainer}>
                     <div className={styles.projectTitle}>{item.name}</div>
                     <div className={styles.projectTags}>

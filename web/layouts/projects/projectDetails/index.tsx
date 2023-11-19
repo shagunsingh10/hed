@@ -11,7 +11,7 @@ import {
 import { useParams } from "next/navigation";
 import useStore from "@/store";
 import Loader from "@/components/Loader";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { Project } from "@/types/projects";
 import KGScreen from "../../kg";
 import ProjectUsers from "../projectUsers";
@@ -20,48 +20,53 @@ import AssetScreen from "../../asset";
 import styles from "./projectDetails.module.scss";
 import CreateAssetForm from "../../asset/createAsset";
 import CreateKGForm from "../../kg/createKg";
+import { useMediaQuery } from "@/hooks/useMediaQuery";
 
 const ProjectDetailsScreen = () => {
+  const smallScreen = useMediaQuery(768);
   const { projectId }: { projectId: string } = useParams();
   const getProjectById = useStore((state) => state.getProjectById);
   const [project, setProject] = useState<Project>();
   const [loading, setLoading] = useState<boolean>(false);
   const [isFullScreen, setIsFullScreen] = useState<boolean>(false);
 
-  const tabs = [
-    {
-      title: "Assets",
-      icon: <FileDoneOutlined />,
-      content: <AssetScreen projectId={projectId} />,
-    },
-    {
-      title: "Add Asset",
-      icon: <PlusCircleOutlined />,
-      content: <CreateAssetForm projectId={projectId} />,
-    },
-    {
-      title: "Chat",
-      icon: <MailOutlined />,
-      content: (
-        <Chatbox
-          scope="project"
-          projectId={projectId}
-          height={isFullScreen ? "81vh" : "65vh"}
-        />
-      ),
-    },
-    {
-      title: "Knowledge Groups",
-      icon: <BookOutlined />,
-      content: <KGScreen projectId={projectId} />,
-    },
-    {
-      title: "Add Knowledge Group",
-      icon: <PlusCircleOutlined />,
-      content: <CreateKGForm projectId={projectId} />,
-    },
-    { title: "Users", icon: <UserOutlined />, content: <ProjectUsers /> },
-  ];
+  const tabs = useMemo(
+    () => [
+      {
+        title: "Assets",
+        icon: <FileDoneOutlined />,
+        content: <AssetScreen projectId={projectId} />,
+      },
+      {
+        title: "Add Asset",
+        icon: <PlusCircleOutlined />,
+        content: <CreateAssetForm projectId={projectId} />,
+      },
+      {
+        title: "Chat",
+        icon: <MailOutlined />,
+        content: (
+          <Chatbox
+            scope="project"
+            projectId={projectId}
+            height={isFullScreen ? "81vh" : "65vh"}
+          />
+        ),
+      },
+      {
+        title: "Knowledge Groups",
+        icon: <BookOutlined />,
+        content: <KGScreen projectId={projectId} />,
+      },
+      {
+        title: "Add Knowledge Group",
+        icon: <PlusCircleOutlined />,
+        content: <CreateKGForm projectId={projectId} />,
+      },
+      { title: "Users", icon: <UserOutlined />, content: <ProjectUsers /> },
+    ],
+    [projectId, isFullScreen]
+  );
 
   useEffect(() => {
     setLoading(true);
@@ -95,7 +100,7 @@ const ProjectDetailsScreen = () => {
           isFullScreen ? styles.hidden : ""
         }`}
       >
-        <Col span={2}>
+        <Col span={2} className={styles.projectAvatar}>
           <img
             src="/images/project-icon.jpg"
             alt="project"
@@ -112,11 +117,10 @@ const ProjectDetailsScreen = () => {
       </Row>
       <div className={styles.projectDetailsContent}>
         <Tabs
-          style={{ width: "100%" }}
           defaultActiveKey="1"
           type="card"
           tabBarGutter={10}
-          tabPosition="left"
+          tabPosition={smallScreen ? "top" : "left"}
           tabBarStyle={{ marginRight: "0.5em" }}
           items={tabs.map((tab, i) => {
             return {

@@ -3,6 +3,7 @@
 .projectsContainer {
   width: 100%;
   height: 100%;
+  position: relative;
 
   .screenHeader {
     display: flex;
@@ -66,11 +67,12 @@
   }
 
   .projectCardsContainer {
+    max-height: 100%;
+    overflow-y: auto !important;
     transition: opacity 0.5s ease-in;
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(24vw, 1fr));
     gap: 2em;
-    overflow-y: auto !important;
     padding: 1em;
 
     .projectCard {
@@ -90,11 +92,6 @@
       transform: scale(1.02);
       box-shadow: 0 4px 8px rgba(91, 91, 91, 0.1);
       transform-origin: center;
-    }
-
-    .projectAvatar {
-      font-size: 40px;
-      color: $primaryColor;
     }
 
     .projectTitleContainer {
@@ -146,5 +143,49 @@
     gap: 1em;
     justify-content: flex-end;
     align-items: flex-end;
+  }
+}
+
+/* Media query for screens smaller than a certain width, e.g., tablets and phones */
+@media screen and (max-width: 768px) {
+  .screenHeader {
+    .screenTitle {
+      font-size: 20px !important;
+      font-weight: bold;
+      text-transform: uppercase;
+    }
+
+    .rightHeader {
+      .listToggleSwitch {
+        display: none;
+      }
+
+      .createNewButton {
+        transform: scale(0.9) !important;
+      }
+    }
+  }
+
+  .projectCardsContainer {
+    height: 89% !important;
+
+    .projectCard {
+      height: 20vh !important;
+    }
+
+    .projectTitle {
+      font-size: 1em !important;
+    }
+
+    .projectTags {
+      padding-top: 1em;
+      overflow: hidden;
+      white-space: pre !important;
+      text-overflow: clip !important;
+    }
+
+    .projectDescriptionContainer {
+      font-size: 0.8em !important;
+    }
   }
 }

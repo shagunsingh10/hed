@@ -13,27 +13,40 @@
   }
 }
 
-.createAssetModal {
-  .newKGFormContainer {
-    height: 95%;
-    overflow-y: auto;
-    display: flex;
-    padding: 0.5em;
-    flex-direction: column;
-    justify-content: space-between;
+.newAssetFormContainer {
+  height: 97%;
+  overflow: auto;
+  display: flex;
+  padding: 0.5em;
+  flex-direction: column;
+  justify-content: space-between;
 
-    .formItemsContainer {
-      textarea {
-        resize: none;
-      }
-      height: 51vh;
+  .formItemsContainer {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2em;
+
+    textarea {
+      resize: none;
     }
   }
+
+  .formButtonGroup {
+    margin-top: 4em;
+    display: flex;
+    gap: 1em;
+    justify-content: flex-end;
+    align-items: flex-end;
+  }
 }
-.formButtonGroup {
-  margin-top: 4em;
-  display: flex;
-  gap: 1em;
-  justify-content: flex-end;
-  align-items: flex-end;
+
+/* Media query for screens smaller than a certain width, e.g., tablets and phones */
+@media screen and (max-width: 768px) {
+  .formItemsContainer {
+    grid-template-columns: 1fr !important;
+
+    .assetInfoContainer {
+      margin-bottom: 1em;
+    }
+  }
 }
