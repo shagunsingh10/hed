@@ -30,6 +30,8 @@ RUN pip install -r requirements.txt
 RUN pip install pymilvus
 RUN pip install pyarrow
 RUN pip install Jinja2
+RUN pip install pypdf
+RUN pip install Pillow
 
 # Copy the contents of the current directory (where Dockerfile is located) into the container at /app
 ADD . /app

@@ -93,7 +93,7 @@ export const createMessagesSlice: StateCreator<
       set({
         waitingForResponse: false,
       });
-    }, 10000);
+    }, 30000);
   },
   loadMessages: async (chatId: string) => {
     set({

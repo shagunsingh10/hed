@@ -1,9 +1,9 @@
 from celery.exceptions import Reject
-from celeryapp.app import app, logger
-from celeryapp.app import serviceconfig
-from queryprocessor.base import QueryProcessor
-from celeryapp.statusupdater import StatusUpdater
 from llama_index.response.schema import StreamingResponse
+
+from celeryapp.app import app, logger, serviceconfig
+from celeryapp.statusupdater import StatusUpdater
+from queryprocessor.base import QueryProcessor
 
 queue = serviceconfig["celery_worker_queues"]["ingestor_queue"]
 status_updater = StatusUpdater()
@@ -48,6 +48,7 @@ def process_query(payload):
             complete=True,
         )
         # logger.debug(streaming_response.source_nodes)
+        logger.debug(complete_response)
     except Exception as e:
         if process_query.request.retries == 2:
             status_updater.send_query_response_chunk(

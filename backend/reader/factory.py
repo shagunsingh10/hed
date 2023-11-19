@@ -1,15 +1,23 @@
+import time
+
 from llama_index import Document
 
-from reader.base import BaseReader
 from reader.directory import DirectoryReader
 from reader.files import FilesReader
+from reader.gdocs import GDocsReader
+from reader.github import GitHubReader
+from reader.gsheets import GSheetsReader
+from reader.wikipedia import WikipediaReader
 from utils.exceptions import UnsupportedReaderError
-import time
 from utils.logger import get_logger
 
 supported_types: dict[str, any] = {
     "file": FilesReader,
     "directory": DirectoryReader,
+    "github": GitHubReader,
+    "wikipedia": WikipediaReader,
+    "gdocs": GDocsReader,
+    "gsheets": GSheetsReader,
 }
 
 logger = get_logger("reader")

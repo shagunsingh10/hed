@@ -1,5 +1,6 @@
-from llama_index import Document
 from abc import ABC, abstractmethod
+
+from llama_index import Document
 
 
 class BaseReader(ABC):

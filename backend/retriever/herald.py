@@ -1,12 +1,14 @@
+import asyncio
+import time
+
 from llama_index import QueryBundle
 from llama_index.retrievers import BaseRetriever
 from llama_index.schema import NodeWithScore
+
 from embeddings.factory import EmbeddingsFactory
-from vector_store.factory import VectorStoreFactory
-import asyncio
-import time
-from utils.logger import get_logger
 from nodeparser.base import NodeParser
+from utils.logger import get_logger
+from vector_store.factory import VectorStoreFactory
 
 logger = get_logger("herald-retriever")
 

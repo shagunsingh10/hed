@@ -3,22 +3,16 @@ from typing import Any, Callable, Dict, Iterator, Optional, Sequence
 from llama_index.bridge.pydantic import Field, PrivateAttr
 from llama_index.callbacks import CallbackManager
 from llama_index.constants import DEFAULT_CONTEXT_WINDOW, DEFAULT_NUM_OUTPUTS
-from llama_index.llms.base import (
-    ChatMessage,
-    ChatResponse,
-    ChatResponseGen,
-    CompletionResponse,
-    CompletionResponseGen,
-    LLMMetadata,
-    llm_chat_callback,
-    llm_completion_callback,
-)
+from llama_index.llms.base import (ChatMessage, ChatResponse, ChatResponseGen,
+                                   CompletionResponse, CompletionResponseGen,
+                                   LLMMetadata, llm_chat_callback,
+                                   llm_completion_callback)
 from llama_index.llms.custom import CustomLLM
 from llama_index.llms.generic_utils import completion_response_to_chat_response
-from llama_index.llms.generic_utils import (
-    messages_to_prompt as generic_messages_to_prompt,
-)
-from llama_index.llms.generic_utils import stream_completion_response_to_chat_response
+from llama_index.llms.generic_utils import \
+    messages_to_prompt as generic_messages_to_prompt
+from llama_index.llms.generic_utils import \
+    stream_completion_response_to_chat_response
 from requests import Response
 
 

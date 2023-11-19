@@ -1,6 +1,5 @@
 from llama_index import Prompt
 
-
 strict_context_response_template = (
     "We have provided context information below.\n"
     "---------------------\n"

@@ -1,10 +1,8 @@
 from celery.exceptions import Reject
 
-from celeryapp.app import app, logger
-from celeryapp.app import serviceconfig
-from ingestor.base import AssetIngestor
+from celeryapp.app import app, logger, serviceconfig
 from celeryapp.statusupdater import StatusUpdater
-
+from ingestor.base import AssetIngestor
 
 queue = serviceconfig["celery_worker_queues"]["ingestor_queue"]
 status_updater = StatusUpdater()

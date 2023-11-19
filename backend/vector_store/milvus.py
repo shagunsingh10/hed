@@ -1,11 +1,14 @@
-from llama_index.schema import BaseNode
-from llama_index.vector_stores import MilvusVectorStore as LlamaMilvusVectorStore
-from llama_index.vector_stores import VectorStoreQuery, VectorStoreQueryResult
-from vector_store.base import BaseVectorStore
-import time
-from llama_index.embeddings.base import Embedding
-from utils.logger import get_logger
 import asyncio
+import time
+
+from llama_index.embeddings.base import Embedding
+from llama_index.schema import BaseNode
+from llama_index.vector_stores import \
+    MilvusVectorStore as LlamaMilvusVectorStore
+from llama_index.vector_stores import VectorStoreQuery, VectorStoreQueryResult
+
+from utils.logger import get_logger
+from vector_store.base import BaseVectorStore
 
 logger = get_logger("milvus-vector-store")
 

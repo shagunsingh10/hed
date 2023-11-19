@@ -25,6 +25,7 @@
     overflow-y: hidden;
     transition: all ease-in-out 0.5s;
     // padding: 0em 2em 1em 2em;
+    overflow-y: auto;
 
     .chatMessage {
       border: none;
@@ -39,10 +40,14 @@
 
       .chatMessageContent {
         width: 100%;
-        padding: 0.4em 1em;
+        padding: 0.4em 2em;
         border-radius: 0.5em;
         font-weight: normal;
         font-size: 1.2em;
+
+        pre:has(code) {
+          border-radius: 0.5em;
+        }
       }
     }
   }

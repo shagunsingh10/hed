@@ -6,8 +6,10 @@ from llama_index.llms.bedrock import Bedrock
 from llama_index.llms.clarifai import Clarifai
 from llama_index.llms.cohere import Cohere
 from llama_index.llms.everlyai import EverlyAI
-from llama_index.llms.gradient import GradientBaseModelLLM, GradientModelAdapterLLM
-from llama_index.llms.huggingface import HuggingFaceInferenceAPI, HuggingFaceLLM
+from llama_index.llms.gradient import (GradientBaseModelLLM,
+                                       GradientModelAdapterLLM)
+from llama_index.llms.huggingface import (HuggingFaceInferenceAPI,
+                                          HuggingFaceLLM)
 from llama_index.llms.konko import Konko
 from llama_index.llms.langchain import LangChainLLM
 from llama_index.llms.litellm import LiteLLM

@@ -16,6 +16,8 @@ import { CHAT_MESSAGE_BG, COLOR_BG_TEXT } from "@/constants";
 import styles from "./chatbot.module.scss";
 import { globalDateFormatParser } from "@/lib/functions";
 import { Message } from "@/types/chats";
+import ReactMarkdown from "react-markdown";
+import CodeBlock from "./Codeblock";
 
 type ChatWindowProps = {
   chatId?: string;
@@ -137,7 +139,12 @@ const ChatWindow: FC<ChatWindowProps> = ({ chatId, height, projectId }) => {
                       {message.id === "waiting-for-response" ? (
                         <Spin size="small" spinning={true} />
                       ) : (
-                        message.content
+                        <ReactMarkdown
+                          children={message.content}
+                          components={{
+                            code: CodeBlock,
+                          }}
+                        />
                       )}
                     </Space>
                   }

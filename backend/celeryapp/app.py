@@ -1,6 +1,7 @@
 from celery import Celery
 from celery.signals import setup_logging
 from kombu import Queue
+
 import utils
 from serviceconfig import serviceconfig
 

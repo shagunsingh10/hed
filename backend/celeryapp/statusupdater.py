@@ -1,8 +1,9 @@
+import time
+
+import requests
+
 from config import appconfig
 from utils.logger import get_logger
-
-import time
-import requests
 
 logger = get_logger("status-updater")
 

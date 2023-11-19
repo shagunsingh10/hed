@@ -1,10 +1,11 @@
-from llama_index.node_parser import SimpleNodeParser
-from llama_index.schema import BaseNode, Document
-from llama_index.text_splitter import CodeSplitter
 import time
-from utils.logger import get_logger
+
+from llama_index.node_parser import SimpleNodeParser
+from llama_index.schema import BaseNode, Document, NodeWithScore
+from llama_index.text_splitter import CodeSplitter
 from llama_index.vector_stores import VectorStoreQueryResult
-from llama_index.schema import NodeWithScore
+
+from utils.logger import get_logger
 
 supported_languages = {
     ".bash": "bash",
@@ -95,8 +96,12 @@ class NodeParser:
                     text_splitter=CodeSplitter(language=language),
                     **kwargs,
                 )
-            nodes = np.get_nodes_from_documents(docs[language])
-            all_nodes.extend(nodes)
+            try:
+                nodes = np.get_nodes_from_documents(docs[language])
+                all_nodes.extend(nodes)
+            except Exception as e:
+                logger.warning(f"Error in parsing a document: {e}")
+                pass
 
         logger.debug(
             f"Time taken to convert documents to nodes: [{round(time.time() - start_time, 4)} s]"
