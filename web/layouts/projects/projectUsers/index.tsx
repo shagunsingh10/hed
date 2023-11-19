@@ -56,6 +56,66 @@ const data: DataType[] = [
     role: "Viewer",
   },
   {
+    id: "def456",
+    name: "Bob Smith",
+    email: "bob.s@example.com",
+    role: "Viewer",
+  },
+  {
+    id: "def456",
+    name: "Bob Smith",
+    email: "bob.s@example.com",
+    role: "Viewer",
+  },
+  {
+    id: "def456",
+    name: "Bob Smith",
+    email: "bob.s@example.com",
+    role: "Viewer",
+  },
+  {
+    id: "def456",
+    name: "Bob Smith",
+    email: "bob.s@example.com",
+    role: "Viewer",
+  },
+  {
+    id: "def456",
+    name: "Bob Smith",
+    email: "bob.s@example.com",
+    role: "Viewer",
+  },
+  {
+    id: "def456",
+    name: "Bob Smith",
+    email: "bob.s@example.com",
+    role: "Viewer",
+  },
+  {
+    id: "def456",
+    name: "Bob Smith",
+    email: "bob.s@example.com",
+    role: "Viewer",
+  },
+  {
+    id: "def456",
+    name: "Bob Smith",
+    email: "bob.s@example.com",
+    role: "Viewer",
+  },
+  {
+    id: "def456",
+    name: "Bob Smith",
+    email: "bob.s@example.com",
+    role: "Viewer",
+  },
+  {
+    id: "def456",
+    name: "Bob Smith",
+    email: "bob.s@example.com",
+    role: "Viewer",
+  },
+  {
     id: "ghi789",
     name: "Charlie Brown",
     email: "charlie.b@example.com",
@@ -105,13 +165,13 @@ const data: DataType[] = [
   },
 ];
 
-const KgUsers: React.FC = () => (
+const ProjectUsers: React.FC = () => (
   <Table
     columns={columns}
     dataSource={data}
-    scroll={{ y: 490 }}
+    scroll={{ y: 540 }}
     pagination={false}
   />
 );
 
-export default KgUsers;
+export default ProjectUsers;

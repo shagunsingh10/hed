@@ -1,7 +1,6 @@
 @use "../../variables.scss" as *;
 
 .assetContainer {
-  width: 93vw;
   height: 65vh;
   position: relative;
 
@@ -14,25 +13,27 @@
   }
 }
 
-.newKGFormContainer {
-  height: 95%;
-  overflow-y: auto;
-  display: flex;
-  padding: 0.5em;
-  flex-direction: column;
-  justify-content: space-between;
-
-  .formItemsContainer {
-    textarea {
-      resize: none;
-    }
-    height: 51vh;
-  }
-
-  .formButtonGroup {
+.createAssetModal {
+  .newKGFormContainer {
+    height: 95%;
+    overflow-y: auto;
     display: flex;
-    gap: 1em;
-    justify-content: flex-end;
-    align-items: flex-end;
+    padding: 0.5em;
+    flex-direction: column;
+    justify-content: space-between;
+
+    .formItemsContainer {
+      textarea {
+        resize: none;
+      }
+      height: 51vh;
+    }
   }
+}
+.formButtonGroup {
+  margin-top: 4em;
+  display: flex;
+  gap: 1em;
+  justify-content: flex-end;
+  align-items: flex-end;
 }

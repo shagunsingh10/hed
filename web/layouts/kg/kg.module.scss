@@ -1,9 +1,8 @@
 @use "../../variables.scss" as *;
 
 .kgContainer {
-  width: 93vw;
-  height: 65vh;
   position: relative;
+  min-height: 65vh;
 
   .screenHeader {
     display: flex;

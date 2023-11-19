@@ -50,19 +50,38 @@ const handler = async (
 
     case "POST":
       const body = await req.body;
-      const newProject = await prisma.project.create({
-        data: {
-          name: body.name,
-          description: body.description,
-          tags: body.tags,
-          createdBy: user?.email as string,
-          UserRole: {
-            create: {
-              role: "owner",
-              userId: Number(user?.id),
+      const newProject = await prisma.$transaction(async (tx) => {
+        const proj = await tx.project.create({
+          data: {
+            name: body.name,
+            description: body.description,
+            tags: body.tags,
+            createdBy: user?.email as string,
+            UserRole: {
+              create: {
+                role: "owner",
+                userId: Number(user?.id),
+              },
             },
           },
-        },
+        });
+        await tx.knowledgeGroup.create({
+          data: {
+            name: "Default",
+            description: `Default knowledge group for ${body.name} project. Consider the default project as a shared space for all your open assets. Just a quick heads-up: since it's an open setup, anything you stash in there is accessible to everyone in the project. `,
+            tags: body.tags,
+            projectId: proj.id,
+            createdBy: user?.email as string,
+            UserRole: {
+              create: {
+                role: "owner",
+                userId: Number(user?.id),
+                projectId: proj.id,
+              },
+            },
+          },
+        });
+        return proj;
       });
 
       res.status(201).json({

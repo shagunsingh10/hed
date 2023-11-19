@@ -15,6 +15,12 @@ export const getAssetsApi = async (projectId: string, kgId: string) => {
   return resData.data;
 };
 
+export const getAssetsInProjectApi = async (projectId: string) => {
+  const res = await fetcher.get(`/api/projects/${projectId}/assets`);
+  const resData = await res.json();
+  return resData.data;
+};
+
 export const createAssetApi = async (
   projectId: string,
   kgId: string,

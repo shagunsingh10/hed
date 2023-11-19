@@ -1,7 +1,7 @@
 import React from "react";
-import { Space, Table } from "antd";
+import { Space } from "antd";
 import { DeleteOutlined, EditOutlined } from "@ant-design/icons";
-
+import CustomTable from "@/components/Table";
 import type { ColumnsType } from "antd/es/table";
 
 interface DataType {
@@ -48,66 +48,6 @@ const data: DataType[] = [
     name: "Alice Johnson",
     email: "alice.j@example.com",
     role: "Contributor",
-  },
-  {
-    id: "def456",
-    name: "Bob Smith",
-    email: "bob.s@example.com",
-    role: "Viewer",
-  },
-  {
-    id: "def456",
-    name: "Bob Smith",
-    email: "bob.s@example.com",
-    role: "Viewer",
-  },
-  {
-    id: "def456",
-    name: "Bob Smith",
-    email: "bob.s@example.com",
-    role: "Viewer",
-  },
-  {
-    id: "def456",
-    name: "Bob Smith",
-    email: "bob.s@example.com",
-    role: "Viewer",
-  },
-  {
-    id: "def456",
-    name: "Bob Smith",
-    email: "bob.s@example.com",
-    role: "Viewer",
-  },
-  {
-    id: "def456",
-    name: "Bob Smith",
-    email: "bob.s@example.com",
-    role: "Viewer",
-  },
-  {
-    id: "def456",
-    name: "Bob Smith",
-    email: "bob.s@example.com",
-    role: "Viewer",
-  },
-  {
-    id: "def456",
-    name: "Bob Smith",
-    email: "bob.s@example.com",
-    role: "Viewer",
-  },
-  {
-    id: "def456",
-    name: "Bob Smith",
-    email: "bob.s@example.com",
-    role: "Viewer",
-  },
-  {
-    id: "def456",
-    name: "Bob Smith",
-    email: "bob.s@example.com",
-    role: "Viewer",
   },
   {
     id: "def456",
@@ -165,13 +105,8 @@ const data: DataType[] = [
   },
 ];
 
-const ProjectUsers: React.FC = () => (
-  <Table
-    columns={columns}
-    dataSource={data}
-    scroll={{ y: 490 }}
-    pagination={false}
-  />
+const KgUsers: React.FC = () => (
+  <CustomTable columns={columns} dataSource={data} pagination={false} />
 );
 
-export default ProjectUsers;
+export default KgUsers;

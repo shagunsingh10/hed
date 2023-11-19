@@ -24,7 +24,7 @@ export const createProjectsSlice: StateCreator<
   createProject: async (data) => {
     const newProject = await createProjectApi(data);
     set({
-      projects: [...get().projects, newProject],
+      projects: [newProject, ...get().projects],
     });
   },
 });

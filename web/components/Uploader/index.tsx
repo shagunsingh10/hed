@@ -67,7 +67,7 @@ const Uploader: FC<UploaderProps> = ({
       />
       {fileStatus == "success" && <CheckCircleFilled />}
       {fileStatus == "failed" && <ExclamationCircleFilled />}
-      <Button type="primary" onClick={handleStart} loading={loading}>
+      <Button type="primary" onClick={handleStart} loading={loading} ghost>
         {loading ? "Uploading" : "Start Upload"}
       </Button>
     </div>

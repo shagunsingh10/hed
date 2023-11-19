@@ -13,6 +13,7 @@ const handler = async (
         select: {
           id: true,
           name: true,
+          key: true,
         },
       });
       res.status(200).json({

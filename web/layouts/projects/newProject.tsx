@@ -1,15 +1,17 @@
 import { useState } from "react";
-import { Form, Input, Button, Card, message } from "antd";
+import { Form, Input, Button, Modal, message } from "antd";
 
 import styles from "./projects.module.scss";
 import useStore from "@/store";
 
 type createProjectFormProps = {
   closeProjectCreationForm: () => void;
+  open: boolean;
 };
 
 const CreateProjectForm: React.FC<createProjectFormProps> = ({
   closeProjectCreationForm,
+  open,
 }) => {
   const [loading, setLoading] = useState(false);
   const createProject = useStore((state) => state.createProject);
@@ -32,52 +34,63 @@ const CreateProjectForm: React.FC<createProjectFormProps> = ({
   };
 
   return (
-    <Card className={styles.newProjectFormContainer}>
-      <Form
-        onFinish={handleSubmit}
-        onReset={closeProjectCreationForm}
-        layout="vertical"
-      >
-        <div className={styles.formItemsContainer}>
-          <Form.Item
-            label="Project Name"
-            name="projectName"
-            rules={[
-              { required: true, message: "Please enter the project name" },
-            ]}
-          >
-            <Input placeholder="Enter project name" />
-          </Form.Item>
+    <Modal
+      open={open}
+      width={"40vw"}
+      footer={false}
+      closeIcon={false}
+      destroyOnClose={true}
+    >
+      <div className={styles.newProjectFormContainer}>
+        <Form
+          onFinish={handleSubmit}
+          onReset={closeProjectCreationForm}
+          layout="vertical"
+        >
+          <div className={styles.formItemsContainer}>
+            <Form.Item
+              label="Project Name"
+              name="projectName"
+              rules={[
+                { required: true, message: "Please enter the project name" },
+              ]}
+            >
+              <Input placeholder="Enter project name" />
+            </Form.Item>
 
-          <Form.Item
-            label="Project Description"
-            name="projectDescription"
-            rules={[
-              {
-                required: true,
-                message: "Please enter the project description",
-              },
-            ]}
-          >
-            <Input.TextArea rows={6} placeholder="Enter project description" />
-          </Form.Item>
+            <Form.Item
+              label="Project Description"
+              name="projectDescription"
+              rules={[
+                {
+                  required: true,
+                  message: "Please enter the project description",
+                },
+              ]}
+            >
+              <Input.TextArea
+                rows={6}
+                placeholder="Enter project description"
+              />
+            </Form.Item>
 
-          <Form.Item label="Project Tags" name="projectTags">
-            <Input placeholder="Enter project tags (comma-separated)" />
-          </Form.Item>
-        </div>
-        <Form.Item>
-          <div className={styles.formButtonGroup}>
-            <Button color="secondary" htmlType="reset" loading={loading}>
-              Cancel
-            </Button>
-            <Button type="primary" htmlType="submit" loading={loading}>
-              Create
-            </Button>
+            <Form.Item label="Project Tags" name="projectTags">
+              <Input placeholder="Enter project tags (comma-separated)" />
+            </Form.Item>
           </div>
-        </Form.Item>
-      </Form>
-    </Card>
+          <Form.Item>
+            <div className={styles.formButtonGroup}>
+              <Button color="secondary" htmlType="reset" loading={loading}>
+                Cancel
+              </Button>
+              <Button type="primary" htmlType="submit" loading={loading}>
+                Create
+              </Button>
+            </div>
+          </Form.Item>
+        </Form>
+      </div>
+    </Modal>
   );
 };
 

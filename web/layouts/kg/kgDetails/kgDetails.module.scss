@@ -1,4 +1,4 @@
-@use "../../variables.scss" as *;
+@use "../../../variables.scss" as *;
 
 .kgDetailsContainer {
   height: 93.5vh;
@@ -21,6 +21,7 @@
     .kgAvatar {
       font-size: 7em;
       color: $primaryColor;
+      border-radius: 0.4em;
     }
 
     .kgTitle {

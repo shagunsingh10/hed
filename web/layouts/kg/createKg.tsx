@@ -1,20 +1,17 @@
-import { useState, FC } from "react";
-import { Form, Input, Button, Card, message } from "antd";
+import { useState, FC, useRef } from "react";
+import { Form, Input, Button, Card, message, Modal, Typography } from "antd";
 
 import styles from "./kg.module.scss";
 import useStore from "@/store";
 
 type createKgFormProps = {
   projectId: string;
-  closeKgCreationForm: () => void;
 };
 
-const CreateKGForm: FC<createKgFormProps> = ({
-  projectId,
-  closeKgCreationForm,
-}) => {
+const CreateKGForm: FC<createKgFormProps> = ({ projectId }) => {
   const [loading, setLoading] = useState(false);
   const createKg = useStore((state) => state.createKg);
+  const formRef: any = useRef(null);
 
   const handleSubmit = async (values: any) => {
     setLoading(true);
@@ -26,8 +23,6 @@ const CreateKGForm: FC<createKgFormProps> = ({
         tags: values.tags,
       });
       message.success("Knowledge Created Successfully");
-
-      closeKgCreationForm();
     } catch (e: any) {
       message.error(e);
     } finally {
@@ -35,12 +30,20 @@ const CreateKGForm: FC<createKgFormProps> = ({
     }
   };
 
+  const handleReset = () => {
+    formRef.current?.resetFields();
+  };
+
   return (
     <Card className={styles.newKGFormContainer}>
+      <Typography.Title level={3}>
+        Create a new knowledge group
+      </Typography.Title>
       <Form
         onFinish={handleSubmit}
-        onReset={closeKgCreationForm}
+        onReset={handleReset}
         layout="vertical"
+        ref={formRef}
       >
         <div className={styles.formItemsContainer}>
           <Form.Item
@@ -70,7 +73,7 @@ const CreateKGForm: FC<createKgFormProps> = ({
         <Form.Item>
           <div className={styles.formButtonGroup}>
             <Button color="secondary" htmlType="reset" loading={loading}>
-              Cancel
+              Reset
             </Button>
             <Button type="primary" htmlType="submit" loading={loading}>
               Create

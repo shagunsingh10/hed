@@ -57,6 +57,7 @@ const Chatbox: FC<ChatBoxProps> = ({ scope, height, projectId }) => {
         <Button
           className={styles.newChatButton}
           type="primary"
+          ghost
           onClick={addNewChat}
         >
           <PlusCircleOutlined />
@@ -65,6 +66,7 @@ const Chatbox: FC<ChatBoxProps> = ({ scope, height, projectId }) => {
         <Button
           className={styles.newChatButton}
           type="primary"
+          ghost
           onClick={handleOpenChatHistory}
         >
           <MessageOutlined />

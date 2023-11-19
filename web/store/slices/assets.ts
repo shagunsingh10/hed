@@ -1,5 +1,10 @@
 import { StateCreator } from "zustand";
-import { createAssetApi, getAssetsApi, getAssetTypesApi } from "@/apis/assets";
+import {
+  createAssetApi,
+  getAssetsApi,
+  getAssetsInProjectApi,
+  getAssetTypesApi,
+} from "@/apis/assets";
 import { AssetsSlice } from "@/types/assets";
 
 export const createAssetsSlice: StateCreator<
@@ -18,12 +23,14 @@ export const createAssetsSlice: StateCreator<
   createAsset: async (projectId, kgId, data) => {
     const newAsset = await createAssetApi(projectId, kgId, data);
     set({
-      assets: [...get().assets, newAsset],
+      assets: [newAsset, ...get().assets],
     });
   },
   loadAssets: async (projectId, kgId) => {
     set({
-      assets: await getAssetsApi(projectId, kgId),
+      assets: kgId
+        ? await getAssetsApi(projectId, kgId)
+        : await getAssetsInProjectApi(projectId),
     });
   },
   updateAssetStatus: (assetId, status) => {

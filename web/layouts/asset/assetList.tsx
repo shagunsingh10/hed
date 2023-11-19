@@ -16,7 +16,7 @@ import { globalDateFormatParser } from "@/lib/functions";
 
 type KgListProps = {
   projectId: string;
-  kgId: string;
+  kgId?: string;
 };
 
 const KgList: React.FC<KgListProps> = ({ projectId, kgId }) => {
@@ -59,6 +59,7 @@ const KgList: React.FC<KgListProps> = ({ projectId, kgId }) => {
         title: FilterByNameInput,
         dataIndex: "name",
         key: "name",
+        width: "20%",
         render: (_, record) => (
           <b style={{ cursor: "pointer" }} onClick={deepDiveAsset}>
             {record.name}
@@ -83,6 +84,13 @@ const KgList: React.FC<KgListProps> = ({ projectId, kgId }) => {
         ),
       },
       {
+        title: "Knowledge Group",
+        align: "center",
+        dataIndex: "knowledgeGroupName",
+        key: "knowledgeGroupName",
+        className: kgId ? "antd-column-hide" : "",
+      },
+      {
         title: "Created By",
         dataIndex: "createdBy",
         align: "center",
@@ -100,6 +108,7 @@ const KgList: React.FC<KgListProps> = ({ projectId, kgId }) => {
         title: "Status",
         dataIndex: "status",
         align: "center",
+        width: "8%",
         render: (_, { status }) => {
           let color = "green";
           if (status === "failed") color = "red";
@@ -133,7 +142,7 @@ const KgList: React.FC<KgListProps> = ({ projectId, kgId }) => {
         ),
       },
     ],
-    [deleteKg, FilterByNameInput]
+    [deleteKg, FilterByNameInput, kgId]
   );
 
   useEffect(() => {
@@ -150,8 +159,12 @@ const KgList: React.FC<KgListProps> = ({ projectId, kgId }) => {
       className={styles.kgList}
       columns={columns}
       dataSource={dataSource}
-      pagination={false}
       scroll={{ y: 480 }}
+      size="large"
+      showSorterTooltip={true}
+      sortDirections={["ascend", "descend"]}
+      pagination={false}
+      sticky={true}
     />
   );
 };

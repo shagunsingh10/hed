@@ -1,14 +1,14 @@
-import { useEffect, useMemo, useState } from "react";
-import { Space, Table, Tag, Input, message } from "antd";
+import { useEffect, useMemo, useRef, useState } from "react";
+import { Space, Tag, Input, message, Table } from "antd";
 import useStore from "@/store";
 import { DeleteOutlined } from "@ant-design/icons";
-import styles from "./kg.module.scss";
 import { PRIMARY_COLOR_DARK } from "@/constants";
 import { globalDateFormatParser } from "@/lib/functions";
-
 import type { ColumnsType } from "antd/es/table";
 import type { Kg } from "@/types/kgs";
 import Link from "next/link";
+import styles from "./kg.module.scss";
+import CustomTable from "@/components/Table";
 
 type KgListProps = {
   projectId: string;
@@ -115,12 +115,11 @@ const KgList: React.FC<KgListProps> = ({ projectId }) => {
   useEffect(() => setDataSource(kgs), [kgs]);
 
   return (
-    <Table
+    <CustomTable
       className={styles.kgList}
       columns={columns}
       dataSource={dataSource}
       pagination={false}
-      scroll={{ y: 480 }}
     />
   );
 };

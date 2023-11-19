@@ -4,6 +4,7 @@ import {
   DownCircleOutlined,
   UserOutlined,
   FileDoneOutlined,
+  PlusCircleOutlined,
 } from "@ant-design/icons";
 import { useParams } from "next/navigation";
 import useStore from "@/store";
@@ -13,7 +14,8 @@ import { Kg } from "@/types/kgs";
 
 import styles from "./kgDetails.module.scss";
 import KgUsers from "../kgUsers";
-import AssetScreen from "../asset";
+import AssetScreen from "../../asset";
+import CreateAssetForm from "@/layouts/asset/createAsset";
 
 const KgDetailsScreen = () => {
   const { projectId, kgId }: { projectId: string; kgId: string } = useParams();
@@ -27,6 +29,11 @@ const KgDetailsScreen = () => {
       title: "Assets",
       icon: <FileDoneOutlined />,
       content: <AssetScreen projectId={projectId} kgId={kgId} />,
+    },
+    {
+      title: "Add Asset",
+      icon: <PlusCircleOutlined />,
+      content: <CreateAssetForm projectId={projectId} kgId={kgId} />,
     },
     { title: "Users", icon: <UserOutlined />, content: <KgUsers /> },
   ];
@@ -82,6 +89,9 @@ const KgDetailsScreen = () => {
           defaultActiveKey="1"
           type="card"
           size={"small"}
+          tabBarGutter={10}
+          tabPosition="left"
+          tabBarStyle={{ marginRight: "0.5em", width: "10vw" }}
           items={tabs.map((tab, i) => {
             return {
               label: (

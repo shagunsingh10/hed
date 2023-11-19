@@ -46,6 +46,7 @@ const ProjectsScreen = () => {
             />
             <Button
               type="primary"
+              ghost
               onClick={handleProjectCreateButton}
               className={styles.createNewButton}
               icon={<PlusCircleOutlined />}
@@ -55,16 +56,13 @@ const ProjectsScreen = () => {
           </div>
         )}
       </div>
-      {createProjectTab ? (
-        <CreateProjectForm
-          closeProjectCreationForm={closeProjectCreationForm}
-        />
-      ) : (
-        <>
-          <ProjectsGrid visible={!listView} />
-          <ProjectsList visible={listView} />
-        </>
-      )}
+
+      <ProjectsGrid visible={!listView} />
+      <ProjectsList visible={listView} />
+      <CreateProjectForm
+        open={createProjectTab}
+        closeProjectCreationForm={closeProjectCreationForm}
+      />
     </div>
   );
 };

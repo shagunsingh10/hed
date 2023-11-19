@@ -46,22 +46,24 @@ const ProjectsGrid = ({ visible }: { visible: boolean }) => {
             onClick={() => handleProjectClick(item.id)}
           >
             <Skeleton loading={loading} avatar active>
-              <Row>
-                <Col span={8}>
+              <Row
+                style={{ display: "flex", alignItems: "center", padding: 0 }}
+              >
+                {/* <Col span={3}>
                   <img
                     src="/images/project-icon.jpg"
                     alt="project"
-                    height={70}
-                    width={70}
+                    height={40}
+                    width={40}
                     style={{ borderRadius: "0.5em" }}
                   />
-                </Col>
+                </Col> */}
                 <Col span={16}>
                   <div className={styles.projectTitleContainer}>
                     <div className={styles.projectTitle}>{item.name}</div>
                     <div className={styles.projectTags}>
                       {item.tags.map((tag) => (
-                        <Tag key={tag} color="#434343">
+                        <Tag key={tag} color="blue">
                           {tag}
                         </Tag>
                       ))}

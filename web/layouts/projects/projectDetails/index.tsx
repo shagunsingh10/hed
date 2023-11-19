@@ -1,21 +1,25 @@
 import { Row, Tabs, Col, message } from "antd";
 import {
   UpCircleOutlined,
+  PlusCircleOutlined,
   DownCircleOutlined,
   UserOutlined,
   BookOutlined,
   MailOutlined,
+  FileDoneOutlined,
 } from "@ant-design/icons";
 import { useParams } from "next/navigation";
 import useStore from "@/store";
 import Loader from "@/components/Loader";
 import { useEffect, useState } from "react";
 import { Project } from "@/types/projects";
-import KGScreen from "../kg";
+import KGScreen from "../../kg";
 import ProjectUsers from "../projectUsers";
 import Chatbox from "@/components/Chatbox";
-
+import AssetScreen from "../../asset";
 import styles from "./projectDetails.module.scss";
+import CreateAssetForm from "../../asset/createAsset";
+import CreateKGForm from "../../kg/createKg";
 
 const ProjectDetailsScreen = () => {
   const { projectId }: { projectId: string } = useParams();
@@ -26,9 +30,14 @@ const ProjectDetailsScreen = () => {
 
   const tabs = [
     {
-      title: "Knowledge Groups",
-      icon: <BookOutlined />,
-      content: <KGScreen projectId={projectId} />,
+      title: "Assets",
+      icon: <FileDoneOutlined />,
+      content: <AssetScreen projectId={projectId} />,
+    },
+    {
+      title: "Add Asset",
+      icon: <PlusCircleOutlined />,
+      content: <CreateAssetForm projectId={projectId} />,
     },
     {
       title: "Chat",
@@ -40,6 +49,16 @@ const ProjectDetailsScreen = () => {
           height={isFullScreen ? "81vh" : "65vh"}
         />
       ),
+    },
+    {
+      title: "Knowledge Groups",
+      icon: <BookOutlined />,
+      content: <KGScreen projectId={projectId} />,
+    },
+    {
+      title: "Add Knowledge Group",
+      icon: <PlusCircleOutlined />,
+      content: <CreateKGForm projectId={projectId} />,
     },
     { title: "Users", icon: <UserOutlined />, content: <ProjectUsers /> },
   ];
@@ -96,7 +115,9 @@ const ProjectDetailsScreen = () => {
           style={{ width: "100%" }}
           defaultActiveKey="1"
           type="card"
-          size={"small"}
+          tabBarGutter={10}
+          tabPosition="left"
+          tabBarStyle={{ marginRight: "0.5em" }}
           items={tabs.map((tab, i) => {
             return {
               label: (

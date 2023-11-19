@@ -46,8 +46,8 @@ const handler = async (
   switch (req.method) {
     case "GET":
       const [projectViewAllowed, kgViewAllowed] = await Promise.all([
-        await hasViewerAccessToProject(projectId, Number(user?.id)),
-        await hasViewerAccessToKg(kgId, Number(user?.id)),
+        hasViewerAccessToProject(projectId, Number(user?.id)),
+        hasViewerAccessToKg(kgId, Number(user?.id)),
       ]);
 
       if (!projectViewAllowed && !kgViewAllowed) {
@@ -77,8 +77,8 @@ const handler = async (
 
       const [projectContributorAccess, kgContributorAccess] = await Promise.all(
         [
-          await hasContributorAccessToProject(projectId, Number(user?.id)),
-          await hasContributorAccessToKg(kgId, Number(user?.id)),
+          hasContributorAccessToProject(projectId, Number(user?.id)),
+          hasContributorAccessToKg(kgId, Number(user?.id)),
         ]
       );
 

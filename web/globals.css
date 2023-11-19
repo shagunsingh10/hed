@@ -1,9 +1,9 @@
 :root {
   --max-width: 1100px;
   --border-radius: 12px;
-  --font-mono: ui-monospace, Menlo, Monaco, "Cascadia Mono", "Segoe UI Mono",
-    "Roboto Mono", "Oxygen Mono", "Ubuntu Monospace", "Source Code Pro",
-    "Fira Mono", "Droid Sans Mono", "Courier New", monospace;
+  --font-mono: "Roboto", ui-monospace, Menlo, Monaco, "Cascadia Mono",
+    "Segoe UI Mono", "Roboto Mono", "Oxygen Mono", "Ubuntu Monospace",
+    "Source Code Pro", "Fira Mono", "Droid Sans Mono", "Courier New", monospace;
 
   --foreground-color: rgba(200, 200, 200, 0.9);
   --background-color: #242629;
@@ -24,7 +24,7 @@ body {
 }
 
 body {
-  color: var(--foreground-color);
+  /* color: var(--foreground-color); */
   background-color: var(--background-color);
 }
 
@@ -60,7 +60,7 @@ html {
 .customFileInput::file-selector-button {
   margin-right: 20px;
   border: none;
-  background: #fa5560;
+  background: #1890ff;
   padding: 0.3em 1em;
   border-radius: 0.4em;
   color: #fff;
@@ -69,7 +69,7 @@ html {
 }
 
 .customFileInput::file-selector-button:hover {
-  background: #fa55607a;
+  background: #1890ff7a;
 }
 
 /* ANTD MODS */
@@ -81,4 +81,18 @@ html {
 .ant-message-notice-content {
   background-color: #1d1f21 !important;
   color: var(--foreground-color);
+}
+
+.ant-modal-content {
+  padding: 0 !important;
+}
+
+.antd-column-hide {
+  display: none;
+}
+
+.ant-menu-item-selected {
+  background-color: #1d1f21 !important;
+  color: #ffffff !important;
+  font-weight: bold;
 }

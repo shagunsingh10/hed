@@ -10,6 +10,7 @@ export type CreateAssetData = {
 export type AssetType = {
   id: string;
   name: string;
+  key: string;
 };
 
 export type Asset = {
@@ -23,13 +24,14 @@ export type Asset = {
   status: string;
   ownerUserId: number;
   createdAt: Date;
+  knowledgeGroupName?: string;
 };
 
 export interface AssetsSlice {
   assets: Asset[];
   assetTypes: AssetType[];
   getAssetTypes: () => void;
-  loadAssets: (projectId: string, kgId: string) => void;
+  loadAssets: (projectId: string, kgId?: string) => void;
   createAsset: (projectId: string, kgId: string, data: CreateAssetData) => void;
   updateAssetStatus: (assetId: string, status: string) => void;
 }

@@ -18,7 +18,7 @@ export const createKgsSlice: StateCreator<KgsSlice, [], [], KgsSlice> = (
   createKg: async (projectId, data) => {
     const newKg = await createKgApi(projectId, data);
     set({
-      kgs: [...get().kgs, newKg],
+      kgs: [newKg, ...get().kgs],
     });
   },
 });
