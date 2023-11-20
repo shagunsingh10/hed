@@ -1,21 +1,12 @@
 import { useState, FC, useEffect, useRef } from "react";
-import {
-  Form,
-  Input,
-  Button,
-  Card,
-  message,
-  Select,
-  Row,
-  Col,
-  Typography,
-} from "antd";
+import { Form, Input, Button, Card, message, Select, Typography } from "antd";
 import Uploader from "@/components/Uploader";
-
 import styles from "./asset.module.scss";
 import useStore from "@/store";
 import Loader from "@/components/Loader";
 import GithubForm from "./create/github";
+import WikipediaForm from "./create/wikipedia";
+import { extractUserAndRepo } from "./create/github";
 
 const { Option } = Select;
 
@@ -36,6 +27,7 @@ const CreateAssetForm: FC<CreateAssetFormProps> = ({ projectId, kgId }) => {
   const kgs = useStore((state) => state.kgs);
   const getKgs = useStore((state) => state.getKgs);
 
+  // functions
   const handleSubmit = async (values: any) => {
     const assetType = assetTypes.find((e) => e.key === selecTedAssetType);
     if (!selectedKgId || !assetType) return;
@@ -48,9 +40,10 @@ const CreateAssetForm: FC<CreateAssetFormProps> = ({ projectId, kgId }) => {
         name: values.name,
         description: values.description,
         tags: values.tags,
-        uploadId: uploadId,
+        readerKwargs: getReaderKwargs(values, assetType.key),
       });
       message.info("Asset created and sent for ingestion");
+      handleReset();
     } catch (e: any) {
       message.error(e);
     } finally {
@@ -58,7 +51,34 @@ const CreateAssetForm: FC<CreateAssetFormProps> = ({ projectId, kgId }) => {
     }
   };
 
+  const getReaderKwargs = (values: any, assetTypeKey: string) => {
+    if (assetTypeKey === "directory") {
+      return {
+        uploadId: uploadId,
+      };
+    }
+
+    if (assetTypeKey === "wikipedia") {
+      return {
+        pages: [values.wiki_page],
+      };
+    }
+
+    if (assetTypeKey === "github") {
+      const githubDetails = extractUserAndRepo(values.github_url);
+      console.log({ githubDetails });
+      return {
+        owner: githubDetails.owner,
+        repo: githubDetails.repo,
+        github_token: values.github_token,
+      };
+    }
+
+    return {};
+  };
+
   const handleReset = () => {
+    setSelectedAssetType("");
     formRef.current?.resetFields();
   };
 
@@ -70,6 +90,7 @@ const CreateAssetForm: FC<CreateAssetFormProps> = ({ projectId, kgId }) => {
     message.error("Upload failed! Please try again.");
   };
 
+  // useEffects
   useEffect(() => {
     if (getKgs) getKgs(projectId);
   }, [getKgs]);
@@ -146,10 +167,10 @@ const CreateAssetForm: FC<CreateAssetFormProps> = ({ projectId, kgId }) => {
                   />
                 )}
                 {selecTedAssetType === "github" && <GithubForm />}
-                {selecTedAssetType !== "github" &&
-                  selecTedAssetType !== "directory" && (
-                    <span>Coming Soon!</span>
-                  )}
+                {selecTedAssetType === "wikipedia" && <WikipediaForm />}
+                {!["github", "wikipedia", "directory"].includes(
+                  selecTedAssetType
+                ) && <span>Coming Soon!</span>}
               </>
             )}
           </div>

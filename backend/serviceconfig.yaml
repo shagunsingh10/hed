@@ -1,6 +1,6 @@
-llm: openai
+llm: kobold
 llm_kwargs:
-  # base_url: https://madagascar-although-appliances-management.trycloudflare.com
+  base_url: https://macromedia-lobby-meyer-investigations.trycloudflare.com
 
 embed_model: openai
 # embed_model_kwargs:

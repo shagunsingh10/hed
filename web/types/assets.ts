@@ -4,7 +4,7 @@ export type CreateAssetData = {
   tags?: string;
   assetTypeId: string;
   knowledgeGroupId: string;
-  uploadId?: string;
+  readerKwargs?: Record<string, any> | null;
 };
 
 export type AssetType = {
@@ -20,7 +20,6 @@ export type Asset = {
   tags?: string[];
   assetTypeId: string;
   knowledgeGroupId: string;
-  uploadId?: string;
   status: string;
   ownerUserId: number;
   createdAt: string;

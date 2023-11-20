@@ -3,13 +3,13 @@ import { Form, Input } from "antd";
 function extractUserAndRepo(githubUrl: string) {
   const regex = /github\.com\/([^\/]+)\/([^\/]+)(\/|$)/;
   const match = githubUrl.match(regex);
-
-  if (match && match.length === 3) {
-    const username = match[1];
+  console.log(match);
+  if (match && match.length >= 3) {
+    const owner = match[1];
     const repo = match[2];
-    return { username, repo };
+    return { owner, repo };
   } else {
-    return null; // Invalid GitHub URL
+    return {}; // Invalid GitHub URL
   }
 }
 
@@ -17,8 +17,8 @@ const GithubForm = () => {
   return (
     <div>
       <Form.Item
-        label="Github Repo"
-        name="repo"
+        label="Github Repo Link"
+        name="github_url"
         rules={[
           {
             required: true,
@@ -30,7 +30,7 @@ const GithubForm = () => {
       </Form.Item>
       <Form.Item
         label="Github Token"
-        name="token"
+        name="github_token"
         rules={[
           {
             required: true,
@@ -45,3 +45,5 @@ const GithubForm = () => {
 };
 
 export default GithubForm;
+
+export { extractUserAndRepo };

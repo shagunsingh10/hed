@@ -25,6 +25,7 @@ const processTags = (asset: PrismaAssetRecord): Asset => {
     ...asset,
     description: asset.description || undefined,
     knowledgeGroupName: asset.KnowledgeGroup?.name,
+    createdAt: asset.createdAt.toISOString(),
     tags: asset.tags?.split(",").map((tag) => tag?.trim()) || [],
   };
 };

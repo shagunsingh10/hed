@@ -115,7 +115,11 @@ const ProjectDetailsScreen = () => {
           </span>
         </Col>
       </Row>
-      <div className={styles.projectDetailsContent}>
+      <div
+        className={`${styles.projectDetailsContent} ${
+          isFullScreen ? styles.projectDetailsContentExpanded : ""
+        }`}
+      >
         <Tabs
           defaultActiveKey="1"
           type="card"

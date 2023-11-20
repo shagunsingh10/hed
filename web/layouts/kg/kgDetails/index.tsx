@@ -84,7 +84,11 @@ const KgDetailsScreen = () => {
           <span className={styles.kgDescription}>{kg?.description}</span>
         </Col>
       </Row>
-      <div className={styles.kgDetailsContent}>
+      <div
+        className={`${styles.kgDetailsContent} ${
+          isFullScreen ? styles.kgDetailsContentExpanded : ""
+        }`}
+      >
         <Tabs
           defaultActiveKey="1"
           type="card"

@@ -132,7 +132,7 @@ model Asset {
   assetTypeId      String
   tags             String?
   knowledgeGroupId String
-  uploadId         String?
+  readerKwargs     String?
   status           String   @default("pending")
   ownerUserId      Int
   isActive         Boolean  @default(true)

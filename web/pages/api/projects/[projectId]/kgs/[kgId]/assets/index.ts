@@ -11,6 +11,7 @@ import {
 } from "@/lib/auth/access";
 import { sendMessageToPythonService } from "@/lib/redis";
 import { config as appConfig } from "@/config";
+import getIngestionPayload from "@/lib/utils/readerKwargsParser";
 
 type PrismaAssetRecord = {
   id: string;
@@ -30,6 +31,7 @@ const processTags = (asset: PrismaAssetRecord): Asset => {
   return {
     ...asset,
     description: asset.description || undefined,
+    createdAt: asset.createdAt.toISOString(),
     tags: asset.tags?.split(",").map((tag) => tag?.trim()) || [],
   };
 };
@@ -91,18 +93,6 @@ const handler = async (
       }
 
       const newAsset = await prisma.$transaction(async (tx) => {
-        const newA = await tx.asset.create({
-          data: {
-            name: body.name,
-            knowledgeGroupId: kgId,
-            description: body.description,
-            tags: body.tags,
-            uploadId: body.uploadId,
-            createdBy: user?.email as string,
-            ownerUserId: user?.id as number,
-            assetTypeId: body.assetTypeId,
-          },
-        });
         const assetType = await tx.assetType.findFirst({
           where: {
             id: body.assetTypeId,
@@ -118,17 +108,31 @@ const handler = async (
           });
           throw new Error("Unknown Asset Type");
         }
+
+        // create asset
+        const newA = await tx.asset.create({
+          data: {
+            name: body.name,
+            knowledgeGroupId: kgId,
+            description: body.description,
+            tags: body.tags,
+            createdBy: user?.email as string,
+            ownerUserId: user?.id as number,
+            assetTypeId: body.assetTypeId,
+            readerKwargs: JSON.stringify(body.readerKwargs),
+          },
+        });
+
         sendMessageToPythonService(
           JSON.stringify({
             job_type: "ingestion",
-            payload: {
-              collection_name: kgId,
-              asset_id: newA.id,
-              asset_type: assetType.key,
-              reader_kwargs: {
-                directory: `${appConfig.assetUploadPath}/${projectId}/${kgId}/${body.uploadId}`,
-              },
-            },
+            payload: getIngestionPayload({
+              assetId: newA.id,
+              assetType: assetType.key,
+              knowledgeGroupId: kgId,
+              projectId: projectId,
+              kwargs: body.readerKwargs || {},
+            }),
           })
         );
         return newA;

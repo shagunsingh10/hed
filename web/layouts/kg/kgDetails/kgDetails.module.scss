@@ -60,6 +60,10 @@
   .kgDetailsContent > * > * > * > * {
     height: 90%;
   }
+
+  .kgDetailsContentExpanded {
+    height: 95%;
+  }
 }
 
 /* Media query for screens smaller than a certain width, e.g., tablets and phones */
