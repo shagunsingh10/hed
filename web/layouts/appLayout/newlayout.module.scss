@@ -1,0 +1,33 @@
+@use '../../global.scss' as *;
+
+.layout {
+  height: 100vh;
+  overflow: hidden;
+  background-color: $bgColor;
+
+  .header {
+    height: 4.5%;
+    box-shadow: 0px 1px 1px rgba(0, 0, 0, 0.5);
+    z-index: 2;
+  }
+
+  .content {
+    height: 95.5%;
+    display: flex;
+    position: relative;
+
+    .sider {
+      width: 2.5%;
+      background-color: $siderColor2;
+    }
+
+    .contentBody {
+      width: 97.5%;
+      border: 1px solid rgba(150, 150, 150, 0.1);
+
+      .mainBody {
+        height: 100%;
+      }
+    }
+  }
+}

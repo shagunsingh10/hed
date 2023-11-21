@@ -1,4 +1,4 @@
-import { prisma } from "../prisma";
+import { prisma } from '../prisma'
 
 // Projects
 const hasOwnerAccessToProject = async (projectId: string, userId: number) => {
@@ -11,16 +11,16 @@ const hasOwnerAccessToProject = async (projectId: string, userId: number) => {
             { userId: userId },
             {
               role: {
-                equals: "owner",
+                equals: 'owner',
               },
             },
           ],
         },
       },
     },
-  });
-  return isAllowed != null;
-};
+  })
+  return isAllowed != null
+}
 
 const hasContributorAccessToProject = async (
   projectId: string,
@@ -37,12 +37,12 @@ const hasContributorAccessToProject = async (
               OR: [
                 {
                   role: {
-                    equals: "owner",
+                    equals: 'owner',
                   },
                 },
                 {
                   role: {
-                    equals: "contributor",
+                    equals: 'contributor',
                   },
                 },
               ],
@@ -51,9 +51,9 @@ const hasContributorAccessToProject = async (
         },
       },
     },
-  });
-  return isAllowed != null;
-};
+  })
+  return isAllowed != null
+}
 
 const hasViewerAccessToProject = async (projectId: string, userId: number) => {
   const isAllowed = await prisma.project.findFirst({
@@ -65,9 +65,9 @@ const hasViewerAccessToProject = async (projectId: string, userId: number) => {
         },
       },
     },
-  });
-  return isAllowed != null;
-};
+  })
+  return isAllowed != null
+}
 
 // Knowledge Groups
 
@@ -81,16 +81,16 @@ const hasOwnerAccessToKg = async (kgId: string, userId: number) => {
             { userId: userId },
             {
               role: {
-                equals: "owner",
+                equals: 'owner',
               },
             },
           ],
         },
       },
     },
-  });
-  return isAllowed != null;
-};
+  })
+  return isAllowed != null
+}
 
 const hasContributorAccessToKg = async (kgId: string, userId: number) => {
   const isAllowed = await prisma.knowledgeGroup.findFirst({
@@ -104,12 +104,12 @@ const hasContributorAccessToKg = async (kgId: string, userId: number) => {
               OR: [
                 {
                   role: {
-                    equals: "owner",
+                    equals: 'owner',
                   },
                 },
                 {
                   role: {
-                    equals: "contributor",
+                    equals: 'contributor',
                   },
                 },
               ],
@@ -118,9 +118,9 @@ const hasContributorAccessToKg = async (kgId: string, userId: number) => {
         },
       },
     },
-  });
-  return isAllowed != null;
-};
+  })
+  return isAllowed != null
+}
 
 const hasViewerAccessToKg = async (kgId: string, userId: number) => {
   const isAllowed = await prisma.knowledgeGroup.findFirst({
@@ -132,9 +132,9 @@ const hasViewerAccessToKg = async (kgId: string, userId: number) => {
         },
       },
     },
-  });
-  return isAllowed != null;
-};
+  })
+  return isAllowed != null
+}
 
 export {
   hasContributorAccessToKg,
@@ -143,4 +143,4 @@ export {
   hasOwnerAccessToProject,
   hasViewerAccessToKg,
   hasViewerAccessToProject,
-};
+}

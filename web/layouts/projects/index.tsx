@@ -1,38 +1,36 @@
-import { Button, Switch } from "antd";
-import { useState } from "react";
 import {
+  AppstoreOutlined,
   PlusCircleOutlined,
   UnorderedListOutlined,
-  AppstoreOutlined,
-} from "@ant-design/icons";
-
-import CreateProjectForm from "./newProject";
-import ProjectsList from "./projectsList";
-
-import styles from "./projects.module.scss";
-import ProjectsGrid from "./projectGrid";
+} from '@ant-design/icons'
+import { Button, Switch } from 'antd'
+import { useState } from 'react'
+import CreateProjectForm from './newProject'
+import ProjectsGrid from './projectGrid'
+import styles from './projects.module.scss'
+import ProjectsList from './projectsList'
 
 const ProjectsScreen = () => {
-  const [createProjectTab, setCreateProjectTab] = useState<boolean>(false);
-  const [listView, setListView] = useState<boolean>(false);
+  const [createProjectTab, setCreateProjectTab] = useState<boolean>(false)
+  const [listView, setListView] = useState<boolean>(false)
 
   const handleProjectCreateButton = () => {
-    setCreateProjectTab(true);
-  };
+    setCreateProjectTab(true)
+  }
 
   const closeProjectCreationForm = () => {
-    setCreateProjectTab(false);
-  };
+    setCreateProjectTab(false)
+  }
 
   const toggleListView = () => {
-    setListView((prev) => !prev);
-  };
+    setListView((prev) => !prev)
+  }
 
   return (
     <div className={styles.projectsContainer}>
       <div className={styles.screenHeader}>
         <div className={styles.screenTitle}>
-          {createProjectTab ? "Create new project" : "Projects"}
+          {createProjectTab ? 'Create new project' : 'Projects'}
         </div>
         {!createProjectTab && (
           <div className={styles.rightHeader}>
@@ -64,7 +62,7 @@ const ProjectsScreen = () => {
         closeProjectCreationForm={closeProjectCreationForm}
       />
     </div>
-  );
-};
+  )
+}
 
-export default ProjectsScreen;
+export default ProjectsScreen

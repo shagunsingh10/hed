@@ -1,19 +1,19 @@
-import { usePathname } from "next/navigation";
-import { ProfileFilled, RobotFilled } from "@ant-design/icons";
-import Link from "next/link";
-import { Tooltip } from "antd";
-import styles from "./sider.module.scss";
+import { ProfileFilled, RobotFilled } from '@ant-design/icons'
+import { Tooltip } from 'antd'
+import Link from 'next/link'
+import { usePathname } from 'next/navigation'
+import styles from './sider.module.scss'
 
 const getParentPath = (path: string) =>
-  path === "/" ? path : `/${path.split("/")[1]}`;
+  path === '/' ? path : `/${path.split('/')[1]}`
 
 const items = [
-  { title: "Ask", path: "/", icon: <RobotFilled /> },
-  { title: "Projects", path: "/projects", icon: <ProfileFilled /> },
-];
+  { title: 'Ask', path: '/', icon: <RobotFilled /> },
+  { title: 'Projects', path: '/projects', icon: <ProfileFilled /> },
+]
 
 export default function Sider() {
-  const pathname = usePathname();
+  const pathname = usePathname()
 
   return (
     <div className={styles.siderContainer}>
@@ -33,5 +33,5 @@ export default function Sider() {
         ))}
       </div>
     </div>
-  );
+  )
 }

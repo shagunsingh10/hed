@@ -1,7 +1,7 @@
-import KgDetailsScreen from "@/layouts/kg/kgDetails";
+import KgDetailsScreen from '@/layouts/kg/kgDetails'
 
 const KgPage = () => {
-  return <KgDetailsScreen />;
-};
+  return <KgDetailsScreen />
+}
 
-export default KgPage;
+export default KgPage

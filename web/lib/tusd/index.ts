@@ -1,4 +1,4 @@
-import fetcher from "../fetcher";
+import fetcher from '../fetcher'
 
 export const removeItem = async (tusId: string) => {
   await fetcher.delete(
@@ -6,8 +6,8 @@ export const removeItem = async (tusId: string) => {
     {},
     {
       headers: {
-        "Tus-Resumable": "1.0.0",
+        'Tus-Resumable': '1.0.0',
       },
     }
-  );
-};
+  )
+}

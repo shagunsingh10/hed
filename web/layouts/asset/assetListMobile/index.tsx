@@ -1,54 +1,54 @@
-import { useEffect } from "react";
-import { Row, Col, Tag, message } from "antd";
-import useStore from "@/store";
+import useStore from '@/store'
 import {
-  DeleteOutlined,
   CheckCircleFilled,
-  ExclamationCircleFilled,
   CloseCircleFilled,
-} from "@ant-design/icons";
-import styles from "./assetlist.module.scss";
+  DeleteOutlined,
+  ExclamationCircleFilled,
+} from '@ant-design/icons'
+import { Col, message, Row, Tag } from 'antd'
+import { useEffect } from 'react'
+import styles from './assetlist.module.scss'
 
 type KgListProps = {
-  projectId: string;
-  kgId?: string;
-};
+  projectId: string
+  kgId?: string
+}
 
 const AssetListMobile: React.FC<KgListProps> = ({ projectId, kgId }) => {
-  const assets = useStore((state) => state.assets);
-  const getAssetTypes = useStore((state) => state.getAssetTypes);
-  const assetTypes = useStore((state) => state.assetTypes);
-  const loadAssets = useStore((state) => state.loadAssets);
+  const assets = useStore((state) => state.assets)
+  const getAssetTypes = useStore((state) => state.getAssetTypes)
+  const assetTypes = useStore((state) => state.assetTypes)
+  const loadAssets = useStore((state) => state.loadAssets)
 
   const deleteKg = (kgId: string) => {
-    message.info("Delete feature coming soon...");
-  };
+    message.info('Delete feature coming soon...')
+  }
 
   const deepDiveAsset = () => {
-    message.info("Deep dive inside an asset coming soon...");
-  };
+    message.info('Deep dive inside an asset coming soon...')
+  }
 
   useEffect(() => {
     if (loadAssets && getAssetTypes) {
-      loadAssets(projectId, kgId);
-      getAssetTypes();
+      loadAssets(projectId, kgId)
+      getAssetTypes()
     }
-  }, [loadAssets, getAssetTypes]);
+  }, [loadAssets, getAssetTypes])
 
   const AssetTag = ({ status }: { status: string }) => {
-    let color = "green";
-    if (status === "failed") color = "red";
-    if (status === "pending") color = "yellow";
+    let color = 'green'
+    if (status === 'failed') color = 'red'
+    if (status === 'pending') color = 'yellow'
     return (
       <Tag color={color} key={status}>
-        {status === "pending" && <ExclamationCircleFilled />}
-        {status === "success" && <CheckCircleFilled />}
-        {status === "failed" && <CloseCircleFilled />}
+        {status === 'pending' && <ExclamationCircleFilled />}
+        {status === 'success' && <CheckCircleFilled />}
+        {status === 'failed' && <CloseCircleFilled />}
 
-        <span style={{ marginLeft: "1em" }}>{status.toUpperCase()}</span>
+        <span style={{ marginLeft: '1em' }}>{status.toUpperCase()}</span>
       </Tag>
-    );
-  };
+    )
+  }
 
   return (
     <div className={styles.assetInfoContainer}>
@@ -69,7 +69,7 @@ const AssetListMobile: React.FC<KgListProps> = ({ projectId, kgId }) => {
             <DeleteOutlined onClick={() => deleteKg(asset.id)} />
           </Col>
           <div className={styles.assetType}>
-            Asset type :{" "}
+            Asset type :{' '}
             {assetTypes.find((e) => e.id === asset.assetTypeId)?.name}
           </div>
           <div className={styles.assetCreatedBy}>
@@ -78,7 +78,7 @@ const AssetListMobile: React.FC<KgListProps> = ({ projectId, kgId }) => {
         </Row>
       ))}
     </div>
-  );
-};
+  )
+}
 
-export default AssetListMobile;
+export default AssetListMobile

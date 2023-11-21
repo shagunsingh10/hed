@@ -1,7 +1,7 @@
-import { Socket } from "socket.io-client";
-import { Session } from "next-auth";
+import { Session } from 'next-auth'
+import { Socket } from 'socket.io-client'
 
 export type SocketSlice = {
-  socket: Socket | null;
-  setSocket: (socket: Socket) => void;
-};
+  socket: Socket | null
+  setSocket: (socket: Socket) => void
+}

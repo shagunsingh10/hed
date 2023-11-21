@@ -1,42 +1,41 @@
-import { useState } from "react";
-import { Form, Input, Button, Modal, message } from "antd";
-
-import styles from "./projects.module.scss";
-import useStore from "@/store";
+import useStore from '@/store'
+import { Button, Form, Input, message, Modal } from 'antd'
+import { useState } from 'react'
+import styles from './projects.module.scss'
 
 type createProjectFormProps = {
-  closeProjectCreationForm: () => void;
-  open: boolean;
-};
+  closeProjectCreationForm: () => void
+  open: boolean
+}
 
 const CreateProjectForm: React.FC<createProjectFormProps> = ({
   closeProjectCreationForm,
   open,
 }) => {
-  const [loading, setLoading] = useState(false);
-  const createProject = useStore((state) => state.createProject);
+  const [loading, setLoading] = useState(false)
+  const createProject = useStore((state) => state.createProject)
 
   const handleSubmit = async (values: any) => {
-    setLoading(true);
+    setLoading(true)
     try {
       createProject({
         name: values.projectName,
         description: values.projectDescription,
         tags: values.projectTags,
-      });
-      message.success("Project Created Successfully");
-      closeProjectCreationForm();
+      })
+      message.success('Project Created Successfully')
+      closeProjectCreationForm()
     } catch (e: any) {
-      message.error(e);
+      message.error(e)
     } finally {
-      setLoading(false);
+      setLoading(false)
     }
-  };
+  }
 
   return (
     <Modal
       open={open}
-      width={"40vw"}
+      width={'40vw'}
       footer={false}
       closeIcon={false}
       destroyOnClose={true}
@@ -52,7 +51,7 @@ const CreateProjectForm: React.FC<createProjectFormProps> = ({
               label="Project Name"
               name="projectName"
               rules={[
-                { required: true, message: "Please enter the project name" },
+                { required: true, message: 'Please enter the project name' },
               ]}
             >
               <Input placeholder="Enter project name" />
@@ -64,7 +63,7 @@ const CreateProjectForm: React.FC<createProjectFormProps> = ({
               rules={[
                 {
                   required: true,
-                  message: "Please enter the project description",
+                  message: 'Please enter the project description',
                 },
               ]}
             >
@@ -91,7 +90,7 @@ const CreateProjectForm: React.FC<createProjectFormProps> = ({
         </Form>
       </div>
     </Modal>
-  );
-};
+  )
+}
 
-export default CreateProjectForm;
+export default CreateProjectForm

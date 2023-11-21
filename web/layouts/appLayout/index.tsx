@@ -1,31 +1,31 @@
-import type { Metadata } from "next";
-import { useSession } from "next-auth/react";
-
-import Sider from "../sider";
-import Header from "../header";
-import Loader from "@/components/Loader";
-import LoginScreen from "../login";
-import SocketConnector from "@/components/Socket";
-import styles from "./layout.module.scss";
+import Loader from '@/components/Loader'
+import SocketConnector from '@/components/Socket'
+import { Layout } from 'antd'
+import type { Metadata } from 'next'
+import { useSession } from 'next-auth/react'
+import Header from '../header'
+import LoginScreen from '../login'
+import Sider from '../sider'
+import styles from './newlayout.module.scss'
 
 export const metadata: Metadata = {
-  title: "Herald",
-  description: "Knowledge management system",
-};
+  title: 'Herald',
+  description: 'Knowledge management system',
+}
 
 export default function AppLayout({ children }: { children: React.ReactNode }) {
-  const { status } = useSession();
+  const { status } = useSession()
 
-  if (status === "loading") {
-    return <Loader />;
+  if (status === 'loading') {
+    return <Loader />
   }
 
-  if (status === "unauthenticated") {
-    return <LoginScreen />;
+  if (status === 'unauthenticated') {
+    return <LoginScreen />
   }
 
   return (
-    <div className={styles.layout}>
+    <Layout className={styles.layout}>
       <SocketConnector />
       <div className={styles.header}>
         <Header />
@@ -34,8 +34,10 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
         <div className={styles.sider}>
           <Sider />
         </div>
-        <div className={styles.main_body}>{children}</div>
+        <div className={styles.contentBody}>
+          <div className={styles.mainBody}>{children}</div>
+        </div>
       </div>
-    </div>
-  );
+    </Layout>
+  )
 }

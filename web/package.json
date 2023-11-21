@@ -7,14 +7,14 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
+    "format": "prettier --write '*/**/*.{js,jsx,ts,tsx,json,css,md}'",
     "seed": "node -r dotenv/config ./scripts/seed.js"
   },
   "dependencies": {
     "@auth/pg-adapter": "0.2.3",
     "@paralleldrive/cuid2": "2.2.2",
     "@prisma/client": "5.5.2",
-    "@tus/file-store": "^1.0.1",
-    "@tus/server": "^1.0.1",
+    "@types/react-syntax-highlighter": "^15.5.10",
     "antd": "5.10.3",
     "formidable": "^3.5.1",
     "ioredis": "^5.3.2",
@@ -32,13 +32,21 @@
     "zustand": "4.4.6"
   },
   "devDependencies": {
+    "@ianvs/prettier-plugin-sort-imports": "^4.1.1",
     "@types/formidable": "^3.4.5",
     "@types/node": "^20",
     "@types/pg": "8.10.7",
     "@types/react": "18",
     "@types/react-dom": "18",
+    "@typescript-eslint/eslint-plugin": "^6.12.0",
+    "@typescript-eslint/parser": "^6.0.0",
     "eslint": "^8",
-    "eslint-config-next": "14.0.1",
+    "eslint-config-next": "11.1.2",
+    "eslint-config-prettier": "^9.0.0",
+    "eslint-plugin-prettier": "^5.0.1",
+    "eslint-plugin-react-hooks": "^4.6.0",
+    "eslint-plugin-unused-imports": "^3.0.0",
+    "prettier": "^3.1.0",
     "prisma": "5.5.2",
     "typescript": "5"
   }

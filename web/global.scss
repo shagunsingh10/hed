@@ -1,0 +1,55 @@
+/* variables */
+$primaryColor: #1890ff;
+$primaryDark: #323236;
+$bgColor: #242629;
+$headerColor: #242629;
+$siderColor: #181818;
+$colorBgText: #75797b7a;
+
+$headerColor2: #323232;
+$siderColor2: #1d1f21;
+
+.customFileInput {
+  width: 100%;
+  max-width: 100%;
+  padding: 0.2em;
+  border-radius: 0.5em;
+  border: 1px solid #555 !important;
+  color: #555;
+}
+
+.customFileInput::file-selector-button {
+  margin-right: 20px;
+  border: none;
+  background: #1890ff;
+  padding: 0.3em 1em;
+  border-radius: 0.4em;
+  color: #fff;
+  cursor: pointer;
+  transition: background 0.2s ease-in-out;
+}
+
+.customFileInput::file-selector-button:hover {
+  background: $primaryColor;
+}
+
+/* ANTD MODS */
+
+.ant-message-notice-content {
+  background-color: $siderColor !important;
+  color: $colorBgText !important;
+}
+
+.ant-modal-content {
+  padding: 0 !important;
+}
+
+.antd-column-hide {
+  display: none;
+}
+
+.ant-menu-item-selected {
+  background-color: #1d1f21 !important;
+  color: #ffffff !important;
+  font-weight: bold;
+}

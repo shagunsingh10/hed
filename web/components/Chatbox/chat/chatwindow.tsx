@@ -1,101 +1,100 @@
-import { useState, useRef, useEffect, FC } from "react";
+import { CHAT_MESSAGE_BG, COLOR_BG_TEXT } from '@/constants'
+import { globalDateFormatParser } from '@/lib/functions'
+import { Message } from '@/types/chats'
+import { BulbOutlined, SendOutlined, SyncOutlined } from '@ant-design/icons'
 import {
+  Avatar,
+  Button,
   Input,
   List,
-  Avatar,
-  Space,
-  Skeleton,
-  Typography,
-  Button,
   message,
+  Skeleton,
+  Space,
   Spin,
-} from "antd";
-import { SendOutlined, BulbOutlined, SyncOutlined } from "@ant-design/icons";
-import useStore from "../../store";
-import { CHAT_MESSAGE_BG, COLOR_BG_TEXT } from "@/constants";
-import styles from "./chatbot.module.scss";
-import { globalDateFormatParser } from "@/lib/functions";
-import { Message } from "@/types/chats";
-import ReactMarkdown from "react-markdown";
-import CodeBlock from "./Codeblock";
+  Typography,
+} from 'antd'
+import { FC, useEffect, useRef, useState } from 'react'
+import ReactMarkdown from 'react-markdown'
+import useStore from '../../../store'
+import styles from './chat.module.scss'
+import CodeBlock from './Codeblock'
 
 type ChatWindowProps = {
-  chatId?: string;
-  height: string;
-  projectId?: string;
-};
+  chatId?: string
+  projectId?: string
+}
 
-const ChatWindow: FC<ChatWindowProps> = ({ chatId, height, projectId }) => {
+const ChatWindow: FC<ChatWindowProps> = ({ chatId, projectId }) => {
   // states
-  const [inputValue, setInputValue] = useState<string>("");
-  const [loading, setLoading] = useState<boolean>(false);
+  const [inputValue, setInputValue] = useState<string>('')
+  const [loading, setLoading] = useState<boolean>(false)
 
-  const messages = useStore((state) => state.messages);
-  const postQuery = useStore((state) => state.postQuery);
-  const addChat = useStore((state) => state.addChat);
-  const loadMessages = useStore((state) => state.loadMessages);
-  const waitingForResponse = useStore((state) => state.waitingForResponse);
-  const chatWindowRef = useRef<HTMLDivElement>(null);
+  const messages = useStore((state) => state.messages)
+  const postQuery = useStore((state) => state.postQuery)
+  const addChat = useStore((state) => state.addChat)
+  const loadMessages = useStore((state) => state.loadMessages)
+  const waitingForResponse = useStore((state) => state.waitingForResponse)
+  const chatWindowRef = useRef<HTMLDivElement>(null)
 
   const waitingForResponseMessage: Message = {
-    id: "waiting-for-response",
-    chatId: chatId || "",
-    content: "",
+    id: 'waiting-for-response',
+    chatId: chatId || '',
+    content: '',
     timestamp: new Date(),
     isResponse: true,
-  };
+  }
 
   // functions
   const handleInputChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
-    setInputValue(e.target.value);
-  };
+    setInputValue(e.target.value)
+  }
 
   const handleSendMessage = async () => {
-    if (inputValue.trim() !== "") {
+    if (inputValue.trim() !== '') {
       if (!chatId) {
         addChat(projectId).then((chatId) => {
-          postQuery(chatId, inputValue);
-        });
+          postQuery(chatId, inputValue)
+        })
       } else {
-        postQuery(chatId, inputValue);
+        postQuery(chatId, inputValue)
       }
-      setInputValue("");
+      setInputValue('')
     }
-  };
+  }
 
   const handleRegenerate = () => {
-    const lastUserMessage = messages?.find((e) => e.isResponse === false);
+    const lastUserMessage = messages?.find((e) => e.isResponse === false)
     if (!lastUserMessage || !chatId) {
-      message.error("No message to regenerate");
+      message.error('No message to regenerate')
     } else {
-      postQuery(chatId, lastUserMessage.content);
+      postQuery(chatId, lastUserMessage.content)
     }
-  };
+  }
 
   const handleEnter = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
-    if (e.altKey && e.key === "Enter") {
-      setInputValue((prev) => prev + "\n");
-      return;
+    if (e.altKey && e.key === 'Enter') {
+      setInputValue((prev) => prev + '\n')
+      return
     }
-    if (e.key === "Enter") {
-      e.preventDefault();
-      handleSendMessage();
+    if (e.key === 'Enter') {
+      e.preventDefault()
+      handleSendMessage()
     }
-  };
+  }
 
   // useEffects
   useEffect(() => {
     if (chatWindowRef.current) {
-      chatWindowRef.current.scrollTop = chatWindowRef.current.scrollHeight;
+      chatWindowRef.current.scrollTop = chatWindowRef.current.scrollHeight
     }
-  }, [messages]);
+  }, [messages])
 
   useEffect(() => {
     if (chatId) {
-      setLoading(true);
-      loadMessages(chatId).finally(() => setLoading(false));
+      setLoading(true)
+      loadMessages(chatId).finally(() => setLoading(false))
     }
-  }, [chatId]);
+  }, [chatId])
 
   return (
     <div className={styles.chatWindow}>
@@ -118,10 +117,10 @@ const ChatWindow: FC<ChatWindowProps> = ({ chatId, height, projectId }) => {
             renderItem={(message) => (
               <List.Item className={styles.chatMessage}>
                 <List.Item.Meta
-                  avatar={<Avatar>{message.isResponse ? "H" : "Y"}</Avatar>}
+                  avatar={<Avatar>{message.isResponse ? 'H' : 'Y'}</Avatar>}
                   title={
                     <Space>
-                      {message.isResponse ? "Herald" : "You"}
+                      {message.isResponse ? 'Herald' : 'You'}
                       <Space className={styles.messageTime}>
                         {globalDateFormatParser(message.timestamp)}
                       </Space>
@@ -133,10 +132,10 @@ const ChatWindow: FC<ChatWindowProps> = ({ chatId, height, projectId }) => {
                       style={{
                         background: message.isResponse
                           ? CHAT_MESSAGE_BG
-                          : "transparent",
+                          : 'transparent',
                       }}
                     >
-                      {message.id === "waiting-for-response" ? (
+                      {message.id === 'waiting-for-response' ? (
                         <Spin size="small" spinning={true} />
                       ) : (
                         <ReactMarkdown
@@ -156,7 +155,7 @@ const ChatWindow: FC<ChatWindowProps> = ({ chatId, height, projectId }) => {
       </div>
       <div className={styles.chatInputContainer}>
         <Input.TextArea
-          size="middle"
+          size="large"
           className={styles.chatInput}
           onChange={handleInputChange}
           onKeyDown={handleEnter}
@@ -183,7 +182,7 @@ const ChatWindow: FC<ChatWindowProps> = ({ chatId, height, projectId }) => {
         />
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default ChatWindow;
+export default ChatWindow

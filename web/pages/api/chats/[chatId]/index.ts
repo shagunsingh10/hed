@@ -1,36 +1,36 @@
-import { NextApiRequest, NextApiResponse } from "next";
-import { prisma } from "@/lib/prisma";
-import type { ApiRes } from "@/types/api";
-import { Message } from "@/types/chats";
-import { getUserInfoFromSessionToken } from "@/lib/auth";
-import { sendMessageToPythonService } from "@/lib/redis";
-import { config as appConfig } from "@/config";
+import { getUserInfoFromSessionToken } from '@/lib/auth'
+import { prisma } from '@/lib/prisma'
+import { sendMessageToPythonService } from '@/lib/redis'
+import type { ApiRes } from '@/types/api'
+import { Message } from '@/types/chats'
+import { NextApiRequest, NextApiResponse } from 'next'
 
 const handler = async (
   req: NextApiRequest,
   res: NextApiResponse<ApiRes<Message[] | Message>>
 ) => {
-  const sessionToken = req.headers.sessiontoken as string;
-  const user = await getUserInfoFromSessionToken(sessionToken);
-  let chatId = req.query.chatId as string;
+  const sessionToken = req.headers.sessiontoken as string
+  const user = await getUserInfoFromSessionToken(sessionToken)
+  const chatId = req.query.chatId as string
 
   switch (req.method) {
-    case "GET":
+    case 'GET': {
       const messages = await prisma.message.findMany({
         where: {
           chatId: chatId,
         },
         orderBy: {
-          timestamp: "asc",
+          timestamp: 'asc',
         },
-      });
+      })
       res.status(200).json({
         success: true,
         data: messages,
-      });
-      break;
-    case "POST":
-      const { content } = req.body;
+      })
+      break
+    }
+    case 'POST': {
+      const { content } = req.body
       const newMessage = await prisma.$transaction(async (tx) => {
         const [nm, chat] = await Promise.all([
           tx.message.create({
@@ -48,10 +48,10 @@ const handler = async (
               projectId: true,
             },
           }),
-        ]);
+        ])
 
         // find all collections to get query context from
-        let collections;
+        let collections
         // if project specific chat, just read project specific collections
         if (chat?.projectId) {
           collections = await tx.knowledgeGroup.findMany({
@@ -66,7 +66,7 @@ const handler = async (
             select: {
               id: true,
             },
-          });
+          })
         } else {
           // else, read all collections
           collections = await tx.knowledgeGroup.findMany({
@@ -80,13 +80,13 @@ const handler = async (
             select: {
               id: true,
             },
-          });
+          })
         }
 
         // send qury and collection name to query processing engine
         await sendMessageToPythonService(
           JSON.stringify({
-            job_type: "query",
+            job_type: 'query',
             payload: {
               query: content,
               collections: collections.map((e) => e.id),
@@ -94,23 +94,24 @@ const handler = async (
               user: user?.email,
             },
           })
-        );
-        return nm;
-      });
+        )
+        return nm
+      })
 
       res.status(201).json({
         success: true,
         data: newMessage,
-      });
-      break;
-
-    default:
+      })
+      break
+    }
+    default: {
       res.status(405).json({
         success: true,
-        error: "Method not allowed",
-      });
-      break;
+        error: 'Method not allowed',
+      })
+      break
+    }
   }
-};
+}
 
-export default handler;
+export default handler

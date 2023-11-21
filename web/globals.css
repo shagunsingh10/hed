@@ -1,12 +1,11 @@
 :root {
   --max-width: 1100px;
   --border-radius: 12px;
-  --font-mono: "Roboto", ui-monospace, Menlo, Monaco, "Cascadia Mono",
-    "Segoe UI Mono", "Roboto Mono", "Oxygen Mono", "Ubuntu Monospace",
-    "Source Code Pro", "Fira Mono", "Droid Sans Mono", "Courier New", monospace;
+  --font-mono: 'Roboto', ui-monospace, Menlo, Monaco, 'Cascadia Mono',
+    'Segoe UI Mono', 'Roboto Mono', 'Oxygen Mono', 'Ubuntu Monospace',
+    'Source Code Pro', 'Fira Mono', 'Droid Sans Mono', 'Courier New', monospace;
 
   --foreground-color: rgba(200, 200, 200, 0.9);
-  --background-color: #242629;
 }
 
 * {
@@ -24,8 +23,7 @@ body {
 }
 
 body {
-  /* color: var(--foreground-color); */
-  background-color: var(--background-color);
+  color: var(--foreground-color);
 }
 
 a {
@@ -46,53 +44,4 @@ html {
     border-radius: 20px;
     border: transparent;
   }
-}
-
-.customFileInput {
-  width: 100%;
-  max-width: 100%;
-  padding: 0.2em;
-  border-radius: 0.5em;
-  border: 1px solid #555 !important;
-  color: #555;
-}
-
-.customFileInput::file-selector-button {
-  margin-right: 20px;
-  border: none;
-  background: #1890ff;
-  padding: 0.3em 1em;
-  border-radius: 0.4em;
-  color: #fff;
-  cursor: pointer;
-  transition: background 0.2s ease-in-out;
-}
-
-.customFileInput::file-selector-button:hover {
-  background: #1890ff7a;
-}
-
-/* ANTD MODS */
-.ant-tabs-tab {
-  border-top-right-radius: 0.4em !important;
-  border-top-left-radius: 0.4em !important;
-}
-
-.ant-message-notice-content {
-  background-color: #1d1f21 !important;
-  color: var(--foreground-color);
-}
-
-.ant-modal-content {
-  padding: 0 !important;
-}
-
-.antd-column-hide {
-  display: none;
-}
-
-.ant-menu-item-selected {
-  background-color: #1d1f21 !important;
-  color: #ffffff !important;
-  font-weight: bold;
 }

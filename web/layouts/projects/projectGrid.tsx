@@ -1,41 +1,40 @@
-import { Empty, Row, Tag, Col } from "antd";
-import useStore from "@/store";
-import { useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
-import { Card, Skeleton } from "antd";
-import styles from "./projects.module.scss";
+import useStore from '@/store'
+import { Card, Col, Empty, Row, Skeleton, Tag } from 'antd'
+import { useRouter } from 'next/navigation'
+import { useEffect, useState } from 'react'
+import styles from './projects.module.scss'
 
 const ProjectsGrid = ({ visible }: { visible: boolean }) => {
-  const [loading, setLoading] = useState(false);
-  const projects = useStore((state) => state.projects);
-  const getProjects = useStore((state) => state.getProjects);
+  const [loading, setLoading] = useState(false)
+  const projects = useStore((state) => state.projects)
+  const getProjects = useStore((state) => state.getProjects)
 
-  const { push } = useRouter();
+  const { push } = useRouter()
 
   useEffect(() => {
     if (getProjects) {
-      setLoading(true);
-      getProjects().then(() => setLoading(false));
+      setLoading(true)
+      getProjects().then(() => setLoading(false))
     }
-  }, [getProjects]);
+  }, [getProjects])
 
   const handleProjectClick = (id: string) => {
     sessionStorage.setItem(
       id,
       JSON.stringify(projects.find((e) => e.id === id))
-    );
+    )
     push(`projects/${id}`, {
       scroll: false,
-    });
-  };
+    })
+  }
 
   return (
     <div
       className={styles.projectCardsContainer}
       style={{
         opacity: `${visible ? 1 : 0}`,
-        height: `${visible ? "" : "0"}`,
-        padding: `${visible ? "" : "0"}`,
+        height: `${visible ? '' : '0'}`,
+        padding: `${visible ? '' : '0'}`,
       }}
     >
       {projects?.length > 0 ? (
@@ -47,7 +46,7 @@ const ProjectsGrid = ({ visible }: { visible: boolean }) => {
           >
             <Skeleton loading={loading} avatar active>
               <Row
-                style={{ display: "flex", alignItems: "center", padding: 0 }}
+                style={{ display: 'flex', alignItems: 'center', padding: 0 }}
               >
                 <Col span={24}>
                   <div className={styles.projectTitleContainer}>
@@ -76,7 +75,7 @@ const ProjectsGrid = ({ visible }: { visible: boolean }) => {
         <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} />
       )}
     </div>
-  );
-};
+  )
+}
 
-export default ProjectsGrid;
+export default ProjectsGrid

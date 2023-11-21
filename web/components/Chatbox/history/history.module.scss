@@ -1,0 +1,33 @@
+@use '../../../global.scss' as *;
+
+.chatHistory {
+  height: 100%;
+  padding: 1em 0.5em;
+  overflow-y: hidden;
+  border-right: 1px solid rgba(100, 100, 100, 0.3);
+
+  .addChatBtn {
+    width: 100%;
+    margin-bottom: 2em;
+  }
+  .chatListItem {
+    display: flex;
+    gap: 0.5em;
+    justify-content: center;
+    align-items: center;
+    transition: all ease-in-out 0.3s;
+    padding: 1em 1em;
+    font-weight: bold;
+    opacity: 0.5;
+    border-radius: 0.4em;
+    cursor: pointer;
+  }
+
+  .chatListItem:hover {
+    background-color: $headerColor;
+  }
+}
+
+.chatHistory:hover {
+  overflow-y: auto;
+}

@@ -1,11 +1,11 @@
-import React from "react";
-import { Result, Button } from "antd";
-import Link from "next/link";
+import { Button, Result } from 'antd'
+import Link from 'next/link'
+import React from 'react'
 
 const NotFoundPage = () => {
   return (
     <Result
-      style={{ width: "100%" }}
+      style={{ width: '100%' }}
       status="404"
       title="Page not found !"
       subTitle="Sorry, the page you are trying to view does not exist or you don't have access to it."
@@ -15,7 +15,7 @@ const NotFoundPage = () => {
         </Link>
       }
     />
-  );
-};
+  )
+}
 
-export default NotFoundPage;
+export default NotFoundPage

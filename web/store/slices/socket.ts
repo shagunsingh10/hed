@@ -1,5 +1,5 @@
-import { StateCreator } from "zustand";
-import { SocketSlice } from "@/types/socket";
+import { SocketSlice } from '@/types/socket'
+import { StateCreator } from 'zustand'
 
 export const createSocketSlice: StateCreator<
   SocketSlice,
@@ -11,6 +11,6 @@ export const createSocketSlice: StateCreator<
   setSocket: async (socket) => {
     set({
       socket: socket,
-    });
+    })
   },
-});
+})

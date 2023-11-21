@@ -1,18 +1,19 @@
-import "@/globals.css";
-import type { AppProps } from "next/app";
-import Head from "next/head";
-import { Nunito } from "next/font/google";
-import { ConfigProvider, theme } from "antd";
-import { SessionProvider } from "next-auth/react";
-import AppLayout from "@/layouts/appLayout";
+import '@/global.scss'
+import '@/globals.css'
+import AppLayout from '@/layouts/appLayout'
+import { ConfigProvider, theme } from 'antd'
+import { SessionProvider } from 'next-auth/react'
+import type { AppProps } from 'next/app'
+import { Nunito } from 'next/font/google'
+import Head from 'next/head'
 import {
-  PRIMARY_COLOR,
-  COLOR_BG_BASE,
   BORDER_RADIUS,
+  COLOR_DARK_2,
   COLOR_OUTLINE,
-} from "../constants";
+  PRIMARY_COLOR,
+} from '../constants'
 
-const font = Nunito({ weight: "400", subsets: ["latin"] });
+const font = Nunito({ weight: '400', subsets: ['latin'] })
 
 export default function App({ Component, pageProps }: AppProps) {
   return (
@@ -28,7 +29,7 @@ export default function App({ Component, pageProps }: AppProps) {
           token: {
             colorPrimary: PRIMARY_COLOR,
             colorInfo: PRIMARY_COLOR,
-            colorBgBase: COLOR_BG_BASE,
+            colorBgBase: COLOR_DARK_2,
             borderRadius: BORDER_RADIUS,
             controlOutline: COLOR_OUTLINE,
           },
@@ -42,5 +43,5 @@ export default function App({ Component, pageProps }: AppProps) {
         </SessionProvider>
       </ConfigProvider>
     </main>
-  );
+  )
 }

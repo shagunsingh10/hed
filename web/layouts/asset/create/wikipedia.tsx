@@ -1,4 +1,4 @@
-import { Form, Input } from "antd";
+import { Form, Input } from 'antd'
 
 const WikipediaForm = () => {
   return (
@@ -9,14 +9,14 @@ const WikipediaForm = () => {
         rules={[
           {
             required: true,
-            message: "Please enter the wikipedia page.",
+            message: 'Please enter the wikipedia page.',
           },
         ]}
       >
         <Input placeholder="Wikipedia page name is required" />
       </Form.Item>
     </div>
-  );
-};
+  )
+}
 
-export default WikipediaForm;
+export default WikipediaForm

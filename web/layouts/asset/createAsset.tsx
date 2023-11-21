@@ -1,38 +1,37 @@
-import { useState, FC, useEffect, useRef } from "react";
-import { Form, Input, Button, Card, message, Select, Typography } from "antd";
-import Uploader from "@/components/Uploader";
-import styles from "./asset.module.scss";
-import useStore from "@/store";
-import Loader from "@/components/Loader";
-import GithubForm from "./create/github";
-import WikipediaForm from "./create/wikipedia";
-import { extractUserAndRepo } from "./create/github";
+import Loader from '@/components/Loader'
+import Uploader from '@/components/Uploader'
+import useStore from '@/store'
+import { Button, Card, Form, Input, message, Select, Typography } from 'antd'
+import { FC, useEffect, useRef, useState } from 'react'
+import styles from './asset.module.scss'
+import GithubForm, { extractUserAndRepo } from './create/github'
+import WikipediaForm from './create/wikipedia'
 
-const { Option } = Select;
+const { Option } = Select
 
 type CreateAssetFormProps = {
-  projectId: string;
-  kgId?: string;
-};
+  projectId: string
+  kgId?: string
+}
 
 const CreateAssetForm: FC<CreateAssetFormProps> = ({ projectId, kgId }) => {
-  const [loading, setLoading] = useState(false);
-  const [selecTedAssetType, setSelectedAssetType] = useState<string>("");
-  const [uploadId, setUploadId] = useState<string>();
-  const [selectedKgId, setSelectedKgId] = useState<string>();
-  const formRef: any = useRef(null);
+  const [loading, setLoading] = useState(false)
+  const [selecTedAssetType, setSelectedAssetType] = useState<string>('')
+  const [uploadId, setUploadId] = useState<string>()
+  const [selectedKgId, setSelectedKgId] = useState<string>()
+  const formRef: any = useRef(null)
 
-  const createAsset = useStore((state) => state.createAsset);
-  const assetTypes = useStore((state) => state.assetTypes);
-  const kgs = useStore((state) => state.kgs);
-  const getKgs = useStore((state) => state.getKgs);
+  const createAsset = useStore((state) => state.createAsset)
+  const assetTypes = useStore((state) => state.assetTypes)
+  const kgs = useStore((state) => state.kgs)
+  const getKgs = useStore((state) => state.getKgs)
 
   // functions
   const handleSubmit = async (values: any) => {
-    const assetType = assetTypes.find((e) => e.key === selecTedAssetType);
-    if (!selectedKgId || !assetType) return;
+    const assetType = assetTypes.find((e) => e.key === selecTedAssetType)
+    if (!selectedKgId || !assetType) return
 
-    setLoading(true);
+    setLoading(true)
     try {
       createAsset(projectId, selectedKgId, {
         assetTypeId: assetType.id,
@@ -41,67 +40,67 @@ const CreateAssetForm: FC<CreateAssetFormProps> = ({ projectId, kgId }) => {
         description: values.description,
         tags: values.tags,
         readerKwargs: getReaderKwargs(values, assetType.key),
-      });
-      message.info("Asset created and sent for ingestion");
-      handleReset();
+      })
+      message.info('Asset created and sent for ingestion')
+      handleReset()
     } catch (e: any) {
-      message.error(e);
+      message.error(e)
     } finally {
-      setLoading(false);
+      setLoading(false)
     }
-  };
+  }
 
   const getReaderKwargs = (values: any, assetTypeKey: string) => {
-    if (assetTypeKey === "directory") {
+    if (assetTypeKey === 'directory') {
       return {
         uploadId: uploadId,
-      };
+      }
     }
 
-    if (assetTypeKey === "wikipedia") {
+    if (assetTypeKey === 'wikipedia') {
       return {
         pages: [values.wiki_page],
-      };
+      }
     }
 
-    if (assetTypeKey === "github") {
-      const githubDetails = extractUserAndRepo(values.github_url);
-      console.log({ githubDetails });
+    if (assetTypeKey === 'github') {
+      const githubDetails = extractUserAndRepo(values.github_url)
+      console.log({ githubDetails })
       return {
         owner: githubDetails.owner,
         repo: githubDetails.repo,
         github_token: values.github_token,
-      };
+      }
     }
 
-    return {};
-  };
+    return {}
+  }
 
   const handleReset = () => {
-    setSelectedAssetType("");
-    formRef.current?.resetFields();
-  };
+    setSelectedAssetType('')
+    formRef.current?.resetFields()
+  }
 
   const handleUploadComplete = (uploadId: string) => {
-    setUploadId(uploadId);
-  };
+    setUploadId(uploadId)
+  }
 
   const handleUploadFailure = () => {
-    message.error("Upload failed! Please try again.");
-  };
+    message.error('Upload failed! Please try again.')
+  }
 
   // useEffects
   useEffect(() => {
-    if (getKgs) getKgs(projectId);
-  }, [getKgs]);
+    if (getKgs) getKgs(projectId)
+  }, [getKgs])
 
   // if kg id comes from props, set it automatically
   useEffect(() => {
-    if (kgId) setSelectedKgId(kgId);
-  }, [kgId]);
+    if (kgId) setSelectedKgId(kgId)
+  }, [kgId])
 
   if (!assetTypes || assetTypes.length === 0) {
-    return <Loader />;
+    return <Loader />
   }
 
   return (
@@ -122,7 +121,7 @@ const CreateAssetForm: FC<CreateAssetFormProps> = ({ projectId, kgId }) => {
                 rules={[
                   {
                     required: true,
-                    message: "Please select knowledge group.",
+                    message: 'Please select knowledge group.',
                   },
                 ]}
               >
@@ -141,7 +140,7 @@ const CreateAssetForm: FC<CreateAssetFormProps> = ({ projectId, kgId }) => {
               rules={[
                 {
                   required: true,
-                  message: "Please select assetType.",
+                  message: 'Please select assetType.',
                 },
               ]}
             >
@@ -158,7 +157,7 @@ const CreateAssetForm: FC<CreateAssetFormProps> = ({ projectId, kgId }) => {
             </Form.Item>
             {selecTedAssetType && selectedKgId && (
               <>
-                {selecTedAssetType === "directory" && (
+                {selecTedAssetType === 'directory' && (
                   <Uploader
                     projectId={projectId}
                     kgId={selectedKgId}
@@ -166,9 +165,9 @@ const CreateAssetForm: FC<CreateAssetFormProps> = ({ projectId, kgId }) => {
                     onFailureCallback={handleUploadFailure}
                   />
                 )}
-                {selecTedAssetType === "github" && <GithubForm />}
-                {selecTedAssetType === "wikipedia" && <WikipediaForm />}
-                {!["github", "wikipedia", "directory"].includes(
+                {selecTedAssetType === 'github' && <GithubForm />}
+                {selecTedAssetType === 'wikipedia' && <WikipediaForm />}
+                {!['github', 'wikipedia', 'directory'].includes(
                   selecTedAssetType
                 ) && <span>Coming Soon!</span>}
               </>
@@ -182,7 +181,7 @@ const CreateAssetForm: FC<CreateAssetFormProps> = ({ projectId, kgId }) => {
               rules={[
                 {
                   required: true,
-                  message: "Please enter a name for this asset.",
+                  message: 'Please enter a name for this asset.',
                 },
               ]}
             >
@@ -205,9 +204,9 @@ const CreateAssetForm: FC<CreateAssetFormProps> = ({ projectId, kgId }) => {
                 mode="multiple"
               >
                 {[
-                  { id: "Bob@abc.com", name: "Bob@abc.com" },
-                  { id: "Sam@abc.com", name: "Sam@abc.com" },
-                  { id: "Shivam@abc.com", name: "Shivam@abc.com" },
+                  { id: 'Bob@abc.com', name: 'Bob@abc.com' },
+                  { id: 'Sam@abc.com', name: 'Sam@abc.com' },
+                  { id: 'Shivam@abc.com', name: 'Shivam@abc.com' },
                 ].map((e) => (
                   <Option key={e.id} value={e.id}>
                     {e.name}
@@ -226,7 +225,7 @@ const CreateAssetForm: FC<CreateAssetFormProps> = ({ projectId, kgId }) => {
               type="primary"
               htmlType="submit"
               loading={loading}
-              disabled={selecTedAssetType === "directory" && !uploadId}
+              disabled={selecTedAssetType === 'directory' && !uploadId}
             >
               Add
             </Button>
@@ -234,7 +233,7 @@ const CreateAssetForm: FC<CreateAssetFormProps> = ({ projectId, kgId }) => {
         </Form.Item>
       </Form>
     </Card>
-  );
-};
+  )
+}
 
-export default CreateAssetForm;
+export default CreateAssetForm

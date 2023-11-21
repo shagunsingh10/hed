@@ -1,19 +1,19 @@
-import { useState, useLayoutEffect, RefObject } from "react";
+import { RefObject, useLayoutEffect, useState } from 'react'
 
 export const useTableHeight = (ref: RefObject<Element>, footer?: boolean) => {
-  const [tableHeight, setTableHeight] = useState(600);
+  const [tableHeight, setTableHeight] = useState(600)
 
   useLayoutEffect(() => {
-    let height = window.innerHeight;
-    const node = ref.current;
-    const nodeBounds = node?.getBoundingClientRect();
-    height -= nodeBounds?.top || 0;
-    height -= 55; // header
-    if (footer) height -= 48; // footer
-    setTableHeight(height);
-  }, [ref]);
+    let height = window.innerHeight
+    const node = ref.current
+    const nodeBounds = node?.getBoundingClientRect()
+    height -= nodeBounds?.top || 0
+    height -= 55 // header
+    if (footer) height -= 48 // footer
+    setTableHeight(height)
+  }, [ref])
 
-  console.log({ tableHeight });
+  console.log({ tableHeight })
 
-  return tableHeight;
-};
+  return tableHeight
+}

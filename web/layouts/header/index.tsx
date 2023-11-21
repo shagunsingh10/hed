@@ -1,44 +1,41 @@
-import { useSession, signOut } from "next-auth/react";
-import { Avatar, Dropdown } from "antd";
 import {
-  UserOutlined,
   BellOutlined,
   LogoutOutlined,
   MailOutlined,
-} from "@ant-design/icons";
+  UserOutlined,
+} from '@ant-design/icons'
+import { Avatar, Dropdown, type MenuProps } from 'antd'
+import { signOut, useSession } from 'next-auth/react'
+import styles from './header.module.scss'
 
-import styles from "./header.module.scss";
-
-import type { MenuProps } from "antd";
-
-const userMenuItems: MenuProps["items"] = [
+const userMenuItems: MenuProps['items'] = [
   {
-    key: "logout",
+    key: 'logout',
     icon: <LogoutOutlined />,
-    label: "Logout",
+    label: 'Logout',
     onClick: () => signOut(),
   },
-];
+]
 
-const notificationItems: MenuProps["items"] = [
+const notificationItems: MenuProps['items'] = [
   {
-    key: "1",
+    key: '1',
     icon: <MailOutlined />,
     label:
-      "John has uploaded an asset to knowledge group KG3, Click here to review.",
+      'John has uploaded an asset to knowledge group KG3, Click here to review.',
     onClick: () => {},
   },
-];
+]
 
 export default function Header() {
-  const { data: session, status } = useSession();
+  const { data: session, status } = useSession()
 
   return (
     <div className={styles.headerContainer}>
       <div className={styles.leftContainer}>
         <span>HERALD</span>
       </div>
-      {status == "authenticated" && (
+      {status == 'authenticated' && (
         <div className={styles.rightContainer}>
           <Dropdown
             menu={{ items: notificationItems }}
@@ -53,12 +50,12 @@ export default function Header() {
             arrow
           >
             <div className="user-info">
-              <Avatar icon={<UserOutlined />} size={"small"} />
-              <span style={{ marginLeft: "8px" }}>{session?.user?.name}</span>
+              <Avatar icon={<UserOutlined />} size={'small'} />
+              <span style={{ marginLeft: '8px' }}>{session?.user?.name}</span>
             </div>
           </Dropdown>
         </div>
       )}
     </div>
-  );
+  )
 }

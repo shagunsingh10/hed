@@ -1,88 +1,82 @@
-import { Row, Tabs, Col, message } from "antd";
+import Chatbox from '@/components/Chatbox'
+import Loader from '@/components/Loader'
+import { useMediaQuery } from '@/hooks/useMediaQuery'
+import useStore from '@/store'
+import { Project } from '@/types/projects'
 import {
-  UpCircleOutlined,
-  PlusCircleOutlined,
-  DownCircleOutlined,
-  UserOutlined,
   BookOutlined,
-  MailOutlined,
+  DownCircleOutlined,
   FileDoneOutlined,
-} from "@ant-design/icons";
-import { useParams } from "next/navigation";
-import useStore from "@/store";
-import Loader from "@/components/Loader";
-import { useEffect, useMemo, useState } from "react";
-import { Project } from "@/types/projects";
-import KGScreen from "../../kg";
-import ProjectUsers from "../projectUsers";
-import Chatbox from "@/components/Chatbox";
-import AssetScreen from "../../asset";
-import styles from "./projectDetails.module.scss";
-import CreateAssetForm from "../../asset/createAsset";
-import CreateKGForm from "../../kg/createKg";
-import { useMediaQuery } from "@/hooks/useMediaQuery";
+  MailOutlined,
+  PlusCircleOutlined,
+  UpCircleOutlined,
+  UserOutlined,
+} from '@ant-design/icons'
+import { Col, message, Row, Tabs } from 'antd'
+import { useParams } from 'next/navigation'
+import { useEffect, useMemo, useState } from 'react'
+import AssetScreen from '../../asset'
+import CreateAssetForm from '../../asset/createAsset'
+import KGScreen from '../../kg'
+import CreateKGForm from '../../kg/createKg'
+import ProjectUsers from '../projectUsers'
+import styles from './projectDetails.module.scss'
 
 const ProjectDetailsScreen = () => {
-  const smallScreen = useMediaQuery(768);
-  const { projectId }: { projectId: string } = useParams();
-  const getProjectById = useStore((state) => state.getProjectById);
-  const [project, setProject] = useState<Project>();
-  const [loading, setLoading] = useState<boolean>(false);
-  const [isFullScreen, setIsFullScreen] = useState<boolean>(false);
+  const smallScreen = useMediaQuery(768)
+  const { projectId }: { projectId: string } = useParams()
+  const getProjectById = useStore((state) => state.getProjectById)
+  const [project, setProject] = useState<Project>()
+  const [loading, setLoading] = useState<boolean>(false)
+  const [isFullScreen, setIsFullScreen] = useState<boolean>(false)
 
   const tabs = useMemo(
     () => [
       {
-        title: "Assets",
+        title: 'Assets',
         icon: <FileDoneOutlined />,
         content: <AssetScreen projectId={projectId} />,
       },
       {
-        title: "Add Asset",
+        title: 'Add Asset',
         icon: <PlusCircleOutlined />,
         content: <CreateAssetForm projectId={projectId} />,
       },
       {
-        title: "Chat",
+        title: 'Chat',
         icon: <MailOutlined />,
-        content: (
-          <Chatbox
-            scope="project"
-            projectId={projectId}
-            height={isFullScreen ? "81vh" : "65vh"}
-          />
-        ),
+        content: <Chatbox scope="project" projectId={projectId} />,
       },
       {
-        title: "Knowledge Groups",
+        title: 'Knowledge Groups',
         icon: <BookOutlined />,
         content: <KGScreen projectId={projectId} />,
       },
       {
-        title: "Add Knowledge Group",
+        title: 'Add Knowledge Group',
         icon: <PlusCircleOutlined />,
         content: <CreateKGForm projectId={projectId} />,
       },
-      { title: "Users", icon: <UserOutlined />, content: <ProjectUsers /> },
+      { title: 'Members', icon: <UserOutlined />, content: <ProjectUsers /> },
     ],
     [projectId, isFullScreen]
-  );
+  )
 
   useEffect(() => {
-    setLoading(true);
+    setLoading(true)
     getProjectById(projectId)
       .then((project) => {
-        setProject(project);
-        setLoading(false);
+        setProject(project)
+        setLoading(false)
       })
-      .catch((e) => {
-        message.error("Error in fetching project!");
-        setLoading(false);
-      });
-  }, [projectId]);
+      .catch(() => {
+        message.error('Error in fetching project!')
+        setLoading(false)
+      })
+  }, [projectId])
 
   if (!projectId || loading) {
-    return <Loader />;
+    return <Loader />
   }
 
   return (
@@ -97,18 +91,18 @@ const ProjectDetailsScreen = () => {
 
       <Row
         className={`${styles.projectDetailsHead} ${
-          isFullScreen ? styles.hidden : ""
+          isFullScreen ? styles.hidden : ''
         }`}
       >
-        <Col span={2} className={styles.projectAvatar}>
+        {/* <Col span={2} className={styles.projectAvatar}>
           <img
             src="/images/project-icon.jpg"
             alt="project"
             height={70}
             width={70}
           />
-        </Col>
-        <Col span={22}>
+        </Col> */}
+        <Col span={24}>
           <span className={styles.projectTitle}>{project?.name} </span>
           <span className={styles.projectDescription}>
             {project?.description}
@@ -117,15 +111,14 @@ const ProjectDetailsScreen = () => {
       </Row>
       <div
         className={`${styles.projectDetailsContent} ${
-          isFullScreen ? styles.projectDetailsContentExpanded : ""
+          isFullScreen ? styles.projectDetailsContentExpanded : ''
         }`}
       >
         <Tabs
           defaultActiveKey="1"
           type="card"
           tabBarGutter={10}
-          tabPosition={smallScreen ? "top" : "left"}
-          tabBarStyle={{ marginRight: "0.5em" }}
+          tabPosition={smallScreen ? 'top' : 'top'}
           items={tabs.map((tab, i) => {
             return {
               label: (
@@ -136,12 +129,12 @@ const ProjectDetailsScreen = () => {
               ),
               key: String(i + 1),
               children: tab.content,
-            };
+            }
           })}
         />
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default ProjectDetailsScreen;
+export default ProjectDetailsScreen

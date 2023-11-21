@@ -1,35 +1,35 @@
-import { message } from "antd";
+import { message } from 'antd'
 
 const redirectToNotFound = () => {
-  if (window) window.location.href = "/404";
-};
+  if (window) window.location.href = '/404'
+}
 
 const fetchApi = async (
   url: string,
   options: RequestInit = {}
 ): Promise<Response> => {
-  const response = await fetch(url, options);
+  const response = await fetch(url, options)
 
   if (response.status === 404) {
-    const res = await response.json();
-    redirectToNotFound();
+    await response.json()
+    redirectToNotFound()
   }
 
   if (response.status === 403) {
-    const res = await response.json();
-    message.error(res?.error);
+    const res = await response.json()
+    message.error(res?.error)
   }
 
   if (!response.ok) {
-    throw new Error(`Request failed with status: ${response.status}`);
+    throw new Error(`Request failed with status: ${response.status}`)
   }
 
-  return response;
-};
+  return response
+}
 
 const fetcher = {
-  get: async (url: string, options?: RequestInit): Promise<any> => {
-    return fetchApi(url, options);
+  get: async (url: string, options?: RequestInit): Promise<Response> => {
+    return fetchApi(url, options)
   },
 
   post: async <T>(
@@ -38,10 +38,10 @@ const fetcher = {
     options?: RequestInit
   ): Promise<Response> => {
     return fetchApi(url, {
-      method: "POST",
+      method: 'POST',
       body: JSON.stringify(data),
       ...options,
-    });
+    })
   },
 
   put: async <T>(
@@ -50,10 +50,10 @@ const fetcher = {
     options?: RequestInit
   ): Promise<Response> => {
     return fetchApi(url, {
-      method: "PUT",
+      method: 'PUT',
       body: JSON.stringify(data),
       ...options,
-    });
+    })
   },
 
   patch: async <T>(
@@ -62,10 +62,10 @@ const fetcher = {
     options?: RequestInit
   ): Promise<Response> => {
     return fetchApi(url, {
-      method: "PATCH",
+      method: 'PATCH',
       body: JSON.stringify(data),
       ...options,
-    });
+    })
   },
 
   delete: async <T>(
@@ -74,11 +74,11 @@ const fetcher = {
     options?: RequestInit
   ): Promise<Response> => {
     return fetchApi(url, {
-      method: "DELETE",
+      method: 'DELETE',
       body: JSON.stringify(data),
       ...options,
-    });
+    })
   },
-};
+}
 
-export default fetcher;
+export default fetcher

@@ -1,119 +1,23 @@
-@use "../../variables.scss" as *;
+@use '../../global.scss' as *;
 
 .chatScreen {
   height: 100%;
   display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  padding-bottom: 2em;
 
-  .chatButtons {
-    display: flex;
-    justify-content: center;
-    gap: 1em;
+  .chatHistoryContainer {
+    width: 15%;
+    background-color: $siderColor2;
   }
-}
-
-// main chat window
-.chatWindow {
-  width: 100%;
-  height: auto;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  transition: all ease-in-out 0.5s;
-
-  .messageContainer {
-    overflow-y: hidden;
-    transition: all ease-in-out 0.5s;
-    overflow-y: auto;
-
-    .chatMessage {
-      border: none;
-      padding: 1em;
-      margin-bottom: 0.5em;
-
-      .messageTime {
-        font-weight: normal;
-        margin-left: 0.2em;
-        color: $colorBgText !important;
-      }
-
-      .chatMessageContent {
-        width: 100%;
-        padding: 0.4em 2em;
-        border-radius: 0.5em;
-        font-weight: normal;
-        font-size: 1.2em;
-
-        pre:has(code) {
-          border-radius: 0.5em;
-        }
-      }
-    }
+  .chatWindowContainer {
+    width: 85%;
+    height: 100%;
+    position: relative;
   }
-
-  .messageContainer:hover {
-    overflow-y: auto;
-  }
-
-  .chatInputContainer {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    gap: 2em;
-
-    .chatInput {
-      width: 70%;
-      resize: vertical;
-      font-size: 0.9em;
-      box-shadow: rgba(0, 0, 0, 0.24) 3px 3px 8px;
-    }
-
-    .sendButton {
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      border-radius: 50%;
-    }
-  }
-}
-
-// chat history
-.chatList {
-  height: 100%;
-  overflow-y: hidden;
-  background: transparent;
-  border: none !important;
-
-  .chatListItem {
-    transition: all ease-in-out 0.3s;
-    border: 1px solid $colorBgText;
-    margin: 1em 0;
-  }
-}
-
-.chatList:hover {
-  overflow-y: auto;
 }
 
 /* Media query for screens smaller than a certain width, e.g., tablets and phones */
 @media screen and (max-width: 768px) {
   .chatScreen {
     padding-bottom: 0;
-  }
-
-  .chatWindow {
-    .chatInputContainer {
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      gap: 0.5em;
-
-      .chatInput {
-        width: 95%;
-        font-size: 0.9em;
-      }
-    }
   }
 }

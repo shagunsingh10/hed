@@ -1,9 +1,9 @@
-@use "../../../variables.scss" as *;
+@use '../../../global.scss' as *;
 
 .projectDetailsContainer {
   height: 100%;
-  width: auto;
   position: relative;
+  padding: 1em;
 
   .fullScreenToggle {
     padding: 0.5em;
@@ -12,11 +12,13 @@
   }
 
   .projectDetailsHead {
-    height: 12vh;
+    height: 10vh;
     margin-bottom: 1vh;
     overflow-y: hidden;
     opacity: 1;
-    transition: all 0.5s ease, opacity 0.5s ease;
+    transition:
+      all 0.5s ease,
+      opacity 0.5s ease;
 
     .projectAvatar {
       color: $primaryColor;
@@ -50,8 +52,7 @@
   }
 
   .projectDetailsContent {
-    height: calc(100% - 12vh);
-    overflow-y: auto;
+    height: calc(100% - 10vh);
     position: relative;
   }
 

@@ -1,8 +1,7 @@
-@use "../../../variables.scss" as *;
+@use '../../../global.scss' as *;
 
 .kgDetailsContainer {
   height: 93.5vh;
-  width: 93vw;
   position: relative;
 
   .fullScreenToggle {
@@ -12,7 +11,7 @@
   }
 
   .kgDetailsHead {
-    height: 12vh;
+    height: 10vh;
     margin-bottom: 1vh;
     transition: all 0.5s ease, opacity 0.5s ease;
     overflow: hidden;
@@ -44,7 +43,7 @@
   }
 
   .kgDetailsContent {
-    height: calc(100% - 12vh);
+    height: calc(100% - 10vh);
     overflow-y: auto;
     position: relative;
   }

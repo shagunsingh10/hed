@@ -1,25 +1,26 @@
-import { useEffect } from "react";
-import { Row, Col, message } from "antd";
-import useStore from "@/store";
-import { DeleteOutlined } from "@ant-design/icons";
-import styles from "./kglist.module.scss";
-import Link from "next/link";
+import useStore from '@/store'
+import { DeleteOutlined } from '@ant-design/icons'
+import { Col, message, Row } from 'antd'
+import Link from 'next/link'
+import { useEffect } from 'react'
+import styles from './kglist.module.scss'
+
 type KgListProps = {
-  projectId: string;
-  kgId?: string;
-};
+  projectId: string
+  kgId?: string
+}
 
 const KgListMobile: React.FC<KgListProps> = ({ projectId, kgId }) => {
-  const kgs = useStore((state) => state.kgs);
-  const getKgs = useStore((state) => state.getKgs);
+  const kgs = useStore((state) => state.kgs)
+  const getKgs = useStore((state) => state.getKgs)
 
   const deleteKg = (kgId: string) => {
-    message.info("Delete feature coming soon...");
-  };
+    message.info('Delete feature coming soon...')
+  }
 
   useEffect(() => {
-    if (getKgs) getKgs(projectId);
-  }, [getKgs]);
+    if (getKgs) getKgs(projectId)
+  }, [getKgs])
 
   return (
     <div className={styles.kgInfoContainer}>
@@ -28,7 +29,7 @@ const KgListMobile: React.FC<KgListProps> = ({ projectId, kgId }) => {
           <Col span={23} className={styles.kgInfoTitle}>
             <Link
               href={`/projects/${projectId}/kgs/${kg.id}`}
-              style={{ fontWeight: "bold" }}
+              style={{ fontWeight: 'bold' }}
             >
               {kg.name}
             </Link>
@@ -42,7 +43,7 @@ const KgListMobile: React.FC<KgListProps> = ({ projectId, kgId }) => {
         </Row>
       ))}
     </div>
-  );
-};
+  )
+}
 
-export default KgListMobile;
+export default KgListMobile

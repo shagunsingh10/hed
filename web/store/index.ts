@@ -4,22 +4,22 @@ StateCreator<MyState, Mutators, [], MySlice>.
 For example, if you are using devtools then it will be 
 StateCreator<MyState, [["zustand/devtools", never]], [], MySlice> 
 */
-"use client";
+'use client'
 
-import { create } from "zustand";
+import { AssetsSlice } from '@/types/assets'
+import type { ChatsSlice, MessagesSlice } from '@/types/chats'
+import { KgsSlice } from '@/types/kgs'
+import type { ProjectsSlice } from '@/types/projects'
+import { SocketSlice } from '@/types/socket'
+import { create } from 'zustand'
 import {
-  createChatsSlice,
-  createProjectsSlice,
-  createMessagesSlice,
-  createKgsSlice,
   createAssetsSlice,
+  createChatsSlice,
+  createKgsSlice,
+  createMessagesSlice,
+  createProjectsSlice,
   createSocketSlice,
-} from "./slices";
-import type { MessagesSlice, ChatsSlice } from "@/types/chats";
-import type { ProjectsSlice } from "@/types/projects";
-import { KgsSlice } from "@/types/kgs";
-import { AssetsSlice } from "@/types/assets";
-import { SocketSlice } from "@/types/socket";
+} from './slices'
 
 const useStore = create<
   ProjectsSlice &
@@ -35,6 +35,6 @@ const useStore = create<
   ...createKgsSlice(...a),
   ...createAssetsSlice(...a),
   ...createSocketSlice(...a),
-}));
+}))
 
-export default useStore;
+export default useStore

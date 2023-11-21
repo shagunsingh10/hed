@@ -1,14 +1,14 @@
-import KgList from "./kgList";
-import styles from "./kg.module.scss";
-import { useMediaQuery } from "@/hooks/useMediaQuery";
-import KgListMobile from "./kgListMobile";
+import { useMediaQuery } from '@/hooks/useMediaQuery'
+import styles from './kg.module.scss'
+import KgList from './kgList'
+import KgListMobile from './kgListMobile'
 
 type KGScreenProps = {
-  projectId: string;
-};
+  projectId: string
+}
 
 const KGScreen: React.FC<KGScreenProps> = ({ projectId }) => {
-  const smallScreen = useMediaQuery(768);
+  const smallScreen = useMediaQuery(768)
 
   return (
     <div className={styles.kgContainer}>
@@ -18,7 +18,7 @@ const KGScreen: React.FC<KGScreenProps> = ({ projectId }) => {
         <KgList projectId={projectId} />
       )}
     </div>
-  );
-};
+  )
+}
 
-export default KGScreen;
+export default KGScreen

@@ -1,7 +1,7 @@
-import ProjectsScreen from "@/layouts/projects";
+import ProjectsScreen from '@/layouts/projects'
 
 const ProjectsPage = () => {
-  return <ProjectsScreen />;
-};
+  return <ProjectsScreen />
+}
 
-export default ProjectsPage;
+export default ProjectsPage

@@ -1,7 +1,7 @@
-@use "../../variables.scss" as *;
+@use '../../global.scss' as *;
 
 .loginContainer {
-  background-image: url("/images/bgIcons.svg");
+  background-image: url('/images/bgIcons.svg');
   height: 100vh;
   display: flex;
   justify-content: center;

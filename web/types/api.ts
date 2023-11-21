@@ -1,5 +1,5 @@
 export type ApiRes<T> = {
-  success: boolean;
-  data?: T;
-  error?: string;
-};
+  success: boolean
+  data?: T
+  error?: string
+}

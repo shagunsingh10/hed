@@ -1,0 +1,97 @@
+@use '../../../global.scss' as *;
+
+// main chat window
+.chatWindow {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  transition: all ease-in-out 0.5s;
+  padding-top: 1em;
+
+  .messageContainer {
+    overflow-y: hidden;
+    transition: all ease-in-out 0.5s;
+    height: 90%;
+
+    .chatMessage {
+      width: 97%;
+      margin: 0 2em;
+      border: none;
+      padding: 1em;
+      margin-bottom: 0.5em;
+
+      .messageTime {
+        font-weight: normal;
+        margin-left: 0.2em;
+        color: $colorBgText !important;
+      }
+
+      .chatMessageContent {
+        margin-top: 0.2em;
+        width: 100%;
+        padding: 1em 2em;
+        border-radius: 0.8em;
+        font-weight: normal;
+        font-size: 1.2em;
+        border-top-left-radius: 0;
+
+        pre:has(code) {
+          border-radius: 0.5em;
+        }
+      }
+    }
+  }
+
+  .messageContainer:hover {
+    overflow-y: auto;
+  }
+
+  .chatInputContainer {
+    height: 10%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 2em;
+
+    .chatInput {
+      width: 70%;
+      resize: vertical;
+      font-size: 0.9em;
+      box-shadow: rgba(0, 0, 0, 0.24) 3px 3px 8px;
+    }
+
+    .sendButton {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      border-radius: 50%;
+    }
+  }
+}
+
+// .chatWindow:before {
+//   position: absolute;
+//   left: 0;
+//   top: 0;
+//   padding: 2em;
+//   content: url('/images/bgIcons.svg');
+//   opacity: 0.05;
+// }
+
+@media screen and (max-width: 768px) {
+  .chatWindow {
+    .chatInputContainer {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 0.5em;
+
+      .chatInput {
+        width: 95%;
+        font-size: 0.9em;
+      }
+    }
+  }
+}

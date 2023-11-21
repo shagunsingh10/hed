@@ -1,38 +1,37 @@
-import { useState, FC, useRef } from "react";
-import { Form, Input, Button, Card, message, Modal, Typography } from "antd";
-
-import styles from "./kg.module.scss";
-import useStore from "@/store";
+import useStore from '@/store'
+import { Button, Card, Form, Input, message, Modal, Typography } from 'antd'
+import { FC, useRef, useState } from 'react'
+import styles from './kg.module.scss'
 
 type createKgFormProps = {
-  projectId: string;
-};
+  projectId: string
+}
 
 const CreateKGForm: FC<createKgFormProps> = ({ projectId }) => {
-  const [loading, setLoading] = useState(false);
-  const createKg = useStore((state) => state.createKg);
-  const formRef: any = useRef(null);
+  const [loading, setLoading] = useState(false)
+  const createKg = useStore((state) => state.createKg)
+  const formRef: any = useRef(null)
 
   const handleSubmit = async (values: any) => {
-    setLoading(true);
+    setLoading(true)
     try {
       createKg(projectId, {
         projectId: projectId,
         name: values.name,
         description: values.description,
         tags: values.tags,
-      });
-      message.success("Knowledge Created Successfully");
+      })
+      message.success('Knowledge Created Successfully')
     } catch (e: any) {
-      message.error(e);
+      message.error(e)
     } finally {
-      setLoading(false);
+      setLoading(false)
     }
-  };
+  }
 
   const handleReset = () => {
-    formRef.current?.resetFields();
-  };
+    formRef.current?.resetFields()
+  }
 
   return (
     <Card className={styles.newKGFormContainer}>
@@ -52,7 +51,7 @@ const CreateKGForm: FC<createKgFormProps> = ({ projectId }) => {
             rules={[
               {
                 required: true,
-                message: "Please enter a name for this knowledge group.",
+                message: 'Please enter a name for this knowledge group.',
               },
             ]}
           >
@@ -82,7 +81,7 @@ const CreateKGForm: FC<createKgFormProps> = ({ projectId }) => {
         </Form.Item>
       </Form>
     </Card>
-  );
-};
+  )
+}
 
-export default CreateKGForm;
+export default CreateKGForm

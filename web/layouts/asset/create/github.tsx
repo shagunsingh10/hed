@@ -1,15 +1,15 @@
-import { Form, Input } from "antd";
+import { Form, Input } from 'antd'
 
 function extractUserAndRepo(githubUrl: string) {
-  const regex = /github\.com\/([^\/]+)\/([^\/]+)(\/|$)/;
-  const match = githubUrl.match(regex);
-  console.log(match);
+  const regex = /github\.com\/([^\/]+)\/([^\/]+)(\/|$)/
+  const match = githubUrl.match(regex)
+  console.log(match)
   if (match && match.length >= 3) {
-    const owner = match[1];
-    const repo = match[2];
-    return { owner, repo };
+    const owner = match[1]
+    const repo = match[2]
+    return { owner, repo }
   } else {
-    return {}; // Invalid GitHub URL
+    return {} // Invalid GitHub URL
   }
 }
 
@@ -22,7 +22,7 @@ const GithubForm = () => {
         rules={[
           {
             required: true,
-            message: "Please enter the github repo link.",
+            message: 'Please enter the github repo link.',
           },
         ]}
       >
@@ -34,16 +34,16 @@ const GithubForm = () => {
         rules={[
           {
             required: true,
-            message: "Please enter your github token.",
+            message: 'Please enter your github token.',
           },
         ]}
       >
         <Input placeholder="Github pat token is required" />
       </Form.Item>
     </div>
-  );
-};
+  )
+}
 
-export default GithubForm;
+export default GithubForm
 
-export { extractUserAndRepo };
+export { extractUserAndRepo }
