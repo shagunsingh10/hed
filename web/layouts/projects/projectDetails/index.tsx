@@ -6,42 +6,32 @@ import { Project } from '@/types/projects'
 import {
   BookOutlined,
   DownCircleOutlined,
-  FileDoneOutlined,
   MailOutlined,
-  PlusCircleOutlined,
   UpCircleOutlined,
   UserOutlined,
 } from '@ant-design/icons'
 import { Col, message, Row, Tabs } from 'antd'
 import { useParams } from 'next/navigation'
 import { useEffect, useMemo, useState } from 'react'
-import AssetScreen from '../../asset'
-import CreateAssetForm from '../../asset/createAsset'
+// import AssetScreen from '../../asset'
+// import CreateAssetForm from '../../asset/createAsset'
 import KGScreen from '../../kg'
-import CreateKGForm from '../../kg/createKg'
 import ProjectUsers from '../projectUsers'
 import styles from './projectDetails.module.scss'
+import TabContent from './TabButtons'
 
 const ProjectDetailsScreen = () => {
   const smallScreen = useMediaQuery(768)
   const { projectId }: { projectId: string } = useParams()
   const getProjectById = useStore((state) => state.getProjectById)
+
   const [project, setProject] = useState<Project>()
   const [loading, setLoading] = useState<boolean>(false)
   const [isFullScreen, setIsFullScreen] = useState<boolean>(false)
+  const [activeTab, setActiveTab] = useState<number>(1)
 
   const tabs = useMemo(
     () => [
-      {
-        title: 'Assets',
-        icon: <FileDoneOutlined />,
-        content: <AssetScreen projectId={projectId} />,
-      },
-      {
-        title: 'Add Asset',
-        icon: <PlusCircleOutlined />,
-        content: <CreateAssetForm projectId={projectId} />,
-      },
       {
         title: 'Chat',
         icon: <MailOutlined />,
@@ -52,15 +42,14 @@ const ProjectDetailsScreen = () => {
         icon: <BookOutlined />,
         content: <KGScreen projectId={projectId} />,
       },
-      {
-        title: 'Add Knowledge Group',
-        icon: <PlusCircleOutlined />,
-        content: <CreateKGForm projectId={projectId} />,
-      },
       { title: 'Members', icon: <UserOutlined />, content: <ProjectUsers /> },
     ],
     [projectId, isFullScreen]
   )
+
+  const handleTabChange = (e: string) => {
+    setActiveTab(Number(e))
+  }
 
   useEffect(() => {
     setLoading(true)
@@ -75,11 +64,9 @@ const ProjectDetailsScreen = () => {
       })
   }, [projectId])
 
-  if (!projectId || loading) {
-    return <Loader />
-  }
-
-  return (
+  return !projectId || loading ? (
+    <Loader />
+  ) : (
     <div className={styles.projectDetailsContainer}>
       <div className={styles.fullScreenToggle}>
         {isFullScreen ? (
@@ -94,14 +81,6 @@ const ProjectDetailsScreen = () => {
           isFullScreen ? styles.hidden : ''
         }`}
       >
-        {/* <Col span={2} className={styles.projectAvatar}>
-          <img
-            src="/images/project-icon.jpg"
-            alt="project"
-            height={70}
-            width={70}
-          />
-        </Col> */}
         <Col span={24}>
           <span className={styles.projectTitle}>{project?.name} </span>
           <span className={styles.projectDescription}>
@@ -117,7 +96,11 @@ const ProjectDetailsScreen = () => {
         <Tabs
           defaultActiveKey="1"
           type="card"
+          onChange={handleTabChange}
           tabBarGutter={10}
+          tabBarExtraContent={
+            <TabContent activeTab={activeTab} projectId={projectId} />
+          }
           tabPosition={smallScreen ? 'top' : 'top'}
           items={tabs.map((tab, i) => {
             return {

@@ -33,7 +33,7 @@ const columns: ColumnsType<DataType> = [
     key: 'action',
     align: 'center',
     width: '10%',
-    render: (_, record) => (
+    render: () => (
       <Space size="middle">
         <EditOutlined style={{ cursor: 'pointer' }} />
         <DeleteOutlined style={{ cursor: 'pointer' }} />
@@ -106,7 +106,9 @@ const data: DataType[] = [
 ]
 
 const KgUsers: React.FC = () => (
-  <CustomTable columns={columns} dataSource={data} pagination={false} />
+  <div>
+    <CustomTable columns={columns} dataSource={data} pagination={false} />
+  </div>
 )
 
 export default KgUsers

@@ -2,29 +2,34 @@
 
 .chatHistory {
   height: 100%;
-  padding: 1em 0.5em;
   overflow-y: hidden;
-  border-right: 1px solid rgba(100, 100, 100, 0.3);
+  display: flex;
+  align-items: center;
+  flex-direction: column;
 
   .addChatBtn {
     width: 100%;
-    margin-bottom: 2em;
+    margin-bottom: 1em;
   }
+
   .chatListItem {
+    width: 100%;
     display: flex;
     gap: 0.5em;
     justify-content: center;
     align-items: center;
     transition: all ease-in-out 0.3s;
-    padding: 1em 1em;
+    padding: 0.8em 1em;
     font-weight: bold;
     opacity: 0.5;
-    border-radius: 0.4em;
+    border-radius: 0.6em;
     cursor: pointer;
+    border: 1px solid $colorBgText;
+    margin: 0.5em 0;
   }
 
   .chatListItem:hover {
-    background-color: $headerColor;
+    background-color: $dark2;
   }
 }
 

@@ -1,12 +1,9 @@
 import Loader from '@/components/Loader'
-import { useMediaQuery } from '@/hooks/useMediaQuery'
-import CreateAssetForm from '@/layouts/asset/createAsset'
 import useStore from '@/store'
 import { Kg } from '@/types/kgs'
 import {
   DownCircleOutlined,
   FileDoneOutlined,
-  PlusCircleOutlined,
   UpCircleOutlined,
   UserOutlined,
 } from '@ant-design/icons'
@@ -16,13 +13,14 @@ import { useEffect, useState } from 'react'
 import AssetScreen from '../../asset'
 import KgUsers from '../kgUsers'
 import styles from './kgDetails.module.scss'
+import TabContent from './TabButton'
 
 const KgDetailsScreen = () => {
-  const smallScreen = useMediaQuery(768)
   const { projectId, kgId }: { projectId: string; kgId: string } = useParams()
   const [kg, setkg] = useState<Kg>()
   const [loading, setLoading] = useState<boolean>(false)
   const [isFullScreen, setIsFullScreen] = useState<boolean>(false)
+  const [activeTab, setActiveTab] = useState<number>(1)
   const getKgById = useStore((state) => state.getKgById)
 
   const tabs = [
@@ -31,13 +29,12 @@ const KgDetailsScreen = () => {
       icon: <FileDoneOutlined />,
       content: <AssetScreen projectId={projectId} kgId={kgId} />,
     },
-    {
-      title: 'Add Asset',
-      icon: <PlusCircleOutlined />,
-      content: <CreateAssetForm projectId={projectId} kgId={kgId} />,
-    },
     { title: 'Members', icon: <UserOutlined />, content: <KgUsers /> },
   ]
+
+  const handleTabChange = (e: string) => {
+    setActiveTab(Number(e))
+  }
 
   useEffect(() => {
     setLoading(true)
@@ -46,7 +43,7 @@ const KgDetailsScreen = () => {
         setkg(kg)
         setLoading(false)
       })
-      .catch((e) => {
+      .catch(() => {
         message.error('Error in fetching kg!')
         setLoading(false)
       })
@@ -70,15 +67,6 @@ const KgDetailsScreen = () => {
           isFullScreen ? styles.hidden : ''
         }`}
       >
-        {/* <Col span={2} className={styles.kgAvatar}>
-          <img
-            src="/images/kg1.jpg"
-            alt="project"
-            height={70}
-            width={70}
-            style={{ borderRadius: "0.5em" }}
-          />
-        </Col> */}
         <Col span={24}>
           <span className={styles.kgTitle}>{kg?.name}</span>
           <span className={styles.kgDescription}>{kg?.description}</span>
@@ -92,10 +80,15 @@ const KgDetailsScreen = () => {
         <Tabs
           defaultActiveKey="1"
           type="card"
-          size={'small'}
+          onChange={handleTabChange}
+          tabBarExtraContent={
+            <TabContent
+              activeTab={activeTab}
+              projectId={projectId}
+              kgId={kgId}
+            />
+          }
           tabBarGutter={10}
-          tabPosition={smallScreen ? 'top' : 'top'}
-          tabBarStyle={{ marginRight: '0.5em' }}
           items={tabs.map((tab, i) => {
             return {
               label: (

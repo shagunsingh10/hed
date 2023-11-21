@@ -1,13 +1,11 @@
 /* variables */
-$primaryColor: #1890ff;
+$primaryColor: #0a6dc2;
 $primaryDark: #323236;
-$bgColor: #242629;
-$headerColor: #242629;
-$siderColor: #181818;
+$bgColor: #1c1c1e;
+$dark1: #1a1a1b;
+$dark2: #232325;
+$dark3: #3a3a3c;
 $colorBgText: #75797b7a;
-
-$headerColor2: #323232;
-$siderColor2: #1d1f21;
 
 .customFileInput {
   width: 100%;
@@ -35,9 +33,13 @@ $siderColor2: #1d1f21;
 
 /* ANTD MODS */
 
+.ant-table-cell {
+  border: none !important;
+}
+
 .ant-message-notice-content {
-  background-color: $siderColor !important;
-  color: $colorBgText !important;
+  background-color: $dark2 !important;
+  color: #fafafa !important;
 }
 
 .ant-modal-content {

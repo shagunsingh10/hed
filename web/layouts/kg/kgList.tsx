@@ -1,13 +1,12 @@
 import CustomTable from '@/components/Table'
-import { PRIMARY_COLOR_DARK } from '@/constants'
 import { globalDateFormatParser } from '@/lib/functions'
 import useStore from '@/store'
 import type { Kg } from '@/types/kgs'
 import { DeleteOutlined } from '@ant-design/icons'
-import { Input, message, Space, Table, Tag } from 'antd'
+import { Input, message, Space, Tag } from 'antd'
 import type { ColumnsType } from 'antd/es/table'
 import Link from 'next/link'
-import { useEffect, useMemo, useRef, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import styles from './kg.module.scss'
 
 type KgListProps = {
@@ -40,6 +39,7 @@ const KgList: React.FC<KgListProps> = ({ projectId }) => {
   )
 
   const deleteKg = (kgId: string) => {
+    console.log(kgId)
     message.info('Delete feature coming soon...')
   }
 

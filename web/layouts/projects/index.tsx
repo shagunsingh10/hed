@@ -44,7 +44,6 @@ const ProjectsScreen = () => {
             />
             <Button
               type="primary"
-              ghost
               onClick={handleProjectCreateButton}
               className={styles.createNewButton}
               icon={<PlusCircleOutlined />}

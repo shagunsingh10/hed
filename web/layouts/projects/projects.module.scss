@@ -42,7 +42,7 @@
 
     .listItem {
       height: 20vh;
-      background-color: $headerColor;
+      background-color: $dark2;
       padding: 0 2em;
       border-radius: 0.5em;
       margin: 2em;
@@ -96,7 +96,7 @@
       border: none;
       border-radius: 0.9em;
       box-shadow: 0px 1px 1px rgba(0, 0, 0, 0.3);
-      background-color: $siderColor2;
+      background-color: $dark2;
       transition:
         box-shadow 0.3s ease,
         transform 0.3s ease;
@@ -104,7 +104,7 @@
 
     .projectCard:hover {
       transform: scale(1.02);
-      box-shadow: 0 4px 8px rgba(91, 91, 91, 0.1);
+      box-shadow: 0 4px 8px $dark1;
       transform-origin: center;
     }
 

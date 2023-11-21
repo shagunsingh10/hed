@@ -1,11 +1,11 @@
 @use '../../../global.scss' as *;
 
 .kgDetailsContainer {
-  height: 93.5vh;
+  height: 100%;
   position: relative;
 
   .fullScreenToggle {
-    padding: 0.5em;
+    padding: 0.5em 0;
     display: flex;
     justify-content: flex-end;
   }
@@ -13,19 +13,18 @@
   .kgDetailsHead {
     height: 10vh;
     margin-bottom: 1vh;
-    transition: all 0.5s ease, opacity 0.5s ease;
+    transition:
+      all 0.5s ease,
+      opacity 0.5s ease;
     overflow: hidden;
     opacity: 1;
-
-    .kgAvatar {
-      color: $primaryColor;
-    }
 
     .kgTitle {
       font-weight: bold;
       font-size: 1.5em;
       margin-bottom: 0.5em;
     }
+
     .kgDescription {
       opacity: 0.5;
       display: -webkit-box;
@@ -57,11 +56,11 @@
   }
 
   .kgDetailsContent > * > * > * > * {
-    height: 90%;
+    height: 100%;
   }
 
   .kgDetailsContentExpanded {
-    height: 95%;
+    height: 97%;
   }
 }
 

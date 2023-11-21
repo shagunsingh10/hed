@@ -3,38 +3,27 @@
 .projectDetailsContainer {
   height: 100%;
   position: relative;
-  padding: 1em;
 
   .fullScreenToggle {
-    padding: 0.5em;
+    padding: 0.5em 0;
     display: flex;
     justify-content: flex-end;
   }
 
   .projectDetailsHead {
     height: 10vh;
-    margin-bottom: 1vh;
     overflow-y: hidden;
     opacity: 1;
     transition:
       all 0.5s ease,
       opacity 0.5s ease;
 
-    .projectAvatar {
-      color: $primaryColor;
-    }
-
     .projectTitle {
       font-weight: bold;
       font-size: 1.5em;
       margin-bottom: 0.5em;
-      display: flex;
-      justify-content: space-between;
-
-      :nth-last-child(1) {
-        cursor: pointer;
-      }
     }
+
     .projectDescription {
       opacity: 0.5;
       display: -webkit-box;
@@ -69,7 +58,7 @@
   }
 
   .projectDetailsContent > * > * > * > * {
-    height: 95%;
+    height: 97%;
   }
 }
 

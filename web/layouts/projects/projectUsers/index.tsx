@@ -1,7 +1,7 @@
+import CustomTable from '@/components/Table'
 import { DeleteOutlined, EditOutlined } from '@ant-design/icons'
-import { Space, Table } from 'antd'
+import { Space } from 'antd'
 import type { ColumnsType } from 'antd/es/table'
-import React from 'react'
 
 interface DataType {
   id: string
@@ -32,7 +32,7 @@ const columns: ColumnsType<DataType> = [
     key: 'action',
     align: 'center',
     width: '10%',
-    render: (_, record) => (
+    render: () => (
       <Space size="middle">
         <EditOutlined style={{ cursor: 'pointer' }} />
         <DeleteOutlined style={{ cursor: 'pointer' }} />
@@ -164,13 +164,7 @@ const data: DataType[] = [
   },
 ]
 
-const ProjectUsers: React.FC = () => (
-  <Table
-    columns={columns}
-    dataSource={data}
-    scroll={{ y: 540 }}
-    pagination={false}
-  />
-)
-
+const ProjectUsers: React.FC = () => {
+  return <CustomTable columns={columns} dataSource={data} pagination={false} />
+}
 export default ProjectUsers
