@@ -24,13 +24,14 @@ export interface MessagesSlice {
   addMessage: (m: Message) => void
   postQuery: (chatId: string, query: string) => Promise<void>
   loadMessages: (chatId: string) => Promise<void>
+  resetMessages: () => void
 }
 
 export interface ChatsSlice {
   chats: ChatWithoutMessage[]
-  activeChatId: string
+  activeChatId: string | undefined
   setActiveChatId: (chatId: string) => void
-  loadChats: (scope: 'generic' | 'project', projectId?: string) => Promise<void>
+  loadChats: (projectId?: string) => Promise<void>
   addChat: (projectId?: string) => Promise<string>
   deleteteChat?: () => void
 }

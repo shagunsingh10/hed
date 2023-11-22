@@ -40,7 +40,7 @@ const CreateAssetForm: FC<CreateAssetFormProps> = ({
   const createAsset = useStore((state) => state.createAsset)
   const assetTypes = useStore((state) => state.assetTypes)
   const kgs = useStore((state) => state.kgs)
-  const getKgs = useStore((state) => state.getKgs)
+  const getKgs = kgId ? null : useStore((state) => state.getKgs)
 
   // functions
   const handleSubmit = async (values: any) => {
@@ -81,7 +81,6 @@ const CreateAssetForm: FC<CreateAssetFormProps> = ({
 
     if (assetTypeKey === 'github') {
       const githubDetails = extractUserAndRepo(values.github_url)
-      console.log({ githubDetails })
       return {
         owner: githubDetails.owner,
         repo: githubDetails.repo,

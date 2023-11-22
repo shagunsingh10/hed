@@ -61,6 +61,7 @@ const handler = async (
       const kgs = await prisma.asset.findMany({
         where: {
           knowledgeGroupId: kgId,
+          isActive: true,
         },
         orderBy: {
           createdAt: 'desc',

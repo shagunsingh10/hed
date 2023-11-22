@@ -11,7 +11,6 @@ export const useTableHeight = (ref: RefObject<Element>, footer?: boolean) => {
     height -= 55 // header
     if (footer) height -= 48 // footer
     setTableHeight(height)
-    console.log({ height: height })
   }, [ref, window.innerHeight])
 
   return tableHeight

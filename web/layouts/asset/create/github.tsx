@@ -3,7 +3,6 @@ import { Form, Input } from 'antd'
 function extractUserAndRepo(githubUrl: string) {
   const regex = /github\.com\/([^\/]+)\/([^\/]+)(\/|$)/
   const match = githubUrl.match(regex)
-  console.log(match)
   if (match && match.length >= 3) {
     const owner = match[1]
     const repo = match[2]

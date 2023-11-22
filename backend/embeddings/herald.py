@@ -126,7 +126,7 @@ class HeraldEmbeddings(BaseModel, Embeddings):
 
         try:
             res = requests.post(
-                f"{self.embed_url}",
+                f"{self.embed_url}/v1/embeddings",
                 headers=headers,
                 json={"model": self.model, "input": input},
             )

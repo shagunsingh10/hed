@@ -9,7 +9,6 @@ const CustomTable: RefTable = (props) => {
 
   const setHeight = useDebouncedCallback(() => {
     let height = window.innerHeight
-    console.log({ height })
     const node = ref.current
     const nodeBounds = node?.getBoundingClientRect()
     height -= nodeBounds?.top || 0

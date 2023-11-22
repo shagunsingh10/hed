@@ -37,6 +37,7 @@ const handler = async (
       const kgs = await prisma.knowledgeGroup.findMany({
         where: {
           projectId: projectId,
+          isActive: true,
           UserRole: {
             some: {
               userId: user?.id,

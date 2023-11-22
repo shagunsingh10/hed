@@ -39,11 +39,8 @@ RUN pip install nbconvert
 ADD . /app
 
 # Run the specified commands when the container launches
-CMD celery -A celeryapp.app worker -c 1 -Q ingestorqueue -n ingestionworker@%h -l info & \
-    celery -A celeryapp.app worker -c 1 -Q queryqueue -n queryworker@%h -l info & \
-    python -m servicequeue.start
-
-# CMD celery -A celeryapp.app multi start 2 -Q:1 ingestorqueue -Q:2 retrieverqueue -c:1 1 -c:2 1 & \
-#     python -m servicequeue.start
+CMD celery -A tasks.app worker -c 1 -Q ingestionqueue -n ingestionworker -l info & \
+    celery -A tasks.app worker -c 1 -Q queryprocessorqueue -n queryworker -l info & \
+    python -m main
 
 

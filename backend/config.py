@@ -1,6 +1,5 @@
 import os
 
-import yaml
 from dotenv import load_dotenv
 
 
@@ -19,6 +18,9 @@ class Config:
         required_vars = [
             "NEXT_ENDPOINT",
             "NEXT_API_KEY",
+            "REDIS_HOST",
+            "REDIS_PORT",
+            "SERVICE_QUEUE_NAME",
         ]
         optional_vars = [
             "OPENAI_API_KEY",

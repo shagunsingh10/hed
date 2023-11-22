@@ -14,7 +14,7 @@ import type { ProjectsSlice } from '@/types/projects'
 import { StateCreator } from 'zustand'
 
 export const createChatsSlice: StateCreator<
-  ProjectsSlice & ChatsSlice,
+  ProjectsSlice & ChatsSlice & MessagesSlice,
   [],
   [],
   ChatsSlice
@@ -26,11 +26,13 @@ export const createChatsSlice: StateCreator<
       activeChatId: chatId,
     })
   },
-  loadChats: async (scope, projectId?: string) => {
-    const chats =
-      scope == 'project' ? await getChatsApi(projectId) : await getChatsApi()
+  loadChats: async (projectId?: string) => {
+    const chats = projectId ? await getChatsApi(projectId) : await getChatsApi()
+    const latestChat = chats?.length > 0 ? chats[0].id : null
+    const messages = latestChat ? await loadMessagesApi(latestChat) : []
     set({
       chats: chats,
+      messages: messages,
     })
   },
   addChat: async (projectId) => {
@@ -68,7 +70,7 @@ export const createMessagesSlice: StateCreator<
       } else {
         // if we are streaming response -> add the current message chunk response to last message
         if (get().streaming) {
-          let currentMessage = messages?.pop()
+          const currentMessage = messages?.pop()
           if (currentMessage) {
             m.content = currentMessage.content + m.content
           }
@@ -98,6 +100,12 @@ export const createMessagesSlice: StateCreator<
   loadMessages: async (chatId: string) => {
     set({
       messages: await loadMessagesApi(chatId),
+    })
+  },
+  resetMessages: async () => {
+    set({
+      messages: [],
+      activeChatId: '',
     })
   },
 })

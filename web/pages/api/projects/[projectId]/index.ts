@@ -35,6 +35,7 @@ const handler = async (
       const project = await prisma.project.findFirst({
         where: {
           id: id,
+          isActive: true,
           UserRole: {
             some: {
               userId: user?.id,

@@ -148,10 +148,11 @@ model Asset {
 }
 
 model Doc {
-  id       String  @id @default(cuid())
-  name     String
-  assetId  String
-  metadata String?
+  id               String  @id @default(cuid())
+  vector_db_doc_id String
+  name             String
+  assetId          String
+  metadata         String?
 
   asset Asset @relation(fields: [assetId], references: [id])
 }

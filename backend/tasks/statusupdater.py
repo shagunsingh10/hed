@@ -34,12 +34,14 @@ class StatusUpdater:
                 else:
                     tries += 1
 
-    def update_asset_ingestion_status(self, asset_id, status):
+    def update_asset_ingestion_status(self, asset_id, status, documents=None):
         data = {
             "status": status,
             "apiKey": self.next_api_key,
             "assetId": asset_id,
         }
+        if status == "success" and documents:
+            data["documents"] = documents
         self._make_request(
             f"{self.next_endpoint}/api/webhooks/update-asset-status",
             method="put",

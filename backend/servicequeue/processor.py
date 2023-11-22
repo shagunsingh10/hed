@@ -1,5 +1,5 @@
-from celeryapp.tasks.ingestion import ingest_asset
-from celeryapp.tasks.query import process_query
+from tasks.ingestion import ingest_asset
+from tasks.query import process_query
 from servicequeue.validator import MessageValidator
 from utils.logger import get_logger
 

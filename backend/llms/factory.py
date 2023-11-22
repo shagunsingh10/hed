@@ -6,10 +6,8 @@ from llama_index.llms.bedrock import Bedrock
 from llama_index.llms.clarifai import Clarifai
 from llama_index.llms.cohere import Cohere
 from llama_index.llms.everlyai import EverlyAI
-from llama_index.llms.gradient import (GradientBaseModelLLM,
-                                       GradientModelAdapterLLM)
-from llama_index.llms.huggingface import (HuggingFaceInferenceAPI,
-                                          HuggingFaceLLM)
+from llama_index.llms.gradient import GradientBaseModelLLM, GradientModelAdapterLLM
+from llama_index.llms.huggingface import HuggingFaceInferenceAPI, HuggingFaceLLM
 from llama_index.llms.konko import Konko
 from llama_index.llms.langchain import LangChainLLM
 from llama_index.llms.litellm import LiteLLM
@@ -29,6 +27,7 @@ from llama_index.llms.watsonx import WatsonX
 from llama_index.llms.xinference import Xinference
 
 from llms.kobold import KoboldCPP
+from llms.herald import HeraldLLM
 
 # from utils.exceptions import LLMInstatiateError
 supported_llm_mappings = {
@@ -62,6 +61,7 @@ supported_llm_mappings = {
     "watsonx": WatsonX,
     "xinference": Xinference,
     "kobold": KoboldCPP,
+    "herald": HeraldLLM,
 }
 
 
@@ -71,12 +71,6 @@ class LLMFactory:
         if name.lower() in supported_llm_mappings:
             llm_class = supported_llm_mappings[name.lower()]
             llm = llm_class(**kwargs)
-            # try:
-            #     llm.complete(prompt="Test...")
-            # except Exception:
-            #     raise LLMInstatiateError(
-            #         "Unable to connect to llm. Please validate if the llm parameters are correct."
-            #     )
             return llm
         else:
             raise ValueError(f"{name} LLM is not supported yet.")

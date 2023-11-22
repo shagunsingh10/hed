@@ -4,9 +4,9 @@ import time
 from llama_index import QueryBundle
 from llama_index.retrievers import BaseRetriever
 from llama_index.schema import NodeWithScore
-
+from llama_index.callbacks.base import CallbackManager
 from embeddings.factory import EmbeddingsFactory
-from nodeparser.base import NodeParser
+from chunker.base import NodeParser
 from utils.logger import get_logger
 from vector_store.factory import VectorStoreFactory
 
@@ -34,6 +34,7 @@ class HeraldRetriever(BaseRetriever):
         self._query_mode = query_mode
         self._similarity_top_k = similarity_top_k
         self._min_similarity_score = min_similarity_score
+        self.callback_manager = CallbackManager([])
 
     async def _search_embeddings_in_vector_db(self, embeddings):
         start_time = time.time()

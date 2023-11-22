@@ -42,6 +42,8 @@ const SocketConnector = () => {
             message.success('Asset ingested successfully!')
           } else if (status === 'failed') {
             message.error('Asset ingestion failed!')
+          } else if (status === 'ingesting') {
+            message.info('Asset ingestion started!')
           } else {
             return
           }

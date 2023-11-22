@@ -10,15 +10,18 @@
   align-items: center;
 
   .leftContainer {
-    width: 10%;
-    span {
+    display: flex;
+    align-items: center;
+    gap: 2em;
+    width: 70%;
+    .appLogo {
       font-weight: bold;
       font-size: 2vh;
     }
   }
 
   .rightContainer {
-    width: 90%;
+    width: 30%;
     display: flex;
     gap: 1em;
     align-items: center;

@@ -33,6 +33,6 @@ class ReaderFactory:
         start_time = time.time()
         docs = self.reader.load()
         logger.debug(
-            f"Time taken to read document: [{round(time.time() - start_time, 4)} s]"
+            f"Time taken to read ({len(docs)}) documents: [{round(time.time() - start_time, 4)} s]"
         )
         return docs

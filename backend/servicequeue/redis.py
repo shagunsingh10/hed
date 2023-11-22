@@ -1,16 +1,13 @@
-import time
-
 import redis
 from retry import retry
 
-from servicequeue.base import BaseQueueClient
 from servicequeue.processor import MessageProcessor
 from utils.logger import get_logger
 
 logger = get_logger("redis-consumer")
 
 
-class RedisClient(BaseQueueClient):
+class RedisClient:
     def __init__(self, redis_host="localhost", redis_port=6379):
         self.client = self.create_client(redis_host, redis_port)
 

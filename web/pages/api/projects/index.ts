@@ -37,6 +37,7 @@ const handler = async (
               userId: user?.id,
             },
           },
+          isActive: true,
         },
         orderBy: {
           createdAt: 'desc',

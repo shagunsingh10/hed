@@ -1,10 +1,17 @@
 import { CHAT_MESSAGE_BG, COLOR_BG_TEXT } from '@/constants'
 import { globalDateFormatParser } from '@/lib/functions'
 import { Message } from '@/types/chats'
-import { BulbOutlined, HistoryOutlined, SendOutlined } from '@ant-design/icons'
+import {
+  BulbOutlined,
+  HistoryOutlined,
+  MessageFilled,
+  PlusCircleOutlined,
+  SendOutlined,
+} from '@ant-design/icons'
 import {
   Avatar,
   Button,
+  Drawer,
   Input,
   List,
   Skeleton,
@@ -17,32 +24,31 @@ import ReactMarkdown from 'react-markdown'
 import useStore from '../../store'
 import styles from './chatbot.module.scss'
 import CodeBlock from './Codeblock'
-import ChatHistory from './history/chatHistory'
 
 type ChatWindowProps = {
-  chatId?: string
   projectId?: string
-  scope: 'generic' | 'project'
 }
 
-const ChatWindow: FC<ChatWindowProps> = ({ chatId, projectId, scope }) => {
+const ChatWindow: FC<ChatWindowProps> = ({ projectId }) => {
   // states
   const [inputValue, setInputValue] = useState<string>('')
   const [loading, setLoading] = useState<boolean>(false)
   const [showHistory, setShowHistory] = useState<boolean>(false)
 
-  const messages = useStore((state) => state.messages)
   const postQuery = useStore((state) => state.postQuery)
   const addChat = useStore((state) => state.addChat)
-  const loadMessages = useStore((state) => state.loadMessages)
   const loadChats = useStore((state) => state.loadChats)
-
+  const setActiveChatId = useStore((state) => state.setActiveChatId)
+  const activeChatId = useStore((state) => state.activeChatId)
+  const chats = useStore((state) => state.chats)
+  const messages = useStore((state) => state.messages)
   const waitingForResponse = useStore((state) => state.waitingForResponse)
+
   const chatWindowRef = useRef<HTMLDivElement>(null)
 
   const waitingForResponseMessage: Message = {
     id: 'waiting-for-response',
-    chatId: chatId || '',
+    chatId: activeChatId || '',
     content: '',
     timestamp: new Date(),
     isResponse: true,
@@ -55,25 +61,16 @@ const ChatWindow: FC<ChatWindowProps> = ({ chatId, projectId, scope }) => {
 
   const handleSendMessage = async () => {
     if (inputValue.trim() !== '') {
-      if (!chatId) {
+      if (!activeChatId) {
         addChat(projectId).then((chatId) => {
           postQuery(chatId, inputValue)
         })
       } else {
-        postQuery(chatId, inputValue)
+        postQuery(activeChatId, inputValue)
       }
       setInputValue('')
     }
   }
-
-  // const handleRegenerate = () => {
-  //   const lastUserMessage = messages?.find((e) => e.isResponse === false)
-  //   if (!lastUserMessage || !chatId) {
-  //     message.error('No message to regenerate')
-  //   } else {
-  //     postQuery(chatId, lastUserMessage.content)
-  //   }
-  // }
 
   const handleEnter = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
     if (e.altKey && e.key === 'Enter') {
@@ -86,6 +83,12 @@ const ChatWindow: FC<ChatWindowProps> = ({ chatId, projectId, scope }) => {
     }
   }
 
+  const addNewChat = async () => {
+    const newChatId = await addChat(projectId)
+    setActiveChatId(newChatId)
+    loadChats(projectId) // on success
+  }
+
   // useEffects
   useEffect(() => {
     if (chatWindowRef.current) {
@@ -94,15 +97,9 @@ const ChatWindow: FC<ChatWindowProps> = ({ chatId, projectId, scope }) => {
   }, [messages])
 
   useEffect(() => {
-    if (chatId) {
-      setLoading(true)
-      loadMessages(chatId).finally(() => setLoading(false))
-    }
-  }, [chatId])
-
-  useEffect(() => {
-    if (loadChats) loadChats(scope, projectId)
-  }, [loadChats, scope, projectId])
+    setLoading(true)
+    loadChats(projectId).finally(() => setLoading(false))
+  }, [projectId])
 
   return (
     <div className={styles.chatWindow}>
@@ -180,14 +177,6 @@ const ChatWindow: FC<ChatWindowProps> = ({ chatId, projectId, scope }) => {
           icon={<SendOutlined />}
           disabled={waitingForResponse}
         />
-        {/* <Button
-          title="Regerenrate"
-          className={styles.sendButton}
-          size="middle"
-          onClick={handleRegenerate}
-          icon={<SyncOutlined />}
-          disabled={waitingForResponse}
-        /> */}
         <Button
           title="History"
           className={styles.sendButton}
@@ -197,12 +186,30 @@ const ChatWindow: FC<ChatWindowProps> = ({ chatId, projectId, scope }) => {
           disabled={waitingForResponse}
         />
       </div>
-      <ChatHistory
-        scope={scope}
-        projectId={projectId}
-        open={showHistory}
-        onClose={() => setShowHistory(false)}
-      />
+      <Drawer open={showHistory} onClose={() => setShowHistory(false)}>
+        <div className={styles.chatHistory}>
+          <Button
+            type="primary"
+            size="large"
+            onClick={addNewChat}
+            className={styles.addChatBtn}
+          >
+            <PlusCircleOutlined />
+            New Chat
+          </Button>
+
+          {chats.map((chat, id) => (
+            <div
+              key={id}
+              onClick={() => setActiveChatId(chat.id)}
+              className={styles.chatListItem}
+            >
+              <MessageFilled />
+              <div>{chat.title}</div>
+            </div>
+          ))}
+        </div>
+      </Drawer>
     </div>
   )
 }

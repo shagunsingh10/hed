@@ -38,9 +38,27 @@ const handler = async (
         where: {
           id: kgId,
           projectId: projectId,
+          isActive: true,
           UserRole: {
             some: {
               userId: user?.id,
+            },
+          },
+        },
+        include: {
+          UserRole: {
+            select: {
+              role: true,
+              User: {
+                select: {
+                  name: true,
+                  id: true,
+                  email: true,
+                },
+              },
+            },
+            orderBy: {
+              id: 'asc',
             },
           },
         },

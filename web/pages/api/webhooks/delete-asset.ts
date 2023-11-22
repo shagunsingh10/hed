@@ -2,7 +2,6 @@ import { config as appConfig } from '@/config'
 import { prisma } from '@/lib/prisma'
 import { getSocketClientId } from '@/lib/socket/handler'
 import type { ApiRes } from '@/types/api'
-import { Doc } from '@/types/assets'
 import { NextApiRequest } from 'next'
 import type { NextApiResponseWithSocket } from '../socket'
 
@@ -11,11 +10,9 @@ const handler = async (
   res: NextApiResponseWithSocket<ApiRes<string>>
 ) => {
   switch (req.method) {
-    case 'PUT': {
-      const status = req.body.status as string
+    case 'DELETE': {
       const assetId = req.body.assetId as string
       const apiKey = req.body.apiKey as string
-      const documents: Doc[] = req.body.documents
 
       if (apiKey != appConfig.serviceApiKey) {
         return res.status(401).json({ success: false })
@@ -27,16 +24,7 @@ const handler = async (
             id: assetId,
           },
           data: {
-            status: status,
-            docs: {
-              createMany: {
-                data:
-                  documents?.map((doc) => ({
-                    vector_db_doc_id: doc.id,
-                    name: doc.name,
-                  })) || [],
-              },
-            },
+            isActive: false,
           },
         }),
         prisma.userRole.findMany({
@@ -65,9 +53,8 @@ const handler = async (
         if (member.User.email && io) {
           getSocketClientId(member.User.email).then((socketId) => {
             if (socketId)
-              io.to(socketId).emit('update-asset-status', {
+              io.to(socketId).emit('deleted-status', {
                 assetId: assetId,
-                status: status,
               })
           })
         }

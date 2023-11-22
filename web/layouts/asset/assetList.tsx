@@ -7,6 +7,7 @@ import {
   CloseCircleFilled,
   DeleteOutlined,
   ExclamationCircleFilled,
+  SettingFilled,
 } from '@ant-design/icons'
 import { Input, message, Space, Table, Tag } from 'antd'
 import type { ColumnsType } from 'antd/es/table'
@@ -112,13 +113,15 @@ const KgList: React.FC<KgListProps> = ({ projectId, kgId }) => {
           let color = 'green'
           if (status === 'failed') color = 'red'
           if (status === 'pending') color = 'yellow'
+          if (status === 'ingesting') color = 'orange'
           return (
             <Tag color={color} key={status}>
               {status === 'pending' && <ExclamationCircleFilled />}
               {status === 'success' && <CheckCircleFilled />}
               {status === 'failed' && <CloseCircleFilled />}
+              {status === 'ingesting' && <SettingFilled spin />}
 
-              <span style={{ marginLeft: '0.5em' }}>
+              <span style={{ marginLeft: '0.5em', fontSize: '0.9em' }}>
                 {status.toUpperCase()}
               </span>
             </Tag>

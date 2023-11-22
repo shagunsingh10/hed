@@ -29,7 +29,11 @@ const KgDetailsScreen = () => {
       icon: <FileDoneOutlined />,
       content: <AssetScreen projectId={projectId} kgId={kgId} />,
     },
-    { title: 'Members', icon: <UserOutlined />, content: <KgUsers /> },
+    {
+      title: 'Members',
+      icon: <UserOutlined />,
+      content: <KgUsers members={kg?.members || []} />,
+    },
   ]
 
   const handleTabChange = (e: string) => {

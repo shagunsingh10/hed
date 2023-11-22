@@ -27,6 +27,11 @@ export type Asset = {
   knowledgeGroupName?: string
 }
 
+export type Doc = {
+  name: string
+  id: string
+}
+
 export interface AssetsSlice {
   assets: Asset[]
   assetTypes: AssetType[]

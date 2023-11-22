@@ -13,6 +13,14 @@ export interface Kg {
   description: string | null
   createdBy: string
   createdAt: string
+  members?: KgUser[]
+}
+
+export interface KgUser {
+  id: number
+  name: string
+  role: string
+  email: string
 }
 
 export interface KgsSlice {

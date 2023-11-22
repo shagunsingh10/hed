@@ -1,5 +1,4 @@
 import fetcher from '@/lib/fetcher'
-import { CreateAssetData } from '@/types/assets'
 import { PostMessage } from '@/types/chats'
 
 export const getChatsApi = async (projectId?: string) => {
