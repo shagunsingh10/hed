@@ -8,13 +8,9 @@ export const getAssetTypesApi = async () => {
 }
 
 export const getAssetsApi = async (projectId: string, kgId: string) => {
-  const res = await fetcher.get(`/api/projects/${projectId}/kgs/${kgId}/assets`)
-  const resData = await res.json()
-  return resData.data
-}
-
-export const getAssetsInProjectApi = async (projectId: string) => {
-  const res = await fetcher.get(`/api/projects/${projectId}/assets`)
+  const res = await fetcher.get(
+    `/api/assets?projectId=${projectId}&kgId=${kgId}`
+  )
   const resData = await res.json()
   return resData.data
 }
@@ -25,7 +21,7 @@ export const createAssetApi = async (
   data: CreateAssetData
 ) => {
   const res = await fetcher.post<CreateAssetData>(
-    `/api/projects/${projectId}/kgs/${kgId}/assets`,
+    `/api/assets?projectId=${projectId}&kgId=${kgId}`,
     data,
     {
       headers: {
@@ -49,7 +45,7 @@ export const uploadFileApi = async (
   const formData = new FormData()
   formData.append('file', file)
   const res = await fetcher.post(
-    `/api/projects/${projectId}/kgs/${kgId}/assets/upload`,
+    `/api/assets/upload?projectId=${projectId}&kgId=${kgId}`,
     {},
     {
       body: formData,

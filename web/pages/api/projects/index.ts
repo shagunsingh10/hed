@@ -32,9 +32,13 @@ const handler = async (
     case 'GET': {
       const projects = await prisma.project.findMany({
         where: {
-          UserRole: {
+          knowledgeGroups: {
             some: {
-              userId: user?.id,
+              UserRole: {
+                some: {
+                  userId: user?.id,
+                },
+              },
             },
           },
           isActive: true,
@@ -51,6 +55,12 @@ const handler = async (
     }
     case 'POST': {
       const body = await req.body
+      if (!user?.id) {
+        return res.status(201).json({
+          success: false,
+          error: 'User not found',
+        })
+      }
       const newProject = await prisma.$transaction(async (tx) => {
         const proj = await tx.project.create({
           data: {
@@ -58,10 +68,9 @@ const handler = async (
             description: body.description,
             tags: body.tags,
             createdBy: user?.email as string,
-            UserRole: {
+            admins: {
               create: {
-                role: 'owner',
-                userId: Number(user?.id),
+                userId: user?.id,
               },
             },
           },
@@ -76,8 +85,7 @@ const handler = async (
             UserRole: {
               create: {
                 role: 'owner',
-                userId: Number(user?.id),
-                projectId: proj.id,
+                userId: user?.id,
               },
             },
           },

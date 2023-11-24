@@ -46,6 +46,7 @@ const KgList: React.FC<KgListProps> = ({ projectId, kgId }) => {
   )
 
   const deleteKg = (kgId: string) => {
+    console.log(kgId)
     message.info('Delete feature coming soon...')
   }
 
@@ -82,13 +83,6 @@ const KgList: React.FC<KgListProps> = ({ projectId, kgId }) => {
             })}
           </>
         ),
-      },
-      {
-        title: 'Knowledge Group',
-        align: 'center',
-        dataIndex: 'knowledgeGroupName',
-        key: 'knowledgeGroupName',
-        className: kgId ? 'antd-column-hide' : '',
       },
       {
         title: 'Created By',
@@ -162,7 +156,7 @@ const KgList: React.FC<KgListProps> = ({ projectId, kgId }) => {
         className={styles.kgList}
         columns={columns}
         dataSource={dataSource}
-        scroll={{ y: 480 }}
+        scroll={{ y: 600 }}
         size="large"
         showSorterTooltip={true}
         sortDirections={['ascend', 'descend']}

@@ -5,7 +5,7 @@ from langchain.pydantic_v1 import BaseModel, Extra
 from langchain.schema.embeddings import Embeddings
 
 
-class HeraldEmbeddings(BaseModel, Embeddings):
+class CustomEmbeddings(BaseModel, Embeddings):
     embed_url: str = "http://localhost:123"
     """Base url the model is hosted under."""
     model: str = "llama2"

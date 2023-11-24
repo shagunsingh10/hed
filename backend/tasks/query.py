@@ -8,7 +8,7 @@ from llama_index.query_engine import RetrieverQueryEngine
 from llama_index.response_synthesizers import get_response_synthesizer
 from llms.factory import LLMFactory
 from prompts.custom import strict_context_qa_template
-from retriever.herald import HeraldRetriever
+from retriever.fusion import FusionRetriever
 from utils.logger import get_logger
 
 logger = get_logger()
@@ -52,7 +52,7 @@ def process_query(self, payload):
         complete_response = ""
 
         # Initializing HeraldRetriever for retrieving information
-        retriever = HeraldRetriever(
+        retriever = FusionRetriever(
             payload.get("collections"),
             embed_model,
             embed_model_kwargs,

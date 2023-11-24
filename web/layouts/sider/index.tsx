@@ -1,5 +1,4 @@
 import { ProfileFilled, RobotFilled } from '@ant-design/icons'
-import { Tooltip } from 'antd'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import styles from './sider.module.scss'
@@ -19,17 +18,16 @@ export default function Sider() {
     <div className={styles.siderContainer}>
       <div className={styles.menuContainer}>
         {items.map((e) => (
-          <Tooltip placement="right" title={e.title} key={e.path}>
-            <div
-              className={
-                getParentPath(pathname) == e.path
-                  ? styles.activeNavItem
-                  : styles.navItem
-              }
-            >
-              <Link href={e.path}>{e.icon}</Link>
-            </div>
-          </Tooltip>
+          <div
+            className={`${styles.navItem} ${
+              getParentPath(pathname) == e.path ? styles.activeNavItem : ''
+            }`}
+          >
+            <Link href={e.path} className={styles.navItemLink}>
+              {e.icon}
+              <span className={styles.navItemTitle}>{e.title}</span>
+            </Link>
+          </div>
         ))}
       </div>
     </div>

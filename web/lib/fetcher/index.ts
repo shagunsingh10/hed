@@ -1,5 +1,3 @@
-import { message } from 'antd'
-
 const redirectToNotFound = () => {
   if (window) window.location.href = '/404'
 }
@@ -11,17 +9,8 @@ const fetchApi = async (
   const response = await fetch(url, options)
 
   if (response.status === 404) {
-    await response.json()
     redirectToNotFound()
-  }
-
-  if (response.status === 403) {
-    const res = await response.json()
-    message.error(res?.error)
-  }
-
-  if (!response.ok) {
-    throw new Error(`Request failed with status: ${response.status}`)
+    return response
   }
 
   return response

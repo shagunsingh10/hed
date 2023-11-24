@@ -3,6 +3,7 @@ import { createChatsSlice, createMessagesSlice } from './chats'
 import { createKgsSlice } from './kgs'
 import { createProjectsSlice } from './projects'
 import { createSocketSlice } from './socket'
+import { createUsersSlice } from './user'
 
 export {
   createChatsSlice,
@@ -11,4 +12,5 @@ export {
   createKgsSlice,
   createAssetsSlice,
   createSocketSlice,
+  createUsersSlice,
 }

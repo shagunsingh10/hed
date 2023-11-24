@@ -1,11 +1,11 @@
-llm: herald
+llm: custom
 llm_kwargs:
-  base_url: https://c841-34-125-198-181.ngrok-free.app
+  base_url: https://483c-35-227-136-255.ngrok-free.app
 
-embed_model: herald
+embed_model: custom
 embed_model_kwargs:
   model: "llama2"
-  embed_url: https://c841-34-125-198-181.ngrok-free.app
+  embed_url: https://483c-35-227-136-255.ngrok-free.app
 
 max_sources: 3
 min_similarity_score: 0.7

@@ -1,71 +1,14 @@
 import { prisma } from '../prisma'
 
 // Projects
-const hasOwnerAccessToProject = async (projectId: string, userId: number) => {
-  const isAllowed = await prisma.project.findFirst({
+const isProjectAdmin = async (projectId: string, userId: number) => {
+  const isAllowed = await prisma.projectAdmin.findFirst({
     where: {
-      id: projectId,
-      UserRole: {
-        some: {
-          AND: [
-            { userId: userId },
-            {
-              role: {
-                equals: 'owner',
-              },
-            },
-          ],
-        },
-      },
+      projectId: projectId,
+      userId: userId,
     },
   })
-  return isAllowed != null
-}
-
-const hasContributorAccessToProject = async (
-  projectId: string,
-  userId: number
-) => {
-  const isAllowed = await prisma.project.findFirst({
-    where: {
-      id: projectId,
-      UserRole: {
-        some: {
-          AND: [
-            { userId: userId },
-            {
-              OR: [
-                {
-                  role: {
-                    equals: 'owner',
-                  },
-                },
-                {
-                  role: {
-                    equals: 'contributor',
-                  },
-                },
-              ],
-            },
-          ],
-        },
-      },
-    },
-  })
-  return isAllowed != null
-}
-
-const hasViewerAccessToProject = async (projectId: string, userId: number) => {
-  const isAllowed = await prisma.project.findFirst({
-    where: {
-      id: projectId,
-      UserRole: {
-        some: {
-          userId: userId,
-        },
-      },
-    },
-  })
+  console.log({ isAllowed })
   return isAllowed != null
 }
 
@@ -89,6 +32,7 @@ const hasOwnerAccessToKg = async (kgId: string, userId: number) => {
       },
     },
   })
+  console.log({ isAllowed })
   return isAllowed != null
 }
 
@@ -137,10 +81,8 @@ const hasViewerAccessToKg = async (kgId: string, userId: number) => {
 }
 
 export {
+  isProjectAdmin,
   hasContributorAccessToKg,
-  hasContributorAccessToProject,
   hasOwnerAccessToKg,
-  hasOwnerAccessToProject,
   hasViewerAccessToKg,
-  hasViewerAccessToProject,
 }

@@ -11,6 +11,7 @@ import type { ChatsSlice, MessagesSlice } from '@/types/chats'
 import { KgsSlice } from '@/types/kgs'
 import type { ProjectsSlice } from '@/types/projects'
 import { SocketSlice } from '@/types/socket'
+import { UsersSlice } from '@/types/users'
 import { create } from 'zustand'
 import {
   createAssetsSlice,
@@ -19,6 +20,7 @@ import {
   createMessagesSlice,
   createProjectsSlice,
   createSocketSlice,
+  createUsersSlice,
 } from './slices'
 
 const useStore = create<
@@ -27,7 +29,8 @@ const useStore = create<
     MessagesSlice &
     KgsSlice &
     AssetsSlice &
-    SocketSlice
+    SocketSlice &
+    UsersSlice
 >()((...a) => ({
   ...createProjectsSlice(...a),
   ...createChatsSlice(...a),
@@ -35,6 +38,7 @@ const useStore = create<
   ...createKgsSlice(...a),
   ...createAssetsSlice(...a),
   ...createSocketSlice(...a),
+  ...createUsersSlice(...a),
 }))
 
 export default useStore

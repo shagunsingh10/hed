@@ -1,5 +1,5 @@
 import Chatbox from '@/components/Chatbox'
 
 export default function Home() {
-  return <Chatbox scope="generic" />
+  return <Chatbox />
 }

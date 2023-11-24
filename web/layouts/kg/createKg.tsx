@@ -23,8 +23,14 @@ const CreateKGForm: FC<createKgFormProps> = ({ projectId, open, onClose }) => {
         description: values.description,
         tags: values.tags,
       })
-      message.success('Knowledge Created Successfully')
-      handleReset()
+        .then(() => {
+          message.success('Knowledge Created Successfully')
+          handleReset()
+        })
+        .catch((e: Error) => {
+          console.log(e.message.toString())
+          message.error(e.message.toString())
+        })
     } catch (e: any) {
       message.error(e)
     } finally {

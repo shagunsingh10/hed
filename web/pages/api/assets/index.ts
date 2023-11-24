@@ -1,9 +1,7 @@
 import { getUserInfoFromSessionToken } from '@/lib/auth'
 import {
   hasContributorAccessToKg,
-  hasContributorAccessToProject,
   hasViewerAccessToKg,
-  hasViewerAccessToProject,
 } from '@/lib/auth/access'
 import { prisma } from '@/lib/prisma'
 import { sendMessageToPythonService } from '@/lib/redis'
@@ -46,12 +44,9 @@ const handler = async (
 
   switch (req.method) {
     case 'GET': {
-      const [projectViewAllowed, kgViewAllowed] = await Promise.all([
-        hasViewerAccessToProject(projectId, Number(user?.id)),
-        hasViewerAccessToKg(kgId, Number(user?.id)),
-      ])
+      const kgViewAllowed = await hasViewerAccessToKg(kgId, Number(user?.id))
 
-      if (!projectViewAllowed && !kgViewAllowed) {
+      if (!kgViewAllowed) {
         return res.status(404).json({
           success: false,
           error: 'Resource not found',
@@ -77,18 +72,16 @@ const handler = async (
     case 'POST': {
       const body: CreateAssetData = await req.body
 
-      const [projectContributorAccess, kgContributorAccess] = await Promise.all(
-        [
-          hasContributorAccessToProject(projectId, Number(user?.id)),
-          hasContributorAccessToKg(kgId, Number(user?.id)),
-        ]
+      const kgContributorAccess = await hasContributorAccessToKg(
+        kgId,
+        Number(user?.id)
       )
 
-      if (!projectContributorAccess || !kgContributorAccess) {
+      if (!kgContributorAccess) {
         return res.status(403).json({
           success: false,
           error:
-            'User needs atleast contributor access in project or knowledge group to be able to create an asset.',
+            'User needs atleast contributor access in the knowledge group to be able to create an asset.',
         })
       }
 

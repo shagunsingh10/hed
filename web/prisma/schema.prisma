@@ -54,9 +54,10 @@ model User {
   emailVerified DateTime?
   image         String?
 
-  ownedAssets Asset[]
-  chats       Chat[]
-  UserRole    UserRole[]
+  ownedAssets   Asset[]
+  chats         Chat[]
+  UserRole      UserRole[]
+  projectAdmins ProjectAdmin[]
 
   @@map("users")
 }
@@ -73,10 +74,22 @@ model Project {
   updatedAt   String?
 
   knowledgeGroups KnowledgeGroup[]
-  UserRole        UserRole[]
   Chat            Chat[]
+  admins          ProjectAdmin[]
 
   @@map("projects")
+}
+
+model ProjectAdmin {
+  id        String @id @default(cuid())
+  userId    Int
+  projectId String
+
+  Project Project @relation(fields: [projectId], references: [id])
+  User    User    @relation(fields: [userId], references: [id])
+
+  @@unique([projectId, userId], name: "UserProjectIndex")
+  @@map("project_admins")
 }
 
 model KnowledgeGroup {
@@ -99,18 +112,15 @@ model KnowledgeGroup {
 }
 
 model UserRole {
-  id               String  @id @default(cuid())
-  projectId        String
-  knowledgeGroupId String?
+  id               String @id @default(cuid())
+  knowledgeGroupId String
   userId           Int
   role             String
 
-  Project        Project         @relation(fields: [projectId], references: [id])
   KnowledgeGroup KnowledgeGroup? @relation(fields: [knowledgeGroupId], references: [id])
   User           User            @relation(fields: [userId], references: [id])
 
   @@unique([knowledgeGroupId, userId], name: "UserKnowledgeGroupIndex")
-  @@index([projectId, userId], name: "UserProjectIndex")
   @@map("user_roles")
 }
 

@@ -27,7 +27,7 @@ from llama_index.llms.watsonx import WatsonX
 from llama_index.llms.xinference import Xinference
 
 from llms.kobold import KoboldCPP
-from llms.herald import HeraldLLM
+from llms.custom import HeraldCustomLLM
 
 # from utils.exceptions import LLMInstatiateError
 supported_llm_mappings = {
@@ -61,7 +61,7 @@ supported_llm_mappings = {
     "watsonx": WatsonX,
     "xinference": Xinference,
     "kobold": KoboldCPP,
-    "herald": HeraldLLM,
+    "custom": HeraldCustomLLM,
 }
 
 

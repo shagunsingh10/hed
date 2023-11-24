@@ -1,16 +1,20 @@
 import fetcher from '@/lib/fetcher'
 import { CreateKgData } from '@/types/kgs'
+import { message } from 'antd'
 
 export const getKgsApi = async (projectId: string) => {
-  const res = await fetcher.get(`/api/projects/${projectId}/kgs`)
+  const res = await fetcher.get(`/api/kgs?projectId=${projectId}`)
   const resData = await res.json()
-  if (res.status != 200) return []
+  if (!resData.success) {
+    message.error(resData.error)
+    return []
+  }
   return resData.data
 }
 
 export const createKgApi = async (projectId: string, data: CreateKgData) => {
   const res = await fetcher.post<CreateKgData>(
-    `/api/projects/${projectId}/kgs`,
+    `/api/kgs?projectId=${projectId}`,
     data,
     {
       headers: {
@@ -19,20 +23,53 @@ export const createKgApi = async (projectId: string, data: CreateKgData) => {
     }
   )
   const resData = await res.json()
-  if (res.status != 200) return []
+  if (!resData.success) {
+    throw Error(resData.error)
+  }
   return resData.data
 }
 
-export const getKgByIdApi = async (projectId: string, kgId: string) => {
-  const res = await fetcher.get(`/api/projects/${projectId}/kgs/${kgId}`)
+export const getKgByIdApi = async (kgId: string) => {
+  const res = await fetcher.get(`/api/kgs/${kgId}`)
   const resData = await res.json()
-  const members = resData.data?.UserRole?.map((user: any) => ({
-    id: user?.User?.id,
-    name: user?.User?.name,
-    email: user?.User?.email,
-    role: user?.role,
-  }))
-  delete resData.data['UserRole']
-  resData.data['members'] = members
+  if (!resData.success) {
+    message.error(resData.error)
+    return {}
+  }
+  return resData.data
+}
+
+export const addUserToKgApi = async (
+  kgId: string,
+  userId: string,
+  role: string
+) => {
+  const res = await fetcher.post(
+    `/api/kgs/${kgId}/users`,
+    {
+      userId: userId,
+      role: role,
+    },
+    {
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    }
+  )
+  const resData = await res.json()
+  if (!resData.success) {
+    message.error(resData.error)
+    return {}
+  }
+  return resData.data
+}
+
+export const getKgMemebersApi = async (kgId: string) => {
+  const res = await fetcher.get(`/api/kgs/${kgId}/users`)
+  const resData = await res.json()
+  if (!resData.success) {
+    message.error(resData.error)
+    return []
+  }
   return resData.data
 }

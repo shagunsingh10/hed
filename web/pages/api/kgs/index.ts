@@ -1,5 +1,5 @@
 import { getUserInfoFromSessionToken } from '@/lib/auth'
-import { hasContributorAccessToProject } from '@/lib/auth/access'
+import { isProjectAdmin } from '@/lib/auth/access'
 import { prisma } from '@/lib/prisma'
 import type { ApiRes } from '@/types/api'
 import { Kg } from '@/types/kgs'
@@ -58,16 +58,19 @@ const handler = async (
     case 'POST': {
       const body = await req.body
 
-      const isAllowed = await hasContributorAccessToProject(
-        projectId,
-        Number(user?.id)
-      )
+      if (!user?.id) {
+        return res.status(201).json({
+          success: false,
+          error: 'User not found',
+        })
+      }
+      console.log({ projectId, userId: user?.id })
+      const isAllowed = await isProjectAdmin(projectId, Number(user?.id))
 
       if (!isAllowed) {
         return res.status(403).json({
           success: false,
-          error:
-            'User needs atleast contributor access in project to be able to create knowledge groups.',
+          error: 'Only admins can create knowledge groups',
         })
       }
 
@@ -80,9 +83,8 @@ const handler = async (
           createdBy: user?.email as string,
           UserRole: {
             create: {
-              userId: Number(user?.id),
+              userId: user?.id,
               role: 'owner',
-              projectId: projectId,
             },
           },
         },

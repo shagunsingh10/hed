@@ -4,14 +4,8 @@
   height: 100%;
   position: relative;
 
-  .fullScreenToggle {
-    padding: 0.5em 0;
-    display: flex;
-    justify-content: flex-end;
-  }
-
   .kgDetailsHead {
-    height: 10vh;
+    height: 4vh;
     margin-bottom: 1vh;
     transition:
       all 0.5s ease,
@@ -21,28 +15,13 @@
 
     .kgTitle {
       font-weight: bold;
-      font-size: 1.5em;
+      font-size: 1.7em;
       margin-bottom: 0.5em;
     }
-
-    .kgDescription {
-      opacity: 0.5;
-      display: -webkit-box;
-      -webkit-line-clamp: 3;
-      -webkit-box-orient: vertical;
-      overflow: hidden;
-      overflow-wrap: break-word;
-    }
-  }
-
-  .hidden {
-    height: 0;
-    opacity: 0;
-    pointer-events: none;
   }
 
   .kgDetailsContent {
-    height: calc(100% - 10vh);
+    height: calc(100% - 4vh);
     overflow-y: auto;
     position: relative;
   }

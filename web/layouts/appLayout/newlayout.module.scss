@@ -17,16 +17,18 @@
     position: relative;
 
     .sider {
-      width: 2.5%;
+      width: 5%;
+      background-color: $dark1;
+      border: none;
     }
 
     .contentBody {
-      width: 97.5%;
+      width: 95%;
       border: 1px solid rgba(150, 150, 150, 0.1);
 
       .mainBody {
-        height: 100%;
-        padding: 1em 1em 0 1em;
+        height: 98%;
+        padding: 1% 2%;
       }
     }
   }

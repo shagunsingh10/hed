@@ -1,3 +1,4 @@
+import BreadcrumbComponent from '@/components/Breadcrumb'
 import Loader from '@/components/Loader'
 import SocketConnector from '@/components/Socket'
 import { Layout } from 'antd'
@@ -35,6 +36,7 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
           <Sider />
         </div>
         <div className={styles.contentBody}>
+          <BreadcrumbComponent />
           <div className={styles.mainBody}>{children}</div>
         </div>
       </div>

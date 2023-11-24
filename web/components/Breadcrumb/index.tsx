@@ -10,7 +10,7 @@ const BreadcrumbComponent = () => {
     .filter((segment) => segment !== '')
 
   return (
-    <Breadcrumb style={{ margin: '0 0.5em' }}>
+    <Breadcrumb style={{ margin: '0.5em 1em' }}>
       <Breadcrumb.Item>
         <Link href="/" style={{ display: 'flex', gap: '0.5em' }}>
           <HomeFilled />

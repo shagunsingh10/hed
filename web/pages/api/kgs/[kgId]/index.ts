@@ -4,9 +4,10 @@ import type { ApiRes } from '@/types/api'
 import { Project } from '@/types/projects'
 import { NextApiRequest, NextApiResponse } from 'next'
 
-type PrismaProjectRecord = {
+type PrismaKgRecord = {
   id: string
   name: string
+  projectId: string
   description: string | null
   tags: string | null
   isActive: boolean
@@ -14,7 +15,7 @@ type PrismaProjectRecord = {
   createdAt: Date
 }
 
-const processTags = (project: PrismaProjectRecord): Project => {
+const processTags = (project: PrismaKgRecord): Project => {
   return {
     ...project,
     tags: project.tags?.split(',').map((tag) => tag?.trim()) || [],
@@ -30,11 +31,11 @@ const handler = async (
 
   switch (req.method) {
     case 'GET': {
-      const id = req.query.projectId as string
+      const kgId = req.query.kgId as string
 
-      const project = await prisma.project.findFirst({
+      const kg = await prisma.knowledgeGroup.findFirst({
         where: {
-          id: id,
+          id: kgId,
           isActive: true,
           UserRole: {
             some: {
@@ -44,15 +45,15 @@ const handler = async (
         },
       })
 
-      if (!project)
+      if (!kg)
         return res.status(404).json({
           success: false,
-          error: 'Project not found',
+          error: 'Knowledge group not found',
         })
 
       res.status(200).json({
         success: true,
-        data: processTags(project),
+        data: processTags(kg),
       })
       break
     }

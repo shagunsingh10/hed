@@ -1,4 +1,3 @@
-import BreadcrumbComponent from '@/components/Breadcrumb'
 import {
   BellOutlined,
   LogoutOutlined,
@@ -35,9 +34,6 @@ export default function Header() {
     <div className={styles.headerContainer}>
       <div className={styles.leftContainer}>
         <span className={styles.appLogo}>HERALD</span>
-        <div>
-          <BreadcrumbComponent />
-        </div>
       </div>
       {status == 'authenticated' && (
         <div className={styles.rightContainer}>

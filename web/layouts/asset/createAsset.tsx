@@ -115,7 +115,7 @@ const CreateAssetForm: FC<CreateAssetFormProps> = ({
     if (kgId) setSelectedKgId(kgId)
   }, [kgId])
 
-  if (!assetTypes || assetTypes.length === 0) {
+  if (!assetTypes) {
     return <Loader />
   }
 

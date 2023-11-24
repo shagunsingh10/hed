@@ -4,14 +4,8 @@
   height: 100%;
   position: relative;
 
-  .fullScreenToggle {
-    padding: 0.5em 0;
-    display: flex;
-    justify-content: flex-end;
-  }
-
   .projectDetailsHead {
-    height: 10vh;
+    height: 5vh;
     overflow-y: hidden;
     opacity: 1;
     transition:
@@ -20,28 +14,13 @@
 
     .projectTitle {
       font-weight: bold;
-      font-size: 1.5em;
+      font-size: 1.7em;
       margin-bottom: 0.5em;
     }
-
-    .projectDescription {
-      opacity: 0.5;
-      display: -webkit-box;
-      -webkit-line-clamp: 3;
-      -webkit-box-orient: vertical;
-      overflow: hidden;
-      overflow-wrap: break-word;
-    }
-  }
-
-  .hidden {
-    height: 0;
-    opacity: 0;
-    pointer-events: none;
   }
 
   .projectDetailsContent {
-    height: calc(100% - 10vh);
+    height: calc(100% - 5vh);
     position: relative;
   }
 

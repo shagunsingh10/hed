@@ -22,7 +22,7 @@ from llama_index.llms.generic_utils import stream_completion_response_to_chat_re
 from requests import Response
 
 
-class HeraldLLM(CustomLLM):
+class HeraldCustomLLM(CustomLLM):
     base_url: str = Field(description="Base url the model is hosted under.")
     model: str = Field(description="The Kobold model to use.")
     temperature: float = Field(description="The temperature to use for sampling.")

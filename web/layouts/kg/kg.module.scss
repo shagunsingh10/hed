@@ -6,20 +6,25 @@
 
   .screenHeader {
     display: flex;
-    justify-content: right;
+    justify-content: space-between;
     align-items: center;
-    padding: 0.5em 0;
-    height: 6vh;
+    height: 10%;
+    padding: 1.5em;
+    gap: 20em;
 
     .screenTitle {
-      font-size: 20px;
+      font-size: 25px;
       font-weight: bold;
+      text-transform: uppercase;
+    }
+
+    .search {
+      width: 40%;
     }
   }
 }
 
 .newKGFormContainer {
-  height: 97%;
   overflow-y: auto;
   display: flex;
   padding: 0.5em;
@@ -30,10 +35,10 @@
     textarea {
       resize: none;
     }
-    height: 45vh;
   }
 
   .formButtonGroup {
+    margin-top: 2em;
     display: flex;
     gap: 1em;
     justify-content: flex-end;

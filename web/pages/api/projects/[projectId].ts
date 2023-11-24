@@ -4,10 +4,9 @@ import type { ApiRes } from '@/types/api'
 import { Project } from '@/types/projects'
 import { NextApiRequest, NextApiResponse } from 'next'
 
-type PrismaKgRecord = {
+type PrismaProjectRecord = {
   id: string
   name: string
-  projectId: string
   description: string | null
   tags: string | null
   isActive: boolean
@@ -15,7 +14,7 @@ type PrismaKgRecord = {
   createdAt: Date
 }
 
-const processTags = (project: PrismaKgRecord): Project => {
+const processTags = (project: PrismaProjectRecord): Project => {
   return {
     ...project,
     tags: project.tags?.split(',').map((tag) => tag?.trim()) || [],
@@ -31,48 +30,33 @@ const handler = async (
 
   switch (req.method) {
     case 'GET': {
-      const projectId = req.query.projectId as string
-      const kgId = req.query.kgId as string
+      const id = req.query.projectId as string
 
-      const kg = await prisma.knowledgeGroup.findFirst({
+      const project = await prisma.project.findFirst({
         where: {
-          id: kgId,
-          projectId: projectId,
+          id: id,
           isActive: true,
-          UserRole: {
+          knowledgeGroups: {
             some: {
-              userId: user?.id,
-            },
-          },
-        },
-        include: {
-          UserRole: {
-            select: {
-              role: true,
-              User: {
-                select: {
-                  name: true,
-                  id: true,
-                  email: true,
+              UserRole: {
+                some: {
+                  userId: user?.id,
                 },
               },
-            },
-            orderBy: {
-              id: 'asc',
             },
           },
         },
       })
 
-      if (!kg)
+      if (!project)
         return res.status(404).json({
           success: false,
-          error: 'Knowledge group not found',
+          error: 'Project not found',
         })
 
       res.status(200).json({
         success: true,
-        data: processTags(kg),
+        data: processTags(project),
       })
       break
     }

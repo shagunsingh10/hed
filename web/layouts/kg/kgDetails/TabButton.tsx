@@ -2,11 +2,12 @@ import CreateAssetForm from '@/layouts/asset/createAsset'
 import { PlusCircleOutlined } from '@ant-design/icons'
 import { Button } from 'antd'
 import { FC, useState } from 'react'
+import AddUserForm from '../kgUsers/addUserForm'
 
 type TabContentProps = {
   activeTab: number
   projectId: string
-  kgId?: string
+  kgId: string
 }
 
 const TabContentAsset: FC<TabContentProps> = ({
@@ -36,6 +37,23 @@ const TabContentAsset: FC<TabContentProps> = ({
       </div>
     )
   }
+
+  if (activeTab === 2) {
+    return (
+      <div>
+        <Button
+          onClick={() => setOpen(true)}
+          type="primary"
+          size="middle"
+          ghost
+        >
+          <PlusCircleOutlined /> Add User
+        </Button>
+        <AddUserForm kgId={kgId} open={open} onClose={() => setOpen(false)} />
+      </div>
+    )
+  }
+
   return <></>
 }
 

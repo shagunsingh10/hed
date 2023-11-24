@@ -13,23 +13,35 @@
     align-items: center;
     gap: 1.5em;
 
-    * {
-      font-size: 1.08em;
-    }
-
-    .activeNavItem {
-      cursor: pointer;
-      font-weight: bold;
-      background-color: $primaryColor;
-      border-radius: 10%;
-      padding: 15%;
-    }
-
     .navItem {
       cursor: pointer;
       display: flex;
+      width: 90%;
+      justify-content: center;
       transition: color 1s;
-      padding: 15%;
+      padding: 10%;
+      border-radius: 10%;
+
+      .navItemLink {
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 0.3em;
+
+        * {
+          font-size: 1.5em;
+        }
+
+        .navItemTitle {
+          font-size: 0.95em;
+        }
+      }
+    }
+
+    .activeNavItem {
+      font-weight: bold;
+      background-color: $primaryColor;
       border-radius: 10%;
     }
 

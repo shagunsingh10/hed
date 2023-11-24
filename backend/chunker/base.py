@@ -1,9 +1,8 @@
 import time
 
 from llama_index.node_parser import SimpleNodeParser
-from llama_index.schema import BaseNode, Document, NodeWithScore
+from llama_index.schema import BaseNode, Document
 from llama_index.text_splitter import CodeSplitter
-from llama_index.vector_stores import VectorStoreQueryResult
 
 from utils.logger import get_logger
 
@@ -107,22 +106,3 @@ class NodeParser:
             f"Time taken to convert documents to nodes: [{round(time.time() - start_time, 4)} s]"
         )
         return all_nodes
-
-    @staticmethod
-    def get_scored_nodes_from_query_results(
-        query_results: list[VectorStoreQueryResult],
-        min_similarity_score: int = 0.5,
-        max_sources: int = 5,
-    ) -> list[NodeWithScore]:
-        nodes_with_score = []
-        for result in query_results:
-            for index, node in enumerate(result.nodes):
-                score = 0
-                if result.similarities is not None:
-                    score = result.similarities[index]
-                if score > min_similarity_score:
-                    nodes_with_score.append(NodeWithScore(node=node, score=score))
-        sorted_nodes_with_score = sorted(
-            nodes_with_score, key=lambda x: x.score, reverse=True
-        )
-        return sorted_nodes_with_score[: min(len(sorted_nodes_with_score), max_sources)]

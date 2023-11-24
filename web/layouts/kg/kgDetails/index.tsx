@@ -2,15 +2,15 @@ import Loader from '@/components/Loader'
 import useStore from '@/store'
 import { Kg } from '@/types/kgs'
 import {
-  DownCircleOutlined,
   FileDoneOutlined,
-  UpCircleOutlined,
+  SettingOutlined,
   UserOutlined,
 } from '@ant-design/icons'
-import { Col, message, Row, Tabs } from 'antd'
+import { message, Tabs } from 'antd'
 import { useParams } from 'next/navigation'
 import { useEffect, useState } from 'react'
 import AssetScreen from '../../asset'
+import KgSettings from '../kgSettings'
 import KgUsers from '../kgUsers'
 import styles from './kgDetails.module.scss'
 import TabContent from './TabButton'
@@ -19,7 +19,6 @@ const KgDetailsScreen = () => {
   const { projectId, kgId }: { projectId: string; kgId: string } = useParams()
   const [kg, setkg] = useState<Kg>()
   const [loading, setLoading] = useState<boolean>(false)
-  const [isFullScreen, setIsFullScreen] = useState<boolean>(false)
   const [activeTab, setActiveTab] = useState<number>(1)
   const getKgById = useStore((state) => state.getKgById)
 
@@ -32,7 +31,12 @@ const KgDetailsScreen = () => {
     {
       title: 'Members',
       icon: <UserOutlined />,
-      content: <KgUsers members={kg?.members || []} />,
+      content: <KgUsers kgId={kgId} />,
+    },
+    {
+      title: 'Settings',
+      icon: <SettingOutlined />,
+      content: <KgSettings kg={kg} />,
     },
   ]
 
@@ -42,7 +46,7 @@ const KgDetailsScreen = () => {
 
   useEffect(() => {
     setLoading(true)
-    getKgById(projectId, kgId)
+    getKgById(kgId)
       .then((kg) => {
         setkg(kg)
         setLoading(false)
@@ -51,7 +55,7 @@ const KgDetailsScreen = () => {
         message.error('Error in fetching kg!')
         setLoading(false)
       })
-  }, [projectId, kgId])
+  }, [kgId])
 
   if (!projectId || !kgId || loading) {
     return <Loader />
@@ -59,28 +63,10 @@ const KgDetailsScreen = () => {
 
   return (
     <div className={styles.kgDetailsContainer}>
-      <div className={styles.fullScreenToggle}>
-        {isFullScreen ? (
-          <DownCircleOutlined onClick={() => setIsFullScreen(false)} />
-        ) : (
-          <UpCircleOutlined onClick={() => setIsFullScreen(true)} />
-        )}
+      <div className={styles.kgDetailsHead}>
+        <span className={styles.kgTitle}>{kg?.name}</span>
       </div>
-      <Row
-        className={`${styles.kgDetailsHead} ${
-          isFullScreen ? styles.hidden : ''
-        }`}
-      >
-        <Col span={24}>
-          <span className={styles.kgTitle}>{kg?.name}</span>
-          <span className={styles.kgDescription}>{kg?.description}</span>
-        </Col>
-      </Row>
-      <div
-        className={`${styles.kgDetailsContent} ${
-          isFullScreen ? styles.kgDetailsContentExpanded : ''
-        }`}
-      >
+      <div className={styles.kgDetailsContent}>
         <Tabs
           defaultActiveKey="1"
           type="card"

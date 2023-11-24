@@ -1,44 +1,42 @@
-import { Project } from '@/types/projects'
+import { Kg } from '@/types/kgs'
 import { PlusCircleOutlined } from '@ant-design/icons'
 import { Card, Col, Empty, Row, Skeleton, Tag } from 'antd'
 import { useRouter } from 'next/navigation'
 import { FC, useState } from 'react'
-import CreateProjectForm from './newProject'
-import styles from './projects.module.scss'
+import CreateKGForm from '../createKg'
+import styles from './kggrid.module.scss'
 
-type KGGridProps = {
-  projects: Project[]
+type KgGridProps = {
+  projectId: string
+  kgs: Kg[]
   loading: boolean
 }
-const ProjectsGrid: FC<KGGridProps> = ({ projects, loading }) => {
-  const [createProjectTab, setCreateProjectTab] = useState<boolean>(false)
+
+const KGGrid: FC<KgGridProps> = ({ projectId, kgs, loading }) => {
+  const [open, setOpen] = useState<boolean>(false)
 
   const { push } = useRouter()
 
   const handleProjectClick = (id: string) => {
-    sessionStorage.setItem(
-      id,
-      JSON.stringify(projects.find((e) => e.id === id))
-    )
-    push(`projects/${id}`, {
+    push(`/projects/${projectId}/kgs/${id}`, {
       scroll: false,
     })
   }
 
   return (
-    <div className={styles.projectCardsContainer}>
+    <div className={styles.kgCardsContainer}>
       <div
-        className={`${styles.projectCard} ${styles.createNewProject}`}
-        onClick={() => setCreateProjectTab(true)}
+        className={`${styles.kgCard} ${styles.createNewKg}`}
+        onClick={() => setOpen(true)}
       >
         <PlusCircleOutlined style={{ fontSize: '8vh' }} />
         <span>Create New</span>
       </div>
-      {projects?.length > 0 ? (
-        projects.map((item, key) => (
+      {kgs?.length > 0 ? (
+        kgs.map((item, key) => (
           <Card
             key={key}
-            className={styles.projectCard}
+            className={styles.kgCard}
             onClick={() => handleProjectClick(item.id)}
           >
             <Skeleton loading={loading} avatar active>
@@ -46,9 +44,9 @@ const ProjectsGrid: FC<KGGridProps> = ({ projects, loading }) => {
                 style={{ display: 'flex', alignItems: 'center', padding: 0 }}
               >
                 <Col span={24}>
-                  <div className={styles.projectTitleContainer}>
-                    <div className={styles.projectTitle}>{item.name}</div>
-                    <div className={styles.projectTags}>
+                  <div className={styles.kgTitleContainer}>
+                    <div className={styles.kgTitle}>{item.name}</div>
+                    <div className={styles.kgTags}>
                       {item.tags.map((tag) => (
                         <Tag key={tag} color="blue">
                           {tag}
@@ -59,9 +57,10 @@ const ProjectsGrid: FC<KGGridProps> = ({ projects, loading }) => {
                 </Col>
               </Row>
               <Row>
-                <div className={styles.projectDescriptionContainer}>
-                  <div className={styles.projectDescription}>
-                    {item.description || 'No description added'}
+                <div className={styles.kgDescriptionContainer}>
+                  <div className={styles.kgDescription}>
+                    {item.description ||
+                      'No description added for this knowledge group'}
                   </div>
                 </div>
               </Row>
@@ -71,12 +70,13 @@ const ProjectsGrid: FC<KGGridProps> = ({ projects, loading }) => {
       ) : (
         <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} />
       )}
-      <CreateProjectForm
-        open={createProjectTab}
-        closeProjectCreationForm={() => setCreateProjectTab(false)}
+      <CreateKGForm
+        projectId={projectId}
+        open={open}
+        onClose={() => setOpen(false)}
       />
     </div>
   )
 }
 
-export default ProjectsGrid
+export default KGGrid

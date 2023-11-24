@@ -28,11 +28,11 @@ export const createChatsSlice: StateCreator<
   },
   loadChats: async (projectId?: string) => {
     const chats = projectId ? await getChatsApi(projectId) : await getChatsApi()
-    const latestChat = chats?.length > 0 ? chats[0].id : null
-    const messages = latestChat ? await loadMessagesApi(latestChat) : []
+    // const latestChat = chats?.length > 0 ? chats[0].id : null
+    // const messages = latestChat ? await loadMessagesApi(latestChat) : []
     set({
       chats: chats,
-      messages: messages,
+      messages: [],
     })
   },
   addChat: async (projectId) => {
