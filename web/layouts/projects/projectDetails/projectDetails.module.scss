@@ -3,6 +3,7 @@
 .projectDetailsContainer {
   height: 100%;
   position: relative;
+  padding-bottom: 1em;
 
   .projectDetailsHead {
     height: 5vh;
@@ -37,7 +38,7 @@
   }
 
   .projectDetailsContent > * > * > * > * {
-    height: 97%;
+    height: 100%;
   }
 }
 

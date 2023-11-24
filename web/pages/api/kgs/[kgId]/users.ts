@@ -57,7 +57,7 @@ const handler = async (
       if (!isAllowed) {
         return res.status(403).json({
           success: false,
-          error: 'Only owners can add users to knowledge groups',
+          error: 'Only owners can add members to knowledge groups',
         })
       }
 

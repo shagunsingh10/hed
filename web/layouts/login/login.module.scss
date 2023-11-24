@@ -26,11 +26,13 @@
         font-weight: bold;
         color: $primaryDark;
         margin-bottom: 2em;
+        text-align: center;
       }
 
       button {
         border: 1px solid $primaryColor;
         color: $primaryColor;
+        margin: 1em;
       }
     }
   }

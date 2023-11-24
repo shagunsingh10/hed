@@ -1,5 +1,5 @@
 import { COLOR_BG_TEXT } from '@/constants'
-import { GoogleOutlined } from '@ant-design/icons'
+import { GithubOutlined, GoogleOutlined } from '@ant-design/icons'
 import { Button, Card, Col, Row } from 'antd'
 import { signIn } from 'next-auth/react'
 import styles from './login.module.scss'
@@ -14,6 +14,10 @@ export default function LoginScreen() {
             <Button block onClick={() => signIn('google')} color="secondary">
               <GoogleOutlined />
               Sign in with Google
+            </Button>
+            <Button block onClick={() => signIn('github')} color="secondary">
+              <GithubOutlined />
+              Sign in with GitHub
             </Button>
             <div
               style={{

@@ -3,7 +3,7 @@ import { Tag } from 'antd'
 import { FC } from 'react'
 
 type IProjectSettings = {
-  project: Project | undefined
+  project: Project | null
 }
 const ProjectSettings: FC<IProjectSettings> = ({ project }) => {
   return project ? (

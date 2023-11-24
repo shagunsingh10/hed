@@ -1,7 +1,8 @@
+import { getProjectsApi } from '@/apis/projects'
 import { useDebouncedCallback } from '@/hooks/useDebounceCallback'
 import useStore from '@/store'
 import { Project } from '@/types/projects'
-import { Input } from 'antd'
+import { Input, message } from 'antd'
 import { useEffect, useState } from 'react'
 import ProjectsGrid from './projectGrid'
 import styles from './projects.module.scss'
@@ -12,14 +13,21 @@ const ProjectsScreen = () => {
   const [loading, setLoading] = useState(false)
   const [filteredProjects, setFilteredProjects] = useState<Project[]>([])
   const projects = useStore((state) => state.projects)
-  const getProjects = useStore((state) => state.getProjects)
+  const setProjects = useStore((state) => state.setProjects)
 
   useEffect(() => {
-    if (getProjects) {
-      setLoading(true)
-      getProjects().then(() => setLoading(false))
-    }
-  }, [getProjects])
+    setLoading(true)
+    getProjectsApi()
+      .then((projects) => {
+        setProjects(projects)
+      })
+      .catch(() => {
+        message.error('Some error occurred in fetching projects')
+      })
+      .finally(() => {
+        setLoading(false)
+      })
+  }, [])
 
   useEffect(() => setFilteredProjects(projects), [projects])
 

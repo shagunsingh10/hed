@@ -1,3 +1,4 @@
+import { createProjectApi } from '@/apis/projects'
 import useStore from '@/store'
 import { Button, Card, Form, Input, message, Modal } from 'antd'
 import { useState } from 'react'
@@ -13,18 +14,26 @@ const CreateProjectForm: React.FC<createProjectFormProps> = ({
   open,
 }) => {
   const [loading, setLoading] = useState(false)
-  const createProject = useStore((state) => state.createProject)
+  const addNewProject = useStore((state) => state.addNewProject)
 
   const handleSubmit = async (values: any) => {
     setLoading(true)
     try {
-      createProject({
+      createProjectApi({
         name: values.projectName,
         description: values.projectDescription,
         tags: values.projectTags,
       })
-      message.success('Project Created Successfully')
-      closeProjectCreationForm()
+        .then((project) => {
+          addNewProject(project)
+          closeProjectCreationForm()
+        })
+        .catch(() => {
+          message.error('Some error occurred in creating project')
+        })
+        .finally(() => {
+          message.success('Project Created Successfully')
+        })
     } catch (e: any) {
       message.error(e)
     } finally {

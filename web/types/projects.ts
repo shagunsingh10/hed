@@ -1,3 +1,5 @@
+import { User } from './users'
+
 export type CreateProjectData = {
   name: string
   description: string
@@ -15,7 +17,10 @@ export interface Project {
 
 export interface ProjectsSlice {
   projects: Project[]
-  getProjects: () => Promise<void>
-  getProjectById: (id: string) => Promise<Project | undefined>
-  createProject: (data: CreateProjectData) => void
+  setProjects: (projects: Project[]) => void
+  addNewProject: (project: Project) => void
+  selectedprojectDetails: Project | null
+  setSelectedProjectDetails: (project: Project) => void
+  selectedProjectAdmins: User[]
+  setSelectedProjectAdmins: (users: User[]) => void
 }

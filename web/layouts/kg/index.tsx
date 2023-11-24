@@ -1,7 +1,8 @@
+import { getKgsApi } from '@/apis/kgs'
 import { useDebouncedCallback } from '@/hooks/useDebounceCallback'
 import useStore from '@/store'
 import { Kg } from '@/types/kgs'
-import { Input } from 'antd'
+import { Input, message } from 'antd'
 import { useEffect, useState } from 'react'
 import styles from './kg.module.scss'
 import KGGrid from './kgGrid'
@@ -17,7 +18,7 @@ const KGScreen: React.FC<KGScreenProps> = ({ projectId }) => {
   const [filteredKgs, setFilteredKgs] = useState<Kg[]>([])
 
   const kgs = useStore((state) => state.kgs)
-  const getKgs = useStore((state) => state.getKgs)
+  const setkgs = useStore((state) => state.setKgs)
 
   const onChange = useDebouncedCallback((text: string) => {
     setFilteredKgs(
@@ -36,10 +37,15 @@ const KGScreen: React.FC<KGScreenProps> = ({ projectId }) => {
   useEffect(() => setFilteredKgs(kgs), [kgs])
 
   useEffect(() => {
-    if (getKgs) {
-      getKgs(projectId).finally(() => setLoading(false))
-    }
-  }, [getKgs])
+    getKgsApi(projectId)
+      .then((kgs) => {
+        setkgs(kgs)
+      })
+      .catch(() => {
+        message.error('Some error occurred in fetching knowledge groups.')
+      })
+      .finally(() => setLoading(false))
+  }, [])
 
   return (
     <div className={styles.kgContainer}>

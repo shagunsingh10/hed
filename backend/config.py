@@ -21,6 +21,7 @@ class Config:
             "REDIS_HOST",
             "REDIS_PORT",
             "SERVICE_QUEUE_NAME",
+            "ASSET_UPLOAD_PATH",
         ]
         optional_vars = [
             "OPENAI_API_KEY",

@@ -1,9 +1,3 @@
-import {
-  createAssetApi,
-  getAssetsApi,
-  getAssetsInProjectApi,
-  getAssetTypesApi,
-} from '@/apis/assets'
 import { AssetsSlice } from '@/types/assets'
 import { StateCreator } from 'zustand'
 
@@ -13,24 +7,21 @@ export const createAssetsSlice: StateCreator<
   [],
   AssetsSlice
 > = (set, get) => ({
-  assets: [],
   assetTypes: [],
-  getAssetTypes: async () => {
+  setAssetTypes: async (assetTypes) => {
     set({
-      assetTypes: await getAssetTypesApi(),
+      assetTypes: assetTypes,
     })
   },
-  createAsset: async (projectId, kgId, data) => {
-    const newAsset = await createAssetApi(projectId, kgId, data)
+  assets: [],
+  addNewAsset: (newAsset) => {
     set({
       assets: [newAsset, ...get().assets],
     })
   },
-  loadAssets: async (projectId, kgId) => {
+  setAssets: (assets) => {
     set({
-      assets: kgId
-        ? await getAssetsApi(projectId, kgId)
-        : await getAssetsInProjectApi(projectId),
+      assets: assets,
     })
   },
   updateAssetStatus: (assetId, status) => {

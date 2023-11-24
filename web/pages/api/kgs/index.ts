@@ -64,7 +64,6 @@ const handler = async (
           error: 'User not found',
         })
       }
-      console.log({ projectId, userId: user?.id })
       const isAllowed = await isProjectAdmin(projectId, Number(user?.id))
 
       if (!isAllowed) {

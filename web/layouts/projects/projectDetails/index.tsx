@@ -1,8 +1,8 @@
+import { getProjectByIdApi } from '@/apis/projects'
 import Chatbox from '@/components/Chatbox'
 import Loader from '@/components/Loader'
 import { useMediaQuery } from '@/hooks/useMediaQuery'
 import useStore from '@/store'
-import { Project } from '@/types/projects'
 import {
   BookOutlined,
   MailOutlined,
@@ -12,19 +12,16 @@ import {
 import { message, Tabs } from 'antd'
 import { useParams } from 'next/navigation'
 import { useEffect, useMemo, useState } from 'react'
-// import AssetScreen from '../../asset'
-// import CreateAssetForm from '../../asset/createAsset'
 import KGScreen from '../../kg'
+import ProjectAdmins from '../projectAdmins'
 import ProjectSettings from '../projectSettings'
-import ProjectUsers from '../projectUsers'
 import styles from './projectDetails.module.scss'
 
 const ProjectDetailsScreen = () => {
   const smallScreen = useMediaQuery(768)
   const { projectId }: { projectId: string } = useParams()
-  const getProjectById = useStore((state) => state.getProjectById)
-
-  const [project, setProject] = useState<Project>()
+  const project = useStore((state) => state.selectedprojectDetails)
+  const setProject = useStore((state) => state.setSelectedProjectDetails)
   const [loading, setLoading] = useState<boolean>(false)
 
   const tabs = useMemo(
@@ -39,7 +36,11 @@ const ProjectDetailsScreen = () => {
         icon: <BookOutlined />,
         content: <KGScreen projectId={projectId} />,
       },
-      { title: 'Members', icon: <UserOutlined />, content: <ProjectUsers /> },
+      {
+        title: 'Admins',
+        icon: <UserOutlined />,
+        content: <ProjectAdmins projectId={projectId} />,
+      },
       {
         title: 'Settings',
         icon: <SettingOutlined />,
@@ -51,15 +52,14 @@ const ProjectDetailsScreen = () => {
 
   useEffect(() => {
     setLoading(true)
-    getProjectById(projectId)
+    getProjectByIdApi(projectId)
       .then((project) => {
         setProject(project)
-        setLoading(false)
       })
       .catch(() => {
         message.error('Error in fetching project!')
-        setLoading(false)
       })
+      .finally(() => setLoading(false))
   }, [projectId])
 
   return !projectId || loading ? (

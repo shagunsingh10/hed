@@ -1,3 +1,4 @@
+import { createKgApi } from '@/apis/kgs'
 import useStore from '@/store'
 import { Button, Card, Form, Input, message, Modal, Typography } from 'antd'
 import { FC, useRef, useState } from 'react'
@@ -11,31 +12,29 @@ type createKgFormProps = {
 
 const CreateKGForm: FC<createKgFormProps> = ({ projectId, open, onClose }) => {
   const [loading, setLoading] = useState(false)
-  const createKg = useStore((state) => state.createKg)
+  const addNewKg = useStore((state) => state.addNewKg)
   const formRef: any = useRef(null)
 
   const handleSubmit = async (values: any) => {
     setLoading(true)
-    try {
-      createKg(projectId, {
-        projectId: projectId,
-        name: values.name,
-        description: values.description,
-        tags: values.tags,
+    createKgApi(projectId, {
+      projectId: projectId,
+      name: values.name,
+      description: values.description,
+      tags: values.tags,
+    })
+      .then((kg) => {
+        message.success('Knowledge Created Successfully')
+        addNewKg(kg)
+        handleReset()
       })
-        .then(() => {
-          message.success('Knowledge Created Successfully')
-          handleReset()
-        })
-        .catch((e: Error) => {
-          console.log(e.message.toString())
-          message.error(e.message.toString())
-        })
-    } catch (e: any) {
-      message.error(e)
-    } finally {
-      setLoading(false)
-    }
+      .catch((e: Error) => {
+        console.log(e.message.toString())
+        message.error(e.message.toString())
+      })
+      .finally(() => {
+        setLoading(false)
+      })
   }
 
   const handleReset = () => {

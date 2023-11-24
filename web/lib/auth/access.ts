@@ -8,7 +8,6 @@ const isProjectAdmin = async (projectId: string, userId: number) => {
       userId: userId,
     },
   })
-  console.log({ isAllowed })
   return isAllowed != null
 }
 
@@ -32,7 +31,6 @@ const hasOwnerAccessToKg = async (kgId: string, userId: number) => {
       },
     },
   })
-  console.log({ isAllowed })
   return isAllowed != null
 }
 

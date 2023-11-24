@@ -1,9 +1,4 @@
-import {
-  addNewChatApi,
-  getChatsApi,
-  loadMessagesApi,
-  postQueryApi,
-} from '@/apis/chats'
+import { addNewChatApi, getChatsApi, postQueryApi } from '@/apis/chats'
 import type {
   ChatsSlice,
   ChatWithoutMessage,
@@ -28,8 +23,6 @@ export const createChatsSlice: StateCreator<
   },
   loadChats: async (projectId?: string) => {
     const chats = projectId ? await getChatsApi(projectId) : await getChatsApi()
-    // const latestChat = chats?.length > 0 ? chats[0].id : null
-    // const messages = latestChat ? await loadMessagesApi(latestChat) : []
     set({
       chats: chats,
       messages: [],
@@ -54,7 +47,7 @@ export const createMessagesSlice: StateCreator<
   waitingForResponse: false,
   messages: [],
   streaming: false,
-  addMessage: (m: Message) => {
+  addMessage: (m) => {
     if (get().activeChatId == m.chatId) {
       const messages = get().messages || []
 
@@ -97,9 +90,9 @@ export const createMessagesSlice: StateCreator<
       })
     }, 30000)
   },
-  loadMessages: async (chatId: string) => {
+  setMessages: (messages) => {
     set({
-      messages: await loadMessagesApi(chatId),
+      messages: messages,
     })
   },
   resetMessages: async () => {

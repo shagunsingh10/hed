@@ -1,5 +1,5 @@
+import { getKgByIdApi } from '@/apis/kgs'
 import Loader from '@/components/Loader'
-import useStore from '@/store'
 import { Kg } from '@/types/kgs'
 import {
   FileDoneOutlined,
@@ -20,7 +20,6 @@ const KgDetailsScreen = () => {
   const [kg, setkg] = useState<Kg>()
   const [loading, setLoading] = useState<boolean>(false)
   const [activeTab, setActiveTab] = useState<number>(1)
-  const getKgById = useStore((state) => state.getKgById)
 
   const tabs = [
     {
@@ -46,7 +45,7 @@ const KgDetailsScreen = () => {
 
   useEffect(() => {
     setLoading(true)
-    getKgById(kgId)
+    getKgByIdApi(kgId)
       .then((kg) => {
         setkg(kg)
         setLoading(false)

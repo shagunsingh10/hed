@@ -10,7 +10,6 @@ const fetchApi = async (
 
   if (response.status === 404) {
     redirectToNotFound()
-    return response
   }
 
   return response

@@ -4,6 +4,9 @@ import { CreateAssetData } from '@/types/assets'
 export const getAssetTypesApi = async () => {
   const res = await fetcher.get(`/api/asset-types`)
   const resData = await res.json()
+  if (!resData.success) {
+    throw Error(resData.error)
+  }
   return resData.data
 }
 
@@ -12,6 +15,9 @@ export const getAssetsApi = async (projectId: string, kgId: string) => {
     `/api/assets?projectId=${projectId}&kgId=${kgId}`
   )
   const resData = await res.json()
+  if (!resData.success) {
+    throw Error(resData.error)
+  }
   return resData.data
 }
 
@@ -30,6 +36,9 @@ export const createAssetApi = async (
     }
   )
   const resData = await res.json()
+  if (!resData.success) {
+    throw Error(resData.error)
+  }
   return resData.data
 }
 
@@ -52,5 +61,8 @@ export const uploadFileApi = async (
     }
   )
   const resData = await res.json()
+  if (!resData.success) {
+    throw Error(resData.error)
+  }
   return resData.data
 }

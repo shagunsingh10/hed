@@ -1,3 +1,5 @@
+import { createAssetApi } from '@/apis/assets'
+import { getKgsApi } from '@/apis/kgs'
 import Loader from '@/components/Loader'
 import Uploader from '@/components/Uploader'
 import useStore from '@/store'
@@ -37,10 +39,10 @@ const CreateAssetForm: FC<CreateAssetFormProps> = ({
   const [selectedKgId, setSelectedKgId] = useState<string>()
   const formRef: any = useRef(null)
 
-  const createAsset = useStore((state) => state.createAsset)
+  const addNewAsset = useStore((state) => state.addNewAsset)
   const assetTypes = useStore((state) => state.assetTypes)
   const kgs = useStore((state) => state.kgs)
-  const getKgs = kgId ? null : useStore((state) => state.getKgs)
+  const setKgs = useStore((state) => state.setKgs)
 
   // functions
   const handleSubmit = async (values: any) => {
@@ -48,22 +50,23 @@ const CreateAssetForm: FC<CreateAssetFormProps> = ({
     if (!selectedKgId || !assetType) return
 
     setLoading(true)
-    try {
-      createAsset(projectId, selectedKgId, {
-        assetTypeId: assetType.id,
-        knowledgeGroupId: selectedKgId,
-        name: values.name,
-        description: values.description,
-        tags: values.tags,
-        readerKwargs: getReaderKwargs(values, assetType.key),
+    createAssetApi(projectId, selectedKgId, {
+      assetTypeId: assetType.id,
+      knowledgeGroupId: selectedKgId,
+      name: values.name,
+      description: values.description,
+      tags: values.tags,
+      readerKwargs: getReaderKwargs(values, assetType.key),
+    })
+      .then((asset) => {
+        addNewAsset(asset)
+        message.info('Asset created and sent for ingestion')
+        handleReset()
       })
-      message.info('Asset created and sent for ingestion')
-      handleReset()
-    } catch (e: any) {
-      message.error(e)
-    } finally {
-      setLoading(false)
-    }
+      .catch((e: Error) => {
+        message.error(e.message.toString())
+      })
+      .finally(() => setLoading(false))
   }
 
   const getReaderKwargs = (values: any, assetTypeKey: string) => {
@@ -97,18 +100,20 @@ const CreateAssetForm: FC<CreateAssetFormProps> = ({
     onClose()
   }
 
-  const handleUploadComplete = (uploadId: string) => {
-    setUploadId(uploadId)
-  }
-
   const handleUploadFailure = () => {
     message.error('Upload failed! Please try again.')
   }
 
   // useEffects
   useEffect(() => {
-    if (getKgs) getKgs(projectId)
-  }, [getKgs])
+    getKgsApi(projectId)
+      .then((kgs) => {
+        setKgs(kgs)
+      })
+      .catch((e: Error) => {
+        message.error(e.message.toString())
+      })
+  }, [])
 
   // if kg id comes from props, set it automatically
   useEffect(() => {
@@ -188,7 +193,7 @@ const CreateAssetForm: FC<CreateAssetFormProps> = ({
                     <Uploader
                       projectId={projectId}
                       kgId={selectedKgId}
-                      onSuccessCallback={handleUploadComplete}
+                      onSuccessCallback={(uploadId) => setUploadId(uploadId)}
                       onFailureCallback={handleUploadFailure}
                     />
                   )}

@@ -27,7 +27,7 @@ export default async (
     const kgId = req.query.kgId as string
     const uploadId = createId()
 
-    const filePath = `../.etc/${appConfig.assetUploadPath}/${projectId}/${kgId}/${uploadId}`
+    const filePath = `${appConfig.assetUploadPath}/${projectId}/${kgId}/${uploadId}`
     const form = formidable({})
     const parsedForm = await form.parse(req)
     const files = parsedForm[1]

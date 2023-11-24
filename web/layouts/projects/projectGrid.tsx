@@ -34,7 +34,7 @@ const ProjectsGrid: FC<KGGridProps> = ({ projects, loading }) => {
         <PlusCircleOutlined style={{ fontSize: '8vh' }} />
         <span>Create New</span>
       </div>
-      {projects?.length > 0 ? (
+      {projects?.length > 0 || loading ? (
         projects.map((item, key) => (
           <Card
             key={key}

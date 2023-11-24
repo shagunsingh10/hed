@@ -1,3 +1,4 @@
+import { getKgsApi } from '@/apis/kgs'
 import useStore from '@/store'
 import { DeleteOutlined } from '@ant-design/icons'
 import { Col, message, Row } from 'antd'
@@ -7,20 +8,24 @@ import styles from './kglist.module.scss'
 
 type KgListProps = {
   projectId: string
-  kgId?: string
 }
 
-const KgListMobile: React.FC<KgListProps> = ({ projectId, kgId }) => {
+const KgListMobile: React.FC<KgListProps> = ({ projectId }) => {
   const kgs = useStore((state) => state.kgs)
-  const getKgs = useStore((state) => state.getKgs)
+  const setKgs = useStore((state) => state.setKgs)
 
   const deleteKg = (kgId: string) => {
+    console.log(kgId)
     message.info('Delete feature coming soon...')
   }
 
   useEffect(() => {
-    if (getKgs) getKgs(projectId)
-  }, [getKgs])
+    getKgsApi(projectId)
+      .then((kgs) => setKgs(kgs))
+      .catch((e: Error) => {
+        message.error(e.message.toString())
+      })
+  }, [])
 
   return (
     <div className={styles.kgInfoContainer}>

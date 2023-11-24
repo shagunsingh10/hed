@@ -3,13 +3,15 @@ import { Breadcrumb } from 'antd'
 import Link from 'next/link'
 import { useRouter } from 'next/router'
 
+const nonNonPageRoutes = ['kgs']
 const BreadcrumbComponent = () => {
   const router = useRouter()
   const pathSegments = router.asPath
     .split('/')
     .filter((segment) => segment !== '')
+    .filter((r) => !nonNonPageRoutes.includes(r))
 
-  return (
+  return pathSegments.length > 0 ? (
     <Breadcrumb style={{ margin: '0.5em 1em' }}>
       <Breadcrumb.Item>
         <Link href="/" style={{ display: 'flex', gap: '0.5em' }}>
@@ -29,6 +31,8 @@ const BreadcrumbComponent = () => {
         </Breadcrumb.Item>
       ))}
     </Breadcrumb>
+  ) : (
+    <div style={{ margin: '0.5em 1em' }} />
   )
 }
 

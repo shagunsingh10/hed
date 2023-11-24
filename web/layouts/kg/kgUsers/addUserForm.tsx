@@ -1,3 +1,4 @@
+import { addUserToKgApi } from '@/apis/kgs'
 import useStore from '@/store'
 import { Button, Card, Form, message, Modal, Select, Typography } from 'antd'
 import { FC, useEffect, useRef, useState } from 'react'
@@ -15,20 +16,21 @@ const AddUserForm: FC<createKgFormProps> = ({ kgId, open, onClose }) => {
   const [loading, setLoading] = useState(false)
   const users = useStore((state) => state.users)
   const loadUsers = useStore((state) => state.loadUsers)
-  const addUserToKg = useStore((state) => state.addUserToKg)
   const formRef: any = useRef(null)
 
   const handleSubmit = async (values: any) => {
     setLoading(true)
-    try {
-      addUserToKg(kgId, values.user, values.role)
-      message.success('User added successfully')
-      handleReset()
-    } catch (e: any) {
-      message.error(e)
-    } finally {
-      setLoading(false)
-    }
+    addUserToKgApi(kgId, values.user, values.role)
+      .then(() => {
+        message.success('User added successfully')
+        handleReset()
+      })
+      .catch((e: Error) => {
+        message.error(e.message)
+      })
+      .finally(() => {
+        setLoading(false)
+      })
   }
 
   const handleReset = () => {

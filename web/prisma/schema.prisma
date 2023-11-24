@@ -126,7 +126,7 @@ model UserRole {
 
 model AssetType {
   id       String  @id @default(cuid())
-  key      String
+  key      String  @unique
   name     String
   isActive Boolean @default(true)
 

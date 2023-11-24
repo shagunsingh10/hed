@@ -1,3 +1,4 @@
+import { getKgsApi } from '@/apis/kgs'
 import CustomTable from '@/components/Table'
 import { globalDateFormatParser } from '@/lib/functions'
 import useStore from '@/store'
@@ -15,7 +16,7 @@ type KgListProps = {
 
 const KgList: React.FC<KgListProps> = ({ projectId }) => {
   const kgs = useStore((state) => state.kgs)
-  const getKgs = useStore((state) => state.getKgs)
+  const setKgs = useStore((state) => state.setKgs)
 
   const [dataSource, setDataSource] = useState(kgs)
   const [value, setValue] = useState('')
@@ -109,8 +110,12 @@ const KgList: React.FC<KgListProps> = ({ projectId }) => {
   )
 
   useEffect(() => {
-    if (getKgs) getKgs(projectId)
-  }, [getKgs])
+    getKgsApi(projectId)
+      .then((kgs) => setKgs(kgs))
+      .catch((e: Error) => {
+        message.error(e.message.toString())
+      })
+  }, [])
 
   useEffect(() => setDataSource(kgs), [kgs])
 

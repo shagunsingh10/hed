@@ -1,13 +1,11 @@
 import fetcher from '@/lib/fetcher'
 import { CreateKgData } from '@/types/kgs'
-import { message } from 'antd'
 
 export const getKgsApi = async (projectId: string) => {
   const res = await fetcher.get(`/api/kgs?projectId=${projectId}`)
   const resData = await res.json()
   if (!resData.success) {
-    message.error(resData.error)
-    return []
+    throw Error(resData.error)
   }
   return resData.data
 }
@@ -33,8 +31,7 @@ export const getKgByIdApi = async (kgId: string) => {
   const res = await fetcher.get(`/api/kgs/${kgId}`)
   const resData = await res.json()
   if (!resData.success) {
-    message.error(resData.error)
-    return {}
+    throw Error(resData.error)
   }
   return resData.data
 }
@@ -58,8 +55,7 @@ export const addUserToKgApi = async (
   )
   const resData = await res.json()
   if (!resData.success) {
-    message.error(resData.error)
-    return {}
+    throw Error(resData.error)
   }
   return resData.data
 }
@@ -68,8 +64,7 @@ export const getKgMemebersApi = async (kgId: string) => {
   const res = await fetcher.get(`/api/kgs/${kgId}/users`)
   const resData = await res.json()
   if (!resData.success) {
-    message.error(resData.error)
-    return []
+    throw Error(resData.error)
   }
   return resData.data
 }

@@ -35,8 +35,8 @@ export type Doc = {
 export interface AssetsSlice {
   assets: Asset[]
   assetTypes: AssetType[]
-  getAssetTypes: () => void
-  loadAssets: (projectId: string, kgId?: string) => void
-  createAsset: (projectId: string, kgId: string, data: CreateAssetData) => void
+  setAssetTypes: (assetType: AssetType[]) => void
+  setAssets: (assets: Asset[]) => void
+  addNewAsset: (asset: Asset) => void
   updateAssetStatus: (assetId: string, status: string) => void
 }

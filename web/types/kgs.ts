@@ -25,9 +25,6 @@ export interface KgMember {
 
 export interface KgsSlice {
   kgs: Kg[]
-  getKgs: (projectId: string) => Promise<void>
-  getKgById: (id: string) => Promise<Kg | undefined>
-  createKg: (projectId: string, data: CreateKgData) => Promise<void>
-  getKgMembers: (kgId: string) => Promise<KgMember[]>
-  addUserToKg: (kgId: string, userId: string, role: string) => Promise<boolean>
+  setKgs: (kgs: Kg[]) => void
+  addNewKg: (kg: Kg) => void
 }

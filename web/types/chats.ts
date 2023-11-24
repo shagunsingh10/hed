@@ -23,7 +23,7 @@ export interface MessagesSlice {
   messages: Message[] | undefined
   addMessage: (m: Message) => void
   postQuery: (chatId: string, query: string) => Promise<void>
-  loadMessages: (chatId: string) => Promise<void>
+  setMessages: (messages: Message[]) => void
   resetMessages: () => void
 }
 

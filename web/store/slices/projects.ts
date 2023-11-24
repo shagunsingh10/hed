@@ -1,8 +1,3 @@
-import {
-  createProjectApi,
-  getProjectByIdApi,
-  getProjectsApi,
-} from '@/apis/projects'
 import type { ProjectsSlice } from '@/types/projects'
 import { StateCreator } from 'zustand'
 
@@ -13,18 +8,28 @@ export const createProjectsSlice: StateCreator<
   ProjectsSlice
 > = (set, get) => ({
   projects: [],
-  getProjects: async () => {
+  setProjects: (projects) => {
     set({
-      projects: await getProjectsApi(),
+      projects: projects,
+      selectedprojectDetails: null,
+      selectedProjectAdmins: [],
     })
   },
-  getProjectById: async (id) => {
-    return await getProjectByIdApi(id)
-  },
-  createProject: async (data) => {
-    const newProject = await createProjectApi(data)
+  addNewProject: (newProject) => {
     set({
       projects: [newProject, ...get().projects],
+    })
+  },
+  selectedprojectDetails: null,
+  setSelectedProjectDetails: (project) => {
+    set({
+      selectedprojectDetails: project,
+    })
+  },
+  selectedProjectAdmins: [],
+  setSelectedProjectAdmins: (users) => {
+    set({
+      selectedProjectAdmins: users,
     })
   },
 })

@@ -54,6 +54,7 @@
     justify-content: center;
     align-items: center;
     gap: 2em;
+    margin-bottom: 1em;
 
     .chatInput {
       width: 70%;
@@ -67,18 +68,27 @@
       justify-content: center;
       align-items: center;
       border-radius: 50%;
+      background-color: $primaryColor;
+    }
+
+    .sendButton:hover {
+      opacity: 0.8;
+      color: white;
     }
   }
 }
 
-// .chatWindow:before {
-//   position: absolute;
-//   left: 0;
-//   top: 0;
-//   padding: 2em;
-//   content: url('/images/bgIcons.svg');
-//   opacity: 0.05;
-// }
+.chatWindow:before {
+  position: absolute;
+  width: 80%;
+  left: 20;
+  top: 0;
+  padding: 2em;
+  content: url('/images/bgIcons.svg');
+  opacity: 0.05;
+  pointer-events: none;
+}
+
 /* Media query for screens smaller than a certain width, e.g., tablets and phones */
 @media screen and (max-width: 768px) {
   .chatWindow {
@@ -96,36 +106,41 @@
   }
 }
 
-.chatHistory {
-  height: 100%;
-  overflow-y: hidden;
-  display: flex;
-  align-items: center;
-  flex-direction: column;
+.chatHistoryDrawer {
+  background-color: $dark1 !important;
+  text-align: center;
 
-  .addChatBtn {
-    width: 100%;
-    margin-bottom: 1em;
-  }
-
-  .chatListItem {
-    width: 100%;
+  .chatHistory {
+    height: 100%;
+    overflow-y: hidden;
     display: flex;
-    gap: 0.5em;
-    justify-content: center;
     align-items: center;
-    transition: all ease-in-out 0.3s;
-    padding: 0.8em 1em;
-    font-weight: bold;
-    opacity: 0.5;
-    border-radius: 0.6em;
-    cursor: pointer;
-    border: 1px solid $colorBgText;
-    margin: 0.5em 0;
-  }
+    flex-direction: column;
 
-  .chatListItem:hover {
-    background-color: $dark2;
+    .addChatBtn {
+      width: 100%;
+      margin-bottom: 1em;
+    }
+
+    .chatListItem {
+      width: 100%;
+      display: flex;
+      gap: 0.5em;
+      justify-content: center;
+      align-items: center;
+      transition: all ease-in-out 0.3s;
+      padding: 0.8em 1em;
+      font-weight: bold;
+      opacity: 0.5;
+      border-radius: 0.6em;
+      cursor: pointer;
+      border: 1px solid $colorBgText;
+      margin: 0.5em 0;
+    }
+
+    .chatListItem:hover {
+      background-color: $dark2;
+    }
   }
 }
 

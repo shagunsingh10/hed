@@ -1,5 +1,3 @@
-import { config as appConfig } from '@/config'
-
 export type AssetIngestionInput = {
   assetId: string
   assetType: string
@@ -18,7 +16,7 @@ const getIngestionPayload = (data: AssetIngestionInput) => {
 
   if (data.assetType == 'directory') {
     payload.reader_kwargs = {
-      directory: `${appConfig.assetUploadPath}/${data.projectId}/${data.knowledgeGroupId}/${data.kwargs?.uploadId}`,
+      directory: `${data.projectId}/${data.knowledgeGroupId}/${data.kwargs?.uploadId}`,
     }
   }
 

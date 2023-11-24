@@ -1,8 +1,10 @@
+import { loadMessagesApi } from '@/apis/chats'
 import { CHAT_MESSAGE_BG, COLOR_BG_TEXT } from '@/constants'
 import { globalDateFormatParser } from '@/lib/functions'
 import { Message } from '@/types/chats'
 import {
   BulbOutlined,
+  CloseCircleOutlined,
   HistoryOutlined,
   MessageFilled,
   PlusCircleOutlined,
@@ -14,6 +16,7 @@ import {
   Drawer,
   Input,
   List,
+  message,
   Skeleton,
   Space,
   Spin,
@@ -38,6 +41,7 @@ const ChatWindow: FC<ChatWindowProps> = ({ projectId }) => {
   const postQuery = useStore((state) => state.postQuery)
   const addChat = useStore((state) => state.addChat)
   const loadChats = useStore((state) => state.loadChats)
+  const setMessages = useStore((state) => state.setMessages)
   const setActiveChatId = useStore((state) => state.setActiveChatId)
   const activeChatId = useStore((state) => state.activeChatId)
   const chats = useStore((state) => state.chats)
@@ -95,6 +99,17 @@ const ChatWindow: FC<ChatWindowProps> = ({ projectId }) => {
       chatWindowRef.current.scrollTop = chatWindowRef.current.scrollHeight
     }
   }, [messages])
+
+  useEffect(() => {
+    setLoading(true)
+    console.log(activeChatId)
+    if (activeChatId) {
+      loadMessagesApi(activeChatId)
+        .then((messages) => setMessages(messages))
+        .catch(() => message.error('Failed to load previous messages'))
+        .finally(() => setLoading(false))
+    }
+  }, [activeChatId])
 
   useEffect(() => {
     setLoading(true)
@@ -186,7 +201,13 @@ const ChatWindow: FC<ChatWindowProps> = ({ projectId }) => {
           disabled={waitingForResponse}
         />
       </div>
-      <Drawer open={showHistory} onClose={() => setShowHistory(false)}>
+      <Drawer
+        open={showHistory}
+        onClose={() => setShowHistory(false)}
+        title="Chat History"
+        className={styles.chatHistoryDrawer}
+        closeIcon={<CloseCircleOutlined />}
+      >
         <div className={styles.chatHistory}>
           <Button
             type="primary"

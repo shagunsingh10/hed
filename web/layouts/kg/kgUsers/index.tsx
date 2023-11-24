@@ -1,11 +1,10 @@
-import Loader from '@/components/Loader'
+import { getKgMemebersApi } from '@/apis/kgs'
 import CustomTable from '@/components/Table'
-import useStore from '@/store'
 import { KgMember } from '@/types/kgs'
 import { DeleteOutlined, EditOutlined } from '@ant-design/icons'
 import { Space } from 'antd'
 import type { ColumnsType } from 'antd/es/table'
-import React, { FC, useEffect, useState } from 'react'
+import { FC, useEffect, useState } from 'react'
 
 type KgUsersProps = {
   kgId: string
@@ -45,31 +44,23 @@ const columns: ColumnsType<KgMember> = [
 const KgUsers: FC<KgUsersProps> = ({ kgId }) => {
   const [kgMembers, setKgMembers] = useState<KgMember[]>([])
   const [loading, setLoading] = useState<boolean>(false)
-  const getKgMembersApi = useStore((state) => state.getKgMembers)
 
   useEffect(() => {
     setLoading(true)
-    if (getKgMembersApi)
-      getKgMembersApi(kgId)
-        .then((data) => {
-          console.log(data)
-          setKgMembers(data)
-        })
-        .finally(() => setLoading(false))
-  }, [getKgMembersApi])
-
-  if (loading) {
-    return <Loader />
-  }
+    getKgMemebersApi(kgId)
+      .then((data) => {
+        setKgMembers(data)
+      })
+      .finally(() => setLoading(false))
+  }, [])
 
   return (
-    <div>
-      <CustomTable
-        columns={columns}
-        dataSource={kgMembers}
-        pagination={false}
-      />
-    </div>
+    <CustomTable
+      loading={loading}
+      columns={columns}
+      dataSource={kgMembers}
+      pagination={false}
+    />
   )
 }
 

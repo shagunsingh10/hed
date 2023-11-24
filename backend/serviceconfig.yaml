@@ -1,11 +1,11 @@
-llm: custom
+llm: openai
 llm_kwargs:
-  base_url: https://483c-35-227-136-255.ngrok-free.app
+  # base_url: https://483c-35-227-136-255.ngrok-free.app
 
-embed_model: custom
+embed_model: openai
 embed_model_kwargs:
-  model: "llama2"
-  embed_url: https://483c-35-227-136-255.ngrok-free.app
+  # model: "llama2"
+  # embed_url: https://483c-35-227-136-255.ngrok-free.app
 
 max_sources: 3
 min_similarity_score: 0.7

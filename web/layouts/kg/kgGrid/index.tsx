@@ -32,7 +32,7 @@ const KGGrid: FC<KgGridProps> = ({ projectId, kgs, loading }) => {
         <PlusCircleOutlined style={{ fontSize: '8vh' }} />
         <span>Create New</span>
       </div>
-      {kgs?.length > 0 ? (
+      {kgs?.length > 0 || loading ? (
         kgs.map((item, key) => (
           <Card
             key={key}

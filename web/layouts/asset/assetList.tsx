@@ -1,3 +1,4 @@
+import { getAssetsApi, getAssetTypesApi } from '@/apis/assets'
 import { PRIMARY_COLOR_DARK } from '@/constants'
 import { globalDateFormatParser } from '@/lib/functions'
 import useStore from '@/store'
@@ -16,13 +17,13 @@ import styles from './asset.module.scss'
 
 type KgListProps = {
   projectId: string
-  kgId?: string
+  kgId: string
 }
 
 const KgList: React.FC<KgListProps> = ({ projectId, kgId }) => {
   const assets = useStore((state) => state.assets)
-  const getAssetTypes = useStore((state) => state.getAssetTypes)
-  const loadAssets = useStore((state) => state.loadAssets)
+  const setAssetTypes = useStore((state) => state.setAssetTypes)
+  const setAssets = useStore((state) => state.setAssets)
 
   const [dataSource, setDataSource] = useState<Asset[]>(assets)
   const [value, setValue] = useState('')
@@ -107,7 +108,7 @@ const KgList: React.FC<KgListProps> = ({ projectId, kgId }) => {
           let color = 'green'
           if (status === 'failed') color = 'red'
           if (status === 'pending') color = 'yellow'
-          if (status === 'ingesting') color = 'orange'
+          if (status === 'ingesting') color = 'blue'
           return (
             <Tag color={color} key={status}>
               {status === 'pending' && <ExclamationCircleFilled />}
@@ -142,28 +143,27 @@ const KgList: React.FC<KgListProps> = ({ projectId, kgId }) => {
   )
 
   useEffect(() => {
-    if (loadAssets && getAssetTypes) {
-      loadAssets(projectId, kgId)
-      getAssetTypes()
-    }
-  }, [loadAssets, getAssetTypes])
+    getAssetsApi(projectId, kgId)
+      .then((assets) => setAssets(assets))
+      .catch((e: Error) => message.error(e.message.toString()))
+    getAssetTypesApi()
+      .then((assetTypes) => setAssetTypes(assetTypes))
+      .catch((e: Error) => message.error(e.message.toString()))
+  }, [])
 
   useEffect(() => setDataSource(assets), [assets])
 
   return (
-    <>
-      <Table
-        className={styles.kgList}
-        columns={columns}
-        dataSource={dataSource}
-        scroll={{ y: 600 }}
-        size="large"
-        showSorterTooltip={true}
-        sortDirections={['ascend', 'descend']}
-        pagination={false}
-        sticky={true}
-      />
-    </>
+    <Table
+      className={styles.assetList}
+      columns={columns}
+      dataSource={dataSource}
+      scroll={{ y: 600 }}
+      showSorterTooltip={true}
+      sortDirections={['ascend', 'descend']}
+      pagination={false}
+      sticky={true}
+    />
   )
 }
 

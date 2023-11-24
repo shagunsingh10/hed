@@ -6,6 +6,9 @@ export const getChatsApi = async (projectId?: string) => {
     `/api/chats${projectId ? `?projectId=${projectId}` : ''}`
   )
   const resData = await res.json()
+  if (!resData.success) {
+    throw Error(resData.error)
+  }
   return resData.data
 }
 
@@ -14,12 +17,18 @@ export const addNewChatApi = async (projectId?: string) => {
     `/api/chats${projectId ? `?projectId=${projectId}` : ''}`
   )
   const resData = await res.json()
+  if (!resData.success) {
+    throw Error(resData.error)
+  }
   return resData.data
 }
 
 export const loadMessagesApi = async (chatId: string) => {
   const res = await fetcher.get(`/api/chats/${chatId}`)
   const resData = await res.json()
+  if (!resData.success) {
+    throw Error(resData.error)
+  }
   return resData.data
 }
 
@@ -36,5 +45,8 @@ export const postQueryApi = async (chatId: string, query: string) => {
     }
   )
   const resData = await res.json()
+  if (!resData.success) {
+    throw Error(resData.error)
+  }
   return resData.data
 }
