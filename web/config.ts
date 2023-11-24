@@ -26,6 +26,6 @@ export const config: configType = {
   redisHost: getEnv('REDIS_HOST'),
   redisPort: Number(getEnv('REDIS_PORT')),
   pythonConsumerQueue: getEnv('PYTHON_CONSUMER_QUEUE'),
-  assetUploadPath: getEnv('ASSET_UPLOAD_PATH'),
+  assetUploadPath: getEnv('ASSET_UPLOAD_PATH_NEXT'),
   serviceApiKey: getEnv('SERVICE_API_KEY'),
 }
