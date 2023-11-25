@@ -15,3 +15,9 @@ class QueryPayload(BaseModel):
     chat_id: str
     user: str
     collections: List[str]
+
+
+class AssetDeletionPayload(BaseModel):
+    asset_id: str
+    collection_name: str
+    doc_ids: List[str]

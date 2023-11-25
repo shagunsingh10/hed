@@ -41,6 +41,7 @@ ADD . /app
 # Run the specified commands when the container launches
 CMD celery -A tasks.app worker -c 1 -Q ingestionqueue -n ingestionworker -l info & \
     celery -A tasks.app worker -c 1 -Q queryprocessorqueue -n queryworker -l info & \
+    celery -A tasks.app worker -c 1 -Q cleanerqueue -n cleanerworker -l info & \
     python -m main
 
 

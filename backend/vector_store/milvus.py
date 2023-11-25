@@ -3,8 +3,7 @@ import time
 
 from llama_index.embeddings.base import Embedding
 from llama_index.schema import BaseNode
-from llama_index.vector_stores import \
-    MilvusVectorStore as LlamaMilvusVectorStore
+from llama_index.vector_stores import MilvusVectorStore as LlamaMilvusVectorStore
 from llama_index.vector_stores import VectorStoreQuery, VectorStoreQueryResult
 
 from utils.logger import get_logger
@@ -38,3 +37,6 @@ class MilvusVectorStore(BaseVectorStore):
         loop = asyncio.get_event_loop()
         result = await loop.run_in_executor(None, self.store.query, query)
         return result
+
+    def delete_docs(self, doc_ids: list[str]):
+        self.store.delete(doc_ids)

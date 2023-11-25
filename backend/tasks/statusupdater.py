@@ -34,7 +34,7 @@ class StatusUpdater:
                 else:
                     tries += 1
 
-    def update_asset_ingestion_status(self, asset_id, status, documents=None):
+    def update_asset_status(self, asset_id, status, documents=None):
         data = {
             "status": status,
             "apiKey": self.next_api_key,
@@ -59,5 +59,16 @@ class StatusUpdater:
         self._make_request(
             f"{self.next_endpoint}/api/webhooks/chat-response",
             method="put",
+            json=data,
+        )
+
+    def delete_asset(self, asset_id: str):
+        data = {
+            "apiKey": self.next_api_key,
+            "assetId": asset_id,
+        }
+        self._make_request(
+            f"{self.next_endpoint}/api/webhooks/update-asset-status",
+            method="delete",
             json=data,
         )

@@ -30,3 +30,6 @@ class VectorStoreFactory:
 
     async def async_search_nodes_from_embeddings(self, embeddings):
         return await self.vector_store.async_search_nodes_from_embeddings(embeddings)
+
+    def delete_docs(self, doc_ids):
+        self.vector_store.delete_docs(doc_ids)

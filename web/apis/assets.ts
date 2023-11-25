@@ -46,6 +46,10 @@ export const removeUploadApi = async (assetId: string) => {
   await fetcher.delete(`/api/upload/${assetId}`)
 }
 
+export const deleteAssetApi = async (assetId: string) => {
+  await fetcher.delete(`/api/assets/${assetId}`)
+}
+
 export const uploadFileApi = async (
   projectId: string,
   kgId: string,

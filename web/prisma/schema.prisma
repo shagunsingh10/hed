@@ -164,7 +164,7 @@ model Doc {
   assetId          String
   metadata         String?
 
-  asset Asset @relation(fields: [assetId], references: [id])
+  asset Asset @relation(fields: [assetId], references: [id], onDelete: Cascade)
 }
 
 model Chat {

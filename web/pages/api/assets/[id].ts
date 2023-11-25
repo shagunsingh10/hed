@@ -11,25 +11,32 @@ export default async function handler(
     try {
       const assetId = req.query.id as string
 
-      const doc_ids = await prisma.doc.findMany({
+      const asset = await prisma.asset.findFirst({
         where: {
-          assetId: assetId,
+          id: assetId,
         },
         select: {
-          vector_db_doc_id: true,
+          docs: true,
+          KnowledgeGroup: {
+            select: {
+              id: true,
+            },
+          },
         },
       })
 
       sendMessageToPythonService(
         JSON.stringify({
-          job_type: 'cleaning',
+          job_type: 'asset-deletion',
           payload: {
-            doc_ids: doc_ids.map((e) => e.vector_db_doc_id),
+            doc_ids: asset?.docs.map((e) => e.vector_db_doc_id),
+            asset_id: assetId,
+            collection_name: asset?.KnowledgeGroup.id,
           },
         })
       )
 
-      res.status(200).json({ success: true, data: 'File deleted successfully' })
+      res.status(200).json({ success: true, data: 'Asset deletion initiated' })
     } catch (error) {
       console.error('Error deleting file:', error)
       res.status(500).json({ success: false, error: 'Internal Server Error' })

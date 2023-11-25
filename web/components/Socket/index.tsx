@@ -10,6 +10,7 @@ const SocketConnector = () => {
   const socket = useStore((state) => state.socket)
   const setSocket = useStore((state) => state.setSocket)
   const updateAssetStatus = useStore((state) => state.updateAssetStatus)
+  const deleteAsset = useStore((state) => state.deleteAsset)
   const addMessage = useStore((state) => state.addMessage)
   const activeChatId = useStore((state) => state.activeChatId)
 
@@ -40,15 +41,23 @@ const SocketConnector = () => {
         if (status) {
           if (status === 'success') {
             message.success('Asset ingested successfully!')
-          } else if (status === 'failed') {
+          } else if (status === 'ingestion-failed') {
             message.error('Asset ingestion failed!')
           } else if (status === 'ingesting') {
             message.info('Asset ingestion started!')
+          } else if (status === 'deleted') {
+            message.success('Asset deleted successfully!')
+          } else if (status === 'deleting') {
+            message.info('Asset deletion started!')
+          } else if (status === 'delete-failed') {
+            message.error('Asset deletion failed!')
           } else {
             return
           }
 
-          updateAssetStatus(assetId, status)
+          status === 'deleted'
+            ? deleteAsset(assetId)
+            : updateAssetStatus(assetId, status)
         }
       })
 

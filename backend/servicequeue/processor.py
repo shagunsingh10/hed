@@ -1,5 +1,6 @@
 from tasks.ingestion import ingest_asset
 from tasks.query import process_query
+from tasks.cleaning import remove_docs
 from servicequeue.validator import MessageValidator
 from utils.logger import get_logger
 
@@ -16,3 +17,5 @@ class MessageProcessor:
                 ingest_asset.delay(validated_message["payload"])
             elif validated_message["job_type"] == "query":
                 process_query.delay(validated_message["payload"])
+            elif validated_message["job_type"] == "asset-deletion":
+                remove_docs.delay(validated_message["payload"])

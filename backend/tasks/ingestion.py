@@ -42,16 +42,17 @@ def ingest_asset(self, payload: dict[str, any]):
         asset_type = payload.get("asset_type")
         reader_kwargs = payload.get("reader_kwargs") or {}
 
-        # Updating asset status to 'ingesting'
-        status_updater.update_asset_ingestion_status(asset_id, "ingesting")
+        # Updating asset status to 'ingesting' for first try
+        if self.request.retries == 0:
+            status_updater.update_asset_status(asset_id, "ingesting")
 
         # Loading documents using the appropriate reader
         reader = ReaderFactory(asset_type, **reader_kwargs)
         documents = reader.load()
         document_ids = [
-            {"id": doc.get_doc_id(), "name": "some file"} for doc in documents
+            {"id": doc.get_doc_id(), "name": doc.metadata.get("file_path")}
+            for doc in documents
         ]
-        logger.debug(f"Document IDS: {documents}")
 
         # Extracting nodes from the loaded documents
         nodes = NodeParser.get_nodes_from_documents(documents)
@@ -70,15 +71,13 @@ def ingest_asset(self, payload: dict[str, any]):
         vector_store_client.save_nodes(embeddings.get("nodes"))
 
         # Updating asset status to 'success'
-        status_updater.update_asset_ingestion_status(
-            asset_id, "success", documents=document_ids
-        )
+        status_updater.update_asset_status(asset_id, "success", documents=document_ids)
 
     except Exception as e:
         # Handling task failure and retries
         if self.request.retries == 2:
             asset_id = payload.get("asset_id")
-            status_updater.update_asset_ingestion_status(asset_id, "failed")
+            status_updater.update_asset_status(asset_id, "failed")
             logger.error(f"Task Failed: {str(e)}")
             raise Reject()
         else:

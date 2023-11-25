@@ -38,4 +38,11 @@ export const createAssetsSlice: StateCreator<
       assets: updatedAssets,
     })
   },
+  deleteAsset: (assetId) => {
+    const assets = get().assets
+    const updatedAssets = assets.filter((e) => e.id !== assetId)
+    set({
+      assets: updatedAssets,
+    })
+  },
 })

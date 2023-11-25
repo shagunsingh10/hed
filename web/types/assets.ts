@@ -39,4 +39,5 @@ export interface AssetsSlice {
   setAssets: (assets: Asset[]) => void
   addNewAsset: (asset: Asset) => void
   updateAssetStatus: (assetId: string, status: string) => void
+  deleteAsset: (assetId: string) => void
 }

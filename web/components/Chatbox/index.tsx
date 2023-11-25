@@ -102,7 +102,6 @@ const ChatWindow: FC<ChatWindowProps> = ({ projectId }) => {
 
   useEffect(() => {
     setLoading(true)
-    console.log(activeChatId)
     if (activeChatId) {
       loadMessagesApi(activeChatId)
         .then((messages) => setMessages(messages))

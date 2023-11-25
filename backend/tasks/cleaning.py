@@ -1,37 +1,46 @@
-# import json
+from celery.exceptions import Reject
+from tasks.app import app, CLEANER_QUEUE
+from tasks.statusupdater import StatusUpdater
+from serviceconfig import serviceconfig
+from vector_store.factory import VectorStoreFactory
+from utils.logger import get_logger
 
-# import qdrant_client
-# from celery.exceptions import Reject
-# from config import config
-# from llama_index.vector_stores.qdrant import QdrantVectorStore
+logger = get_logger()
+status_updater = StatusUpdater()
 
-
-# ## QUEUE ##
-# QUEUE = config.get("CELERY_CLEANER_QUEUE")
-
-
-# ## Util Functions ##
-# def delete_document(doc_id, collection_name):
-#     client = qdrant_client.QdrantClient(config.get("QDRANT_URI"), prefer_grpc=True)
-#     vector_store = QdrantVectorStore(client=client, collection_name=collection_name)
-#     vector_store.delete(doc_id)
-#     logger.info(f"Removed doc {doc_id} from collection {collection_name}")
+vector_store = serviceconfig.get("vector_store")
+vector_store_kwargs = serviceconfig.get("vector_store_kwargs") or {}
 
 
-# ## TASKS ##
-# @worker.task(queue=QUEUE, max_retries=3, time_limit=20)
-# def remove_doc(msg):
-#     try:
-#         payload = json.loads(msg)
-#         doc_id = payload.get("doc_id", None)
-#         collection_name = payload.get("collection_name", None)
-#         delete_document(doc_id, collection_name)
-#     except Exception as e:
-#         logger.warning(
-#             f"An error occurred in task but {3-remove_doc.request.retries} retries left. Error: {str(e)}"
-#         )
-#         if remove_doc.request.retries == 3:
-#             logger.exception(f"Task failed: {str(e)}")
-#             raise Reject()
-#         else:
-#             remove_doc.retry()
+@app.task(bind=True, queue=CLEANER_QUEUE, max_retries=3, default_retry_delay=1)
+def remove_docs(self, payload: dict[str, any]):
+    try:
+        doc_ids = payload.get("doc_ids")
+        collection_name = payload.get("collection_name")
+        asset_id = payload.get("asset_id")
+
+        # Updating asset status to 'ingesting' for first try
+        if self.request.retries == 0:
+            status_updater.update_asset_status(asset_id, "deleting")
+
+        # Saving the embedded nodes to the vector store
+        vector_store_client = VectorStoreFactory(
+            vector_store=vector_store,
+            collection_name=collection_name,
+            **vector_store_kwargs,
+        )
+        vector_store_client.delete_docs(doc_ids)
+
+        # Updating asset status to 'success'
+        status_updater.delete_asset(asset_id)
+    except Exception as e:
+        # Handling task failure and retries
+        if self.request.retries == 2:
+            asset_id = payload.get("asset_id")
+            status_updater.update_asset_status(asset_id, status="delete-failed")
+            logger.error(f"Task Failed: {str(e)}")
+            raise Reject()
+        else:
+            retry_num = self.request.retries + 1
+            logger.warning(f"Retrying task [{retry_num}/2] -> Error: {str(e)}")
+            self.retry()

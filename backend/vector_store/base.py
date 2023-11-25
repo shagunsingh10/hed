@@ -18,3 +18,7 @@ class BaseVectorStore(ABC):
     @abstractmethod
     async def async_search_nodes_from_embeddings(self, embeddings, **kwargs):
         pass
+
+    @abstractmethod
+    def delete_docs(self, doc_ids: list[str]):
+        pass

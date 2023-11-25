@@ -1,11 +1,20 @@
 import json
 
-from schema.messages import BaseModel, IngestionPayload, QueryPayload
+from schema.messages import (
+    BaseModel,
+    IngestionPayload,
+    QueryPayload,
+    AssetDeletionPayload,
+)
 from utils.logger import get_logger
 
 logger = get_logger("queue-message-validator")
 
-jobs = {"ingestion": IngestionPayload, "query": QueryPayload}
+jobs = {
+    "ingestion": IngestionPayload,
+    "query": QueryPayload,
+    "asset-deletion": AssetDeletionPayload,
+}
 
 
 class MessageValidator:

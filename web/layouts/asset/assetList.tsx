@@ -1,4 +1,5 @@
-import { getAssetsApi, getAssetTypesApi } from '@/apis/assets'
+import { deleteAssetApi, getAssetsApi, getAssetTypesApi } from '@/apis/assets'
+import DeleteConfirmationModal from '@/components/Modals/DeleteWarn'
 import { PRIMARY_COLOR_DARK } from '@/constants'
 import { globalDateFormatParser } from '@/lib/functions'
 import useStore from '@/store'
@@ -8,6 +9,7 @@ import {
   CloseCircleFilled,
   DeleteOutlined,
   ExclamationCircleFilled,
+  ScissorOutlined,
   SettingFilled,
 } from '@ant-design/icons'
 import { Input, message, Space, Table, Tag } from 'antd'
@@ -15,18 +17,21 @@ import type { ColumnsType } from 'antd/es/table'
 import { useEffect, useMemo, useState } from 'react'
 import styles from './asset.module.scss'
 
-type KgListProps = {
+type AssetListProps = {
   projectId: string
   kgId: string
 }
 
-const KgList: React.FC<KgListProps> = ({ projectId, kgId }) => {
+const AssetList: React.FC<AssetListProps> = ({ projectId, kgId }) => {
   const assets = useStore((state) => state.assets)
   const setAssetTypes = useStore((state) => state.setAssetTypes)
   const setAssets = useStore((state) => state.setAssets)
 
   const [dataSource, setDataSource] = useState<Asset[]>(assets)
+  const [loading, setLoading] = useState(false)
   const [value, setValue] = useState('')
+  const [deleteWarnOpen, setDeleteWarn] = useState(false)
+  const [assetIdToDelete, setAssetIdToDelete] = useState('')
 
   const FilterByNameInput = (
     <Space style={{ display: 'flex', justifyContent: 'space-between' }}>
@@ -46,12 +51,24 @@ const KgList: React.FC<KgListProps> = ({ projectId, kgId }) => {
     </Space>
   )
 
-  const deleteKg = (kgId: string) => {
-    console.log(kgId)
-    message.info('Delete feature coming soon...')
+  const openDeleteWarning = (assetId: string) => {
+    setAssetIdToDelete(assetId)
+    setDeleteWarn(true)
   }
 
-  const deepDiveAsset = () => {
+  const deleteAsset = (kgId: string) => {
+    setLoading(true)
+    deleteAssetApi(kgId)
+      .catch((e: Error) => {
+        message.error(e.message.toString())
+      })
+      .finally(() => {
+        setLoading(false)
+        setDeleteWarn(false)
+      })
+  }
+
+  const deepDiveAsset: any = () => {
     message.info('Deep dive inside an asset coming soon...')
   }
 
@@ -103,18 +120,21 @@ const KgList: React.FC<KgListProps> = ({ projectId, kgId }) => {
         title: 'Status',
         dataIndex: 'status',
         align: 'center',
-        width: '8%',
         render: (_, { status }) => {
           let color = 'green'
           if (status === 'failed') color = 'red'
           if (status === 'pending') color = 'yellow'
           if (status === 'ingesting') color = 'blue'
+          if (status === 'deleting') color = 'orange'
+          if (status === 'delete-failed') color = 'red'
           return (
             <Tag color={color} key={status}>
               {status === 'pending' && <ExclamationCircleFilled />}
               {status === 'success' && <CheckCircleFilled />}
               {status === 'failed' && <CloseCircleFilled />}
               {status === 'ingesting' && <SettingFilled spin />}
+              {status === 'deleting' && <ScissorOutlined rotate={-20} />}
+              {status === 'delete-failed' && <ExclamationCircleFilled />}
 
               <span style={{ marginLeft: '0.5em', fontSize: '0.9em' }}>
                 {status.toUpperCase()}
@@ -128,24 +148,27 @@ const KgList: React.FC<KgListProps> = ({ projectId, kgId }) => {
         key: 'action',
         align: 'center',
         width: '10%',
-        render: (_, record) => (
-          <Space>
-            <DeleteOutlined
-              color="primary"
-              style={{ cursor: 'pointer' }}
-              onClick={() => deleteKg(record.id)}
-            />
-          </Space>
-        ),
+        render: (_, record) =>
+          ['delete-failed', 'success'].includes(record.status) && (
+            <Space>
+              <DeleteOutlined
+                color="primary"
+                style={{ cursor: 'pointer' }}
+                onClick={() => openDeleteWarning(record.id)}
+              />
+            </Space>
+          ),
       },
     ],
-    [deleteKg, FilterByNameInput, kgId]
+    [openDeleteWarning, FilterByNameInput, kgId]
   )
 
   useEffect(() => {
+    setLoading(true)
     getAssetsApi(projectId, kgId)
       .then((assets) => setAssets(assets))
       .catch((e: Error) => message.error(e.message.toString()))
+      .finally(() => setLoading(false))
     getAssetTypesApi()
       .then((assetTypes) => setAssetTypes(assetTypes))
       .catch((e: Error) => message.error(e.message.toString()))
@@ -154,17 +177,25 @@ const KgList: React.FC<KgListProps> = ({ projectId, kgId }) => {
   useEffect(() => setDataSource(assets), [assets])
 
   return (
-    <Table
-      className={styles.assetList}
-      columns={columns}
-      dataSource={dataSource}
-      scroll={{ y: 600 }}
-      showSorterTooltip={true}
-      sortDirections={['ascend', 'descend']}
-      pagination={false}
-      sticky={true}
-    />
+    <>
+      <DeleteConfirmationModal
+        open={deleteWarnOpen}
+        onCancel={() => setDeleteWarn(false)}
+        onDelete={() => deleteAsset(assetIdToDelete)}
+        message="Are you sure you want to delete the asset? It is non reversible."
+      />
+      <Table
+        loading={loading}
+        className={styles.assetList}
+        columns={columns}
+        dataSource={dataSource}
+        scroll={{ y: 600 }}
+        showSorterTooltip={true}
+        sortDirections={['ascend', 'descend']}
+        pagination={false}
+      />
+    </>
   )
 }
 
-export default KgList
+export default AssetList
