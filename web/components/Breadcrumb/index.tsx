@@ -2,6 +2,7 @@ import { HomeFilled } from '@ant-design/icons'
 import { Breadcrumb } from 'antd'
 import Link from 'next/link'
 import { useRouter } from 'next/router'
+import styles from './breadcrumb.module.scss'
 
 const nonNonPageRoutes = ['kgs']
 const BreadcrumbComponent = () => {
@@ -12,7 +13,7 @@ const BreadcrumbComponent = () => {
     .filter((r) => !nonNonPageRoutes.includes(r))
 
   return pathSegments.length > 0 ? (
-    <Breadcrumb style={{ margin: '0.5em 1em' }}>
+    <Breadcrumb className={styles.breadcrumbContainer}>
       <Breadcrumb.Item>
         <Link href="/" style={{ display: 'flex', gap: '0.5em' }}>
           <HomeFilled />
@@ -22,7 +23,7 @@ const BreadcrumbComponent = () => {
       {pathSegments.map((segment, index) => (
         <Breadcrumb.Item key={index}>
           {index === pathSegments.length - 1 ? (
-            <span>{segment}</span>
+            <span className={styles.breadcrumbItem}>{segment}</span>
           ) : (
             <Link href={`/${pathSegments.slice(0, index + 1).join('/')}`}>
               {segment}

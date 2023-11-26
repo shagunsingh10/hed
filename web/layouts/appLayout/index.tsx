@@ -1,7 +1,5 @@
-import BreadcrumbComponent from '@/components/Breadcrumb'
 import Loader from '@/components/Loader'
 import SocketConnector from '@/components/Socket'
-import { Layout } from 'antd'
 import type { Metadata } from 'next'
 import { useSession } from 'next-auth/react'
 import Header from '../header'
@@ -26,20 +24,19 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
   }
 
   return (
-    <Layout className={styles.layout}>
+    <div className={styles.layout}>
       <SocketConnector />
-      <div className={styles.header}>
-        <Header />
-      </div>
       <div className={styles.content}>
         <div className={styles.sider}>
           <Sider />
         </div>
         <div className={styles.contentBody}>
-          <BreadcrumbComponent />
+          <div className={styles.header}>
+            <Header />
+          </div>
           <div className={styles.mainBody}>{children}</div>
         </div>
       </div>
-    </Layout>
+    </div>
   )
 }

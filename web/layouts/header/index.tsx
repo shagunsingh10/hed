@@ -32,9 +32,7 @@ export default function Header() {
 
   return (
     <div className={styles.headerContainer}>
-      <div className={styles.leftContainer}>
-        <span className={styles.appLogo}>HERALD</span>
-      </div>
+      <div />
       {status == 'authenticated' && (
         <div className={styles.rightContainer}>
           <Dropdown

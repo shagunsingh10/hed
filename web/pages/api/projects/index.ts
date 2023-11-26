@@ -46,6 +46,9 @@ const handler = async (
         orderBy: {
           createdAt: 'desc',
         },
+        include: {
+          admins: true,
+        },
       })
       res.status(200).json({
         success: true,

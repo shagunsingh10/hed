@@ -6,17 +6,14 @@
   padding-bottom: 1em;
 
   .projectDetailsHead {
-    height: 5vh;
-    overflow-y: hidden;
-    opacity: 1;
+    margin-bottom: 0.5em;
     transition:
       all 0.5s ease,
       opacity 0.5s ease;
 
     .projectTitle {
       font-weight: bold;
-      font-size: 1.7em;
-      margin-bottom: 0.5em;
+      font-size: 1.3em;
     }
   }
 

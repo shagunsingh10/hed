@@ -13,6 +13,7 @@ export interface Project {
   description: string | null
   createdBy: string
   createdAt: Date
+  admins?: User[]
 }
 
 export interface ProjectsSlice {

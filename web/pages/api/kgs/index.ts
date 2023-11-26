@@ -14,12 +14,14 @@ type PrismaKgRecord = {
   isActive: boolean
   createdBy: string
   createdAt: Date
+  UserRole?: any[]
 }
 
 const processTags = (project: PrismaKgRecord): Kg => {
   return {
     ...project,
     createdAt: project.createdAt.toString(),
+    members: project.UserRole?.map((e) => ({ ...e.User, role: e.role })),
     tags: project.tags?.split(',').map((tag) => tag?.trim()) || [],
   }
 }
@@ -46,6 +48,14 @@ const handler = async (
         },
         orderBy: {
           createdAt: 'desc',
+        },
+        include: {
+          UserRole: {
+            select: {
+              User: true,
+              role: true,
+            },
+          },
         },
       })
       res.status(200).json({

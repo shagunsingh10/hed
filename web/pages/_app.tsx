@@ -6,7 +6,7 @@ import { SessionProvider } from 'next-auth/react'
 import type { AppProps } from 'next/app'
 import { Nunito } from 'next/font/google'
 import Head from 'next/head'
-import { COLOR_BG_BASE, COLOR_OUTLINE, PRIMARY_COLOR } from '../constants'
+import { COLOR_BG_BASE, PRIMARY_COLOR } from '../constants'
 
 const font = Nunito({ weight: '400', subsets: ['latin'] })
 
@@ -24,7 +24,6 @@ export default function App({ Component, pageProps }: AppProps) {
           token: {
             colorPrimary: PRIMARY_COLOR,
             colorBgBase: COLOR_BG_BASE,
-            controlOutline: COLOR_OUTLINE,
           },
           algorithm: [theme.darkAlgorithm, theme.compactAlgorithm],
         }}

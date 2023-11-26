@@ -2,16 +2,20 @@ import { getProjectsApi } from '@/apis/projects'
 import { useDebouncedCallback } from '@/hooks/useDebounceCallback'
 import useStore from '@/store'
 import { Project } from '@/types/projects'
-import { Input, message } from 'antd'
+import { PlusCircleOutlined, SearchOutlined } from '@ant-design/icons'
+import { Button, Input, message, Typography } from 'antd'
 import { useEffect, useState } from 'react'
+import ProjectEvents from './events'
+import AppMetrics from './metrics'
+import CreateProjectForm from './newProjectForm/newProject'
 import ProjectsGrid from './projectGrid'
 import styles from './projects.module.scss'
-
-const { Search } = Input
 
 const ProjectsScreen = () => {
   const [loading, setLoading] = useState(false)
   const [filteredProjects, setFilteredProjects] = useState<Project[]>([])
+  const [createProjectTab, setCreateProjectTab] = useState<boolean>(false)
+
   const projects = useStore((state) => state.projects)
   const setProjects = useStore((state) => state.setProjects)
 
@@ -46,18 +50,43 @@ const ProjectsScreen = () => {
   }, 100)
 
   return (
-    <div className={styles.projectsContainer}>
-      <div className={styles.screenHeader}>
-        <div className={styles.screenTitle}>Projects</div>
-        <Search
-          className={styles.search}
-          placeholder="Search projects by name or tags or description"
-          size="large"
-          onChange={(e) => onChange(e.target.value)}
-        />
-      </div>
+    <div className={styles.pageContainer}>
+      <Typography.Title level={3}>My Projects</Typography.Title>
+      <div className={styles.projectsScreen}>
+        <div className={styles.projectsContainer}>
+          <div className={styles.screenHeader}>
+            <Input
+              prefix={<SearchOutlined />}
+              className={styles.search}
+              placeholder="Search projects by name or tags or description"
+              onChange={(e) => onChange(e.target.value)}
+            />
+            <Button onClick={() => setCreateProjectTab(true)} type="primary">
+              <PlusCircleOutlined /> Create New
+            </Button>
+          </div>
 
-      <ProjectsGrid projects={filteredProjects} loading={loading} />
+          <ProjectsGrid projects={filteredProjects} loading={loading} />
+          <CreateProjectForm
+            open={createProjectTab}
+            closeProjectCreationForm={() => setCreateProjectTab(false)}
+          />
+        </div>
+        <div className={styles.rightContainer}>
+          <div className={styles.appMetricsContainer}>
+            <Typography.Title level={3} className={styles.eventsTitle}>
+              Metrics
+            </Typography.Title>
+            <AppMetrics />
+          </div>
+          <div className={styles.eventsContainer}>
+            <Typography.Title level={3} className={styles.eventsTitle}>
+              Recent Events
+            </Typography.Title>
+            <ProjectEvents />
+          </div>
+        </div>
+      </div>
     </div>
   )
 }

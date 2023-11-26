@@ -20,12 +20,7 @@ const TabContentAsset: FC<TabContentProps> = ({
   if (activeTab === 1) {
     return (
       <div>
-        <Button
-          onClick={() => setOpen(true)}
-          type="primary"
-          size="middle"
-          ghost
-        >
+        <Button onClick={() => setOpen(true)} type="primary" size="middle">
           <PlusCircleOutlined /> Create Asset
         </Button>
         <CreateAssetForm
@@ -41,12 +36,7 @@ const TabContentAsset: FC<TabContentProps> = ({
   if (activeTab === 2) {
     return (
       <div>
-        <Button
-          onClick={() => setOpen(true)}
-          type="primary"
-          size="middle"
-          ghost
-        >
+        <Button onClick={() => setOpen(true)} type="primary" size="middle">
           <PlusCircleOutlined /> Add User
         </Button>
         <AddUserForm kgId={kgId} open={open} onClose={() => setOpen(false)} />

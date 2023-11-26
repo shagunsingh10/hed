@@ -1,4 +1,4 @@
-import { ProfileFilled, RobotFilled } from '@ant-design/icons'
+import { AppstoreFilled, BulbFilled } from '@ant-design/icons'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import styles from './sider.module.scss'
@@ -7,8 +7,8 @@ const getParentPath = (path: string) =>
   path === '/' ? path : `/${path.split('/')[1]}`
 
 const items = [
-  { title: 'Ask', path: '/', icon: <RobotFilled /> },
-  { title: 'Projects', path: '/projects', icon: <ProfileFilled /> },
+  { title: 'Ask', path: '/', icon: <BulbFilled /> },
+  { title: 'Projects', path: '/projects', icon: <AppstoreFilled /> },
 ]
 
 export default function Sider() {
