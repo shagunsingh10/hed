@@ -1,0 +1,16 @@
+@use '../../global.scss' as *;
+
+.chatScreenContainer {
+  background-color: $dark2;
+  height: 100%;
+  border-radius: 0.5em;
+  display: flex;
+
+  .chatHistoryContainer {
+    width: 20%;
+  }
+
+  .chatBoxContainer {
+    width: 80%;
+  }
+}

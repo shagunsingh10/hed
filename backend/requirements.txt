@@ -12,10 +12,16 @@ redis
 celery
 celery[redis]
 
-## qdrant ##
-qdrant_client
-
 ## llama index ##
-llama_index
-langchain
-ray
+langchain==0.0.333
+llama-hub==0.0.45
+llama-index==0.8.66
+atlassian-python-api
+jira
+pymilvus==2.3.3
+pyarrow
+Jinja2
+pypdf
+Pillow
+wikipedia
+nbconvert

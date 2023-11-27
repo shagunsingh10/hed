@@ -12,9 +12,17 @@ export const getChatsApi = async (projectId?: string) => {
   return resData.data
 }
 
-export const addNewChatApi = async (projectId?: string) => {
+export const addNewChatApi = async (title: string, projectId?: string) => {
   const res = await fetcher.post(
-    `/api/chats${projectId ? `?projectId=${projectId}` : ''}`
+    `/api/chats${projectId ? `?projectId=${projectId}` : ''}`,
+    {
+      title: title,
+    },
+    {
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    }
   )
   const resData = await res.json()
   if (!resData.success) {

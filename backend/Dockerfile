@@ -27,14 +27,6 @@ ADD requirements.txt /app/requirements.txt
 # Install dependencies from requirements.txt
 RUN pip install -r requirements.txt
 
-RUN pip install pymilvus
-RUN pip install pyarrow
-RUN pip install Jinja2
-RUN pip install pypdf
-RUN pip install Pillow
-RUN pip install wikipedia
-RUN pip install nbconvert
-
 # Copy the contents of the current directory (where Dockerfile is located) into the container at /app
 ADD . /app
 

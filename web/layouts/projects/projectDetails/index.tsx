@@ -1,14 +1,8 @@
 import { getProjectByIdApi } from '@/apis/projects'
-import Chatbox from '@/components/Chatbox'
 import Loader from '@/components/Loader'
 import { useMediaQuery } from '@/hooks/useMediaQuery'
 import useStore from '@/store'
-import {
-  BookOutlined,
-  MailOutlined,
-  SettingOutlined,
-  UserOutlined,
-} from '@ant-design/icons'
+import { BookOutlined, SettingOutlined, UserOutlined } from '@ant-design/icons'
 import { message, Tabs } from 'antd'
 import { useParams } from 'next/navigation'
 import { useEffect, useMemo, useState } from 'react'
@@ -26,11 +20,6 @@ const ProjectDetailsScreen = () => {
 
   const tabs = useMemo(
     () => [
-      {
-        title: 'Chat',
-        icon: <MailOutlined />,
-        content: <Chatbox projectId={projectId} />,
-      },
       {
         title: 'Knowledge Groups',
         icon: <BookOutlined />,

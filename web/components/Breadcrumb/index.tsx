@@ -1,5 +1,5 @@
 import { HomeFilled } from '@ant-design/icons'
-import { Breadcrumb } from 'antd'
+import { Breadcrumb, Typography } from 'antd'
 import Link from 'next/link'
 import { useRouter } from 'next/router'
 import styles from './breadcrumb.module.scss'
@@ -33,7 +33,7 @@ const BreadcrumbComponent = () => {
       ))}
     </Breadcrumb>
   ) : (
-    <div style={{ margin: '0.5em 1em' }} />
+    <Typography.Title level={4}>HERALD</Typography.Title>
   )
 }
 

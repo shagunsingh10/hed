@@ -26,7 +26,7 @@
 
       .projectCardsContainer {
         height: 100%;
-        overflow-y: hidden;
+        overflow-y: auto;
         transition: opacity 0.5s ease-in;
         padding-right: 0.5em;
         display: grid;
@@ -70,10 +70,6 @@
         .projectMembers {
           height: 6vh;
         }
-      }
-
-      .projectCardsContainer:hover {
-        overflow-y: auto;
       }
     }
 

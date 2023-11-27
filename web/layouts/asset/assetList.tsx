@@ -121,14 +121,14 @@ const AssetList: React.FC<AssetListProps> = ({ projectId, kgId }) => {
         dataIndex: 'status',
         align: 'center',
         render: (_, { status }) => {
-          let color = 'green'
-          if (status === 'failed') color = 'red'
-          if (status === 'pending') color = 'yellow'
-          if (status === 'ingesting') color = 'blue'
+          let color = 'success'
+          if (status === 'failed') color = 'error'
+          if (status === 'pending') color = 'warning'
+          if (status === 'ingesting') color = 'processing'
           if (status === 'deleting') color = 'orange'
-          if (status === 'delete-failed') color = 'red'
+          if (status === 'delete-failed') color = 'error'
           return (
-            <Tag color={color} key={status}>
+            <Tag color={color} key={status} bordered>
               {status === 'pending' && <ExclamationCircleFilled />}
               {status === 'success' && <CheckCircleFilled />}
               {status === 'failed' && <CloseCircleFilled />}

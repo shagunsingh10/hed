@@ -3,9 +3,10 @@ $primaryColor: #0a6dc2;
 $primaryDark: #323236;
 $bgColor: #010409;
 $dark1: #0d1117;
-$dark2: #232325;
+$dark2: #1a1e24;
 $dark3: #3a3a3c;
 $colorBgText: #75797b7a;
+$chatMessageBg: #010409;
 
 .customFileInput {
   width: 100%;
@@ -51,7 +52,7 @@ $colorBgText: #75797b7a;
 }
 
 .ant-menu-item-selected {
-  background-color: #1d1f21 !important;
+  background-color: $dark1 !important;
   color: #ffffff !important;
   font-weight: bold;
 }

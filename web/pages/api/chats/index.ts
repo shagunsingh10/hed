@@ -10,15 +10,13 @@ const handler = async (
 ) => {
   const sessionToken = req.headers.sessiontoken as string
   const user = await getUserInfoFromSessionToken(sessionToken)
-  let projectId = req.query.projectId as string | null
+  const projectId = req.query.projectId as string | null
 
   switch (req.method) {
     case 'GET': {
-      if (!projectId) projectId = null
       const chats = await prisma.chat.findMany({
         where: {
           userId: user?.id,
-          projectId,
         },
         orderBy: {
           createdAt: 'desc',
@@ -31,11 +29,13 @@ const handler = async (
       break
     }
     case 'POST': {
+      const title = req.body.title
+
       const newChat = await prisma.chat.create({
         data: {
           userId: Number(user?.id),
           projectId: projectId,
-          title: `New Chat ${Date.now()}`,
+          title: title || 'No Title',
         },
       })
 

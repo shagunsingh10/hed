@@ -1,0 +1,9 @@
+.formContainer {
+  padding: 2em;
+
+  .buttonGroup {
+    display: flex;
+    justify-content: flex-end;
+    gap: 1em;
+  }
+}

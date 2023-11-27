@@ -1,10 +1,5 @@
-import { addNewChatApi, getChatsApi, postQueryApi } from '@/apis/chats'
-import type {
-  ChatsSlice,
-  ChatWithoutMessage,
-  Message,
-  MessagesSlice,
-} from '@/types/chats'
+import { getChatsApi, postQueryApi } from '@/apis/chats'
+import type { ChatsSlice, Message, MessagesSlice } from '@/types/chats'
 import type { ProjectsSlice } from '@/types/projects'
 import { StateCreator } from 'zustand'
 
@@ -15,10 +10,11 @@ export const createChatsSlice: StateCreator<
   ChatsSlice
 > = (set, get) => ({
   chats: [],
-  activeChatId: '',
-  setActiveChatId: (chatId) => {
+  activeChat: undefined,
+  setActiveChat: (chatId) => {
+    const activeChat = get().chats.find((e) => e.id === chatId)
     set({
-      activeChatId: chatId,
+      activeChat: activeChat,
     })
   },
   loadChats: async (projectId?: string) => {
@@ -26,15 +22,14 @@ export const createChatsSlice: StateCreator<
     set({
       chats: chats,
       messages: [],
+      activeChat: chats ? chats[0] : undefined,
     })
   },
-  addChat: async (projectId) => {
-    const newChat: ChatWithoutMessage = await addNewChatApi(projectId)
+  addChat: (newChat) => {
     set({
-      chats: [...get().chats, newChat],
-      activeChatId: newChat.id,
+      chats: [newChat, ...get().chats],
+      activeChat: newChat,
     })
-    return newChat.id
   },
 })
 
@@ -48,7 +43,7 @@ export const createMessagesSlice: StateCreator<
   messages: [],
   streaming: false,
   addMessage: (m) => {
-    if (get().activeChatId == m.chatId) {
+    if (get().activeChat?.id == m.chatId) {
       const messages = get().messages || []
 
       // if we are streaming and the message is complete -> replace last message with the final message
@@ -98,7 +93,7 @@ export const createMessagesSlice: StateCreator<
   resetMessages: async () => {
     set({
       messages: [],
-      activeChatId: '',
+      activeChat: undefined,
     })
   },
 })

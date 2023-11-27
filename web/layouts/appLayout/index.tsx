@@ -1,7 +1,10 @@
+import { getUserByEmail } from '@/apis/users'
 import Loader from '@/components/Loader'
 import SocketConnector from '@/components/Socket'
+import { User } from '@/types/users'
 import type { Metadata } from 'next'
 import { useSession } from 'next-auth/react'
+import { useEffect } from 'react'
 import Header from '../header'
 import LoginScreen from '../login'
 import Sider from '../sider'
@@ -13,7 +16,17 @@ export const metadata: Metadata = {
 }
 
 export default function AppLayout({ children }: { children: React.ReactNode }) {
-  const { status } = useSession()
+  const { data: session, status } = useSession()
+
+  useEffect(() => {
+    if (session?.user?.email) {
+      getUserByEmail(session?.user?.email)
+        .then((user: User) => {
+          localStorage.setItem('userAvatarSrc', user?.image || '')
+        })
+        .catch((e) => console.error(e))
+    }
+  }, [session])
 
   if (status === 'loading') {
     return <Loader />

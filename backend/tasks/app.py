@@ -5,6 +5,7 @@ from config import appconfig
 app = Celery(
     "herald",
     broker=f"redis://{appconfig.get('REDIS_HOST')}:{appconfig.get('REDIS_PORT')}",
+    backend=f"redis://{appconfig.get('REDIS_HOST')}:{appconfig.get('REDIS_PORT')}",
     include=["tasks.ingestion", "tasks.query", "tasks.cleaning"],
 )
 

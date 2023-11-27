@@ -1,11 +1,8 @@
-import {
-  BellOutlined,
-  LogoutOutlined,
-  MailOutlined,
-  UserOutlined,
-} from '@ant-design/icons'
+import BreadcrumbComponent from '@/components/Breadcrumb'
+import { BellOutlined, LogoutOutlined, MailOutlined } from '@ant-design/icons'
 import { Avatar, Dropdown, type MenuProps } from 'antd'
 import { signOut, useSession } from 'next-auth/react'
+import { useEffect, useState } from 'react'
 import styles from './header.module.scss'
 
 const userMenuItems: MenuProps['items'] = [
@@ -29,10 +26,17 @@ const notificationItems: MenuProps['items'] = [
 
 export default function Header() {
   const { data: session, status } = useSession()
+  const [userAvatarSrc, setuserAvatarSrc] = useState<string>('')
+
+  useEffect(() => {
+    setuserAvatarSrc(localStorage.getItem('userAvatarSrc') || '')
+  }, [])
 
   return (
     <div className={styles.headerContainer}>
-      <div />
+      <div>
+        <BreadcrumbComponent />
+      </div>
       {status == 'authenticated' && (
         <div className={styles.rightContainer}>
           <Dropdown
@@ -48,7 +52,10 @@ export default function Header() {
             arrow
           >
             <div className="user-info">
-              <Avatar icon={<UserOutlined />} size={'small'} />
+              <Avatar
+                src={<img src={userAvatarSrc} referrerPolicy="no-referrer" />}
+                size="small"
+              />
               <span style={{ marginLeft: '8px' }}>{session?.user?.name}</span>
             </div>
           </Dropdown>
