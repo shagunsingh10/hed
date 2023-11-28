@@ -1,6 +1,7 @@
 export interface PostMessage {
   content: string
 }
+
 export interface Message {
   id: string
   chatId: string
@@ -8,7 +9,9 @@ export interface Message {
   timestamp: Date
   isResponse: boolean
   complete?: boolean
+  sources?: Record<string, any>[]
 }
+
 export interface ChatWithoutMessage {
   id: string
   title: string | null

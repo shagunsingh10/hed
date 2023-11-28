@@ -41,16 +41,24 @@ def ingest_asset(self, payload: dict[str, any]):
         collection_name = payload.get("collection_name")
         asset_type = payload.get("asset_type")
         reader_kwargs = payload.get("reader_kwargs") or {}
+        extra_metadata = payload.get("extra_metadata") or {}
 
         # Updating asset status to 'ingesting' for first try
         if self.request.retries == 0:
             status_updater.update_asset_status(asset_id, "ingesting")
 
         # Loading documents using the appropriate reader
-        reader = ReaderFactory(asset_type, **reader_kwargs)
+        reader = ReaderFactory(
+            asset_type, extra_metadata=extra_metadata, **reader_kwargs
+        )
         documents = reader.load()
         document_ids = [
-            {"id": doc.get_doc_id(), "name": doc.metadata.get("file_path")}
+            {
+                "id": doc.get_doc_id(),
+                "name": doc.metadata.get("file_path")
+                or doc.metadata.get("file_name")
+                or "Untitled",
+            }
             for doc in documents
         ]
 

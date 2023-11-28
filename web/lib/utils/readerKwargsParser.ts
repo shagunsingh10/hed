@@ -3,7 +3,8 @@ export type AssetIngestionInput = {
   assetType: string
   knowledgeGroupId: string
   projectId: string
-  kwargs?: Record<string, unknown>
+  kwargs?: Record<string, unknown> | null
+  extra_metadata?: Record<string, unknown> | null
 }
 
 const getIngestionPayload = (data: AssetIngestionInput) => {
@@ -12,6 +13,7 @@ const getIngestionPayload = (data: AssetIngestionInput) => {
     asset_id: data.assetId,
     asset_type: data.assetType,
     reader_kwargs: data.kwargs || {},
+    extra_metadata: data.extra_metadata || {},
   }
 
   if (data.assetType == 'directory') {

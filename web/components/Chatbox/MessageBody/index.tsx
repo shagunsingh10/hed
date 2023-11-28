@@ -1,8 +1,9 @@
 import { Message } from '@/types/chats'
-import { Space, Spin, Tag } from 'antd'
+import { Space, Spin } from 'antd'
 import { FC } from 'react'
 import ReactMarkdown from 'react-markdown'
 import CodeBlock from '../Codeblock'
+import SourceInfoModal from '../SourceInfo'
 import styles from './message.module.scss'
 
 type MessageProps = {
@@ -26,12 +27,14 @@ const MessageBody: FC<MessageProps> = ({ chatMessage }) => {
                 />
               </span>
             </div>
-            <div className={styles.chatResponseMessageSources}>
-              <h5>Sources: </h5>
-              {['customers.txt', 'harry potter.pdf'].map((e) => (
-                <Tag color={'default'}>{e}</Tag>
-              ))}
-            </div>
+            {chatMessage.sources && (
+              <div className={styles.chatResponseMessageSources}>
+                <h5>Sources: </h5>
+                {chatMessage.sources.map((e) => (
+                  <SourceInfoModal data={e} />
+                ))}
+              </div>
+            )}
           </>
         )
       ) : (

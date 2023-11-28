@@ -7,7 +7,7 @@ const prisma = new PrismaClient()
 async function seedData() {
   try {
     const data = [
-      { key: 'directory', name: 'Directory', isActive: true },
+      { key: 'directory', name: 'Files', isActive: true },
       { key: 'github', name: 'Github', isActive: true },
       { key: 'wikipedia', name: 'Wikipedia', isActive: true },
       { key: 'gsheets', name: 'Gsheets', isActive: true },

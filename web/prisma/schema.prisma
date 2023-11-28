@@ -143,6 +143,7 @@ model Asset {
   tags             String?
   knowledgeGroupId String
   readerKwargs     String?
+  extraMetadata    Json?
   status           String   @default("pending")
   ownerUserId      Int
   isActive         Boolean  @default(true)
@@ -186,6 +187,7 @@ model Chat {
 model Message {
   id         String   @id @default(cuid())
   content    String
+  sources    Json?
   isResponse Boolean
   timestamp  DateTime @default(now())
   chatId     String

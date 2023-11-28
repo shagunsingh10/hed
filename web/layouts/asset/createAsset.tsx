@@ -43,6 +43,8 @@ const CreateAssetForm: FC<CreateAssetFormProps> = ({
   const assetTypes = useStore((state) => state.assetTypes)
   const kgs = useStore((state) => state.kgs)
   const setKgs = useStore((state) => state.setKgs)
+  const users = useStore((state) => state.users)
+  const loadUsers = useStore((state) => state.loadUsers)
 
   // functions
   const handleSubmit = async (values: any) => {
@@ -57,6 +59,13 @@ const CreateAssetForm: FC<CreateAssetFormProps> = ({
       description: values.description,
       tags: values.tags,
       readerKwargs: getReaderKwargs(values, assetType.key),
+      extraMetadata: {
+        description: values.description,
+        authors: values.authors,
+        tags: values.tags,
+        assetType: assetType.key,
+        ...getMetadata(values, assetType.key),
+      },
     })
       .then((asset) => {
         addNewAsset(asset)
@@ -88,7 +97,23 @@ const CreateAssetForm: FC<CreateAssetFormProps> = ({
         owner: githubDetails.owner,
         repo: githubDetails.repo,
         github_token: values.github_token,
+        branch: values.branch,
       }
+    }
+
+    return {}
+  }
+
+  const getMetadata = (values: any, assetTypeKey: string) => {
+    if (assetTypeKey === 'wikipedia') {
+      return {
+        base_url: 'https://www.wikipedia.org/',
+        file_path: values.wiki_page,
+      }
+    }
+
+    if (assetTypeKey === 'github') {
+      return { base_url: values.github_url }
     }
 
     return {}
@@ -119,6 +144,10 @@ const CreateAssetForm: FC<CreateAssetFormProps> = ({
   useEffect(() => {
     if (kgId) setSelectedKgId(kgId)
   }, [kgId])
+
+  useEffect(() => {
+    if (loadUsers) loadUsers()
+  }, [loadUsers])
 
   if (!assetTypes) {
     return <Loader />
@@ -223,24 +252,26 @@ const CreateAssetForm: FC<CreateAssetFormProps> = ({
               <Form.Item label="Asset Description" name="description">
                 <Input.TextArea
                   rows={6}
-                  placeholder="Please enter a short description for this KG"
+                  placeholder="Please enter a short description for this asset"
                 />
               </Form.Item>
               <Form.Item label="Tags" name="tags">
                 <Input placeholder="Enter tags asscoiated with this asset (comma-separated)" />
               </Form.Item>
-              <Form.Item label="Authors" name="poc">
+              <Form.Item label="Authors" name="authors">
                 <Select
-                  showSearch={true}
-                  placeholder="Select authors of this asset"
                   mode="multiple"
+                  showSearch
+                  filterOption={(inputValue, option) =>
+                    option?.children
+                      ?.toLocaleString()
+                      .toLowerCase()
+                      .includes(inputValue.toLowerCase()) || false
+                  }
+                  placeholder="Add authors"
                 >
-                  {[
-                    { id: 'Bob@abc.com', name: 'Bob@abc.com' },
-                    { id: 'Sam@abc.com', name: 'Sam@abc.com' },
-                    { id: 'Shivam@abc.com', name: 'Shivam@abc.com' },
-                  ].map((e) => (
-                    <Option key={e.id} value={e.id}>
+                  {users.map((e) => (
+                    <Option key={e.id} value={e.email}>
                       {e.name}
                     </Option>
                   ))}

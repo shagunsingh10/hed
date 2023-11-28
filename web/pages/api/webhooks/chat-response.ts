@@ -14,8 +14,9 @@ const handler = async (
       const chatId = req.body.chatId as string
       const apiKey = req.body.apiKey as string
       const user = req.body.user as string
-      const complete = req.body.complete as string
       const chunk = req.body.chunk as string
+      const complete = req.body.complete as string
+      const sources = req.body.sources
 
       if (apiKey != appConfig.serviceApiKey) {
         return res.status(401).json({ success: false })
@@ -40,6 +41,7 @@ const handler = async (
             chatId: chatId,
             content: chunk,
             isResponse: true,
+            sources: sources,
           },
         })
         const io = res.socket.server.io
@@ -52,6 +54,7 @@ const handler = async (
                 messageId: message.id,
                 timestamp: message.timestamp,
                 complete: true,
+                sources: sources,
               })
           })
         }

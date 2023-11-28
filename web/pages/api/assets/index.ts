@@ -70,7 +70,8 @@ const handler = async (
       break
     }
     case 'POST': {
-      const body: CreateAssetData = await req.body
+      const body: CreateAssetData = req.body
+      console.log({ body })
 
       const kgContributorAccess = await hasContributorAccessToKg(
         kgId,
@@ -113,6 +114,7 @@ const handler = async (
             ownerUserId: user?.id as number,
             assetTypeId: body.assetTypeId,
             readerKwargs: JSON.stringify(body.readerKwargs),
+            extraMetadata: body?.extraMetadata as any,
           },
         })
 
@@ -124,7 +126,8 @@ const handler = async (
               assetType: assetType.key,
               knowledgeGroupId: kgId,
               projectId: projectId,
-              kwargs: body.readerKwargs || {},
+              kwargs: body?.readerKwargs,
+              extra_metadata: body?.extraMetadata,
             }),
           })
         )

@@ -6,6 +6,7 @@
     'Source Code Pro', 'Fira Mono', 'Droid Sans Mono', 'Courier New', monospace;
 
   --foreground-color: rgba(200, 200, 200, 0.9);
+  --background-color: #010409;
 }
 
 * {
@@ -24,6 +25,7 @@ body {
 
 body {
   color: var(--foreground-color);
+  background-color: var(--background-color);
 }
 
 a {

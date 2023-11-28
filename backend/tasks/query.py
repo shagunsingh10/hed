@@ -1,5 +1,5 @@
 from celery.exceptions import Reject
-from llama_index.response.schema import StreamingResponse
+from llama_index.response.schema import StreamingResponse, Response
 from tasks.app import app, QUERY_PROCESSOR_QUEUE
 from serviceconfig import serviceconfig
 from tasks.statusupdater import StatusUpdater
@@ -92,17 +92,15 @@ def process_query(self, payload):
                     user=payload.get("user"),
                 )
 
+        sources = get_sources_from_response(streaming_response)
         # Sending the complete response
         status_updater.send_query_response_chunk(
             chunk=complete_response,
             chat_id=payload.get("chat_id"),
             user=payload.get("user"),
             complete=True,
+            sources=sources,
         )
-
-        # Logging source nodes and complete response
-        logger.debug(f"Source nodes: {streaming_response.source_nodes}")
-        logger.debug(f"Complete response: {complete_response}")
 
     except Exception as e:
         # Handling task failure and retries
@@ -119,3 +117,10 @@ def process_query(self, payload):
             retries = self.request.retries + 1
             logger.warning(f"Retrying task [{retries}/2] -> Error: {str(e)}")
             self.retry()
+
+
+def get_sources_from_response(response: StreamingResponse | Response):
+    sources = []
+    for node in response.source_nodes:
+        sources.append(node.metadata)
+    return sources

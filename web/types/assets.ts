@@ -5,6 +5,7 @@ export type CreateAssetData = {
   assetTypeId: string
   knowledgeGroupId: string
   readerKwargs?: Record<string, any> | null
+  extraMetadata?: Record<string, any> | null
 }
 
 export type AssetType = {

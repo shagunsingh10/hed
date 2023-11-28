@@ -12,7 +12,7 @@ const SocketConnector = () => {
   const updateAssetStatus = useStore((state) => state.updateAssetStatus)
   const deleteAsset = useStore((state) => state.deleteAsset)
   const addMessage = useStore((state) => state.addMessage)
-  const activeChatId = useStore((state) => state.activeChatId)
+  const activeChat = useStore((state) => state.activeChat)
 
   const connectSocket = useCallback(
     async (session: Session) => {
@@ -63,7 +63,8 @@ const SocketConnector = () => {
 
       socket.on(
         'chat-response',
-        ({ chatId, messageId, timestamp, response, complete }) => {
+        ({ chatId, messageId, timestamp, response, complete, sources }) => {
+          console.log(sources)
           addMessage({
             chatId: chatId,
             id: messageId,
@@ -71,13 +72,14 @@ const SocketConnector = () => {
             content: response,
             isResponse: true,
             complete: complete,
+            sources: sources,
           })
         }
       )
 
       setSocket(socket)
     },
-    [addMessage, updateAssetStatus, activeChatId]
+    [addMessage, updateAssetStatus, activeChat?.id]
   )
 
   useEffect(() => {

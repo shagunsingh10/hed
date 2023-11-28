@@ -8,6 +8,7 @@ class IngestionPayload(BaseModel):
     asset_id: str
     collection_name: str
     reader_kwargs: Dict[str, Any]
+    extra_metadata: Dict[str, Any]
 
 
 class QueryPayload(BaseModel):

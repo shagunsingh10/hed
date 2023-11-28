@@ -24,7 +24,8 @@ logger = get_logger("reader")
 
 
 class ReaderFactory:
-    def __init__(self, asset_type, **kwargs):
+    def __init__(self, asset_type, extra_metadata, **kwargs):
+        self.extra_metadata = extra_metadata
         if asset_type not in supported_types:
             raise UnsupportedReaderError(f"Reader {asset_type} is not supported yet")
         self.reader = supported_types[asset_type](**kwargs)
@@ -32,6 +33,7 @@ class ReaderFactory:
     def load(self) -> list[Document]:
         start_time = time.time()
         docs = self.reader.load()
+        docs = self.reader._add_metadata(docs, self.extra_metadata)
         logger.debug(
             f"Time taken to read ({len(docs)}) documents: [{round(time.time() - start_time, 4)} s]"
         )

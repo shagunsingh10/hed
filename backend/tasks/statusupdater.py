@@ -48,13 +48,16 @@ class StatusUpdater:
             json=data,
         )
 
-    def send_query_response_chunk(self, chunk, chat_id, user, complete=False):
+    def send_query_response_chunk(
+        self, chunk, chat_id, user, complete=False, sources=[]
+    ):
         data = {
             "chunk": chunk,
             "apiKey": self.next_api_key,
             "chatId": chat_id,
             "user": user,
             "complete": complete,
+            "sources": sources,
         }
         self._make_request(
             f"{self.next_endpoint}/api/webhooks/chat-response",

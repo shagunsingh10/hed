@@ -1,6 +1,7 @@
 import { Form, Input } from 'antd'
 
 function extractUserAndRepo(githubUrl: string) {
+  // eslint-disable-next-line no-useless-escape
   const regex = /github\.com\/([^\/]+)\/([^\/]+)(\/|$)/
   const match = githubUrl.match(regex)
   if (match && match.length >= 3) {
@@ -26,6 +27,18 @@ const GithubForm = () => {
         ]}
       >
         <Input placeholder="Github repo link is required" />
+      </Form.Item>
+      <Form.Item
+        label="Branch"
+        name="branch"
+        rules={[
+          {
+            required: true,
+            message: 'Please enter the branch.',
+          },
+        ]}
+      >
+        <Input placeholder="Enter branch name" value={'main'} />
       </Form.Item>
       <Form.Item
         label="Github Token"
