@@ -9,5 +9,5 @@ class WikipediaReader(BaseReader):
         self.pages = kwargs.get("pages")
         self.reader = LlamaWikipediaReader()
 
-    def load(self) -> list[Document]:
+    def _load(self) -> list[Document]:
         return self.reader.load_data(pages=self.pages)

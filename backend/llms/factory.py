@@ -25,12 +25,12 @@ from llama_index.llms.replicate import Replicate
 from llama_index.llms.vertex import Vertex
 from llama_index.llms.watsonx import WatsonX
 from llama_index.llms.xinference import Xinference
+from llama_index.llms.custom import CustomLLM
 
 from llms.kobold import KoboldCPP
 from llms.custom import HeraldCustomLLM
 
-# from utils.exceptions import LLMInstatiateError
-supported_llm_mappings = {
+supported_llms = {
     "ai21": AI21,
     "anthropic": Anthropic,
     "anyscale": Anyscale,
@@ -65,12 +65,27 @@ supported_llm_mappings = {
 }
 
 
-class LLMFactory:
-    @staticmethod
-    def get_llm(name, **kwargs):
-        if name.lower() in supported_llm_mappings:
-            llm_class = supported_llm_mappings[name.lower()]
-            llm = llm_class(**kwargs)
-            return llm
-        else:
-            raise ValueError(f"{name} LLM is not supported yet.")
+def get_llm(model_name, **kwargs) -> CustomLLM:
+    """
+    Retrieves an instance of an llm based on the specified model name.
+
+    Parameters:
+    - model_name (str): Name of the llm to retrieve.
+    - **kwargs: Additional keyword arguments to be passed to the llm constructor.
+
+    Returns:
+    - Embeddings: An instance of the specified llm.
+
+    Raises:
+    - ValueError: If the specified llm is not supported.
+
+    Example:
+    ```python
+    model_instance = get_llm("azure_openai", base_url="https://hsoted-endpoint")
+    ```
+    """
+    if model_name.lower() not in supported_llms:
+        raise ValueError(f"{model_name} llm is not supported yet.")
+
+    embedding_class = supported_llms[model_name.lower()]
+    return embedding_class(**kwargs)

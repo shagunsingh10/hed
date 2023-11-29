@@ -24,7 +24,7 @@ class JiraReader(BaseReader):
             email=self.email, server_url=self.server_url, api_token=self.api_token
         )
 
-    def load(self) -> list[Document]:
+    def _load(self) -> list[Document]:
         i = 0
         chunk_size = 100
         all_docs = []

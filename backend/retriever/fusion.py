@@ -5,10 +5,9 @@ from llama_index import QueryBundle
 from llama_index.retrievers import BaseRetriever
 from llama_index.schema import NodeWithScore
 from llama_index.callbacks.base import CallbackManager
-from embeddings.factory import EmbeddingsFactory
-from chunker.base import NodeParser
+from embeddings.factory import get_embedding_model
 from utils.logger import get_logger
-from vector_store.factory import VectorStoreFactory
+from vector_store.factory import get_vector_store_client
 from llama_index.vector_stores import VectorStoreQueryResult
 
 logger = get_logger("fusion-retriever")
@@ -41,7 +40,7 @@ class FusionRetriever(BaseRetriever):
         - similarity_top_k (int): Number of top results to retrieve.
         - query_mode (str): Query mode.
         """
-        self._embedder = EmbeddingsFactory(embed_model, **embed_model_kwargs)
+        self._embedder = get_embedding_model(embed_model, **embed_model_kwargs)
         self._collections = collections
         self._vector_store = vector_store
         self._vector_store_kwargs = vector_store_kwargs
@@ -64,8 +63,8 @@ class FusionRetriever(BaseRetriever):
         nodes_futures = []
         for collection in self._collections:
             try:
-                vector_store_client = VectorStoreFactory(
-                    vector_store=self._vector_store,
+                vector_store_client = get_vector_store_client(
+                    vector_store_name=self._vector_store,
                     collection_name=collection,
                     **self._vector_store_kwargs,
                 )

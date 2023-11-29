@@ -11,5 +11,5 @@ class DirectoryReader(BaseReader):
             recursive=True,
         )
 
-    def load(self) -> list[Document]:
+    def _load(self) -> list[Document]:
         return self.reader.load_data()

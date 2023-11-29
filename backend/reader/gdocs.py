@@ -9,5 +9,5 @@ class GDocsReader(BaseReader):
         self.document_ids = kwargs.get("document_ids")
         self.reader = GoogleDocsReader()
 
-    def load(self) -> list[Document]:
+    def _load(self) -> list[Document]:
         return self.reader.load_data(document_ids=self.document_ids)

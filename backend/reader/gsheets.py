@@ -9,5 +9,5 @@ class GSheetsReader(BaseReader):
         self.spreadsheet_ids = kwargs.get("spreadsheet_ids")
         self.reader = GoogleSheetsReader()
 
-    def load(self) -> list[Document]:
+    def _load(self) -> list[Document]:
         return self.reader.load_data(document_ids=self.spreadsheet_ids)

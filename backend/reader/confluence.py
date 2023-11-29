@@ -24,5 +24,5 @@ class ConfluenceReader(BaseReader):
             base_url=self.base_url, api_token=self.api_token, cloud=self.cloud
         )
 
-    def load(self) -> list[Document]:
+    def _load(self) -> list[Document]:
         return self.reader.load_data(page_ids=self.page_ids)

@@ -6,7 +6,7 @@ from tasks.statusupdater import StatusUpdater
 from llama_index import ServiceContext
 from llama_index.query_engine import RetrieverQueryEngine
 from llama_index.response_synthesizers import get_response_synthesizer
-from llms.factory import LLMFactory
+from llms.factory import get_llm
 from prompts.custom import strict_context_qa_template
 from retriever.fusion import FusionRetriever
 from utils.logger import get_logger
@@ -64,7 +64,7 @@ def process_query(self, payload):
         )
 
         # Initializing language model and query engine
-        llm = LLMFactory.get_llm(llm_model, **llm_kwargs)
+        llm = get_llm(llm_model, **llm_kwargs)
         service_context = ServiceContext.from_defaults(llm=llm)
         response_synthesizer = get_response_synthesizer(
             service_context=service_context,

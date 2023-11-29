@@ -1,35 +1,43 @@
 from vector_store.milvus import MilvusVectorStore
+from vector_store.base import BaseVectorStore
 
 supported_vector_stores = {"milvus": MilvusVectorStore}
 
 
-class VectorStoreFactory:
-    def __init__(self, vector_store: str, collection_name, dim: int = None, **kwargs):
-        self.vector_store = self.get_vector_store(
-            vector_store, collection_name, dim, **kwargs
-        )
+def get_vector_store_client(
+    vector_store_name: str, collection_name, dim=None, **kwargs
+) -> BaseVectorStore:
+    """
+    Retrieves an instance of a vector store client based on the specified vector store name.
 
-    def get_vector_store(
-        self, vector_store: str, collection_name, dim: int = None, **kwargs
-    ):
-        if dim is not None:
-            kwargs["dim"] = dim
-        client = None
-        if vector_store not in supported_vector_stores:
-            # TODO: change exception to custom exception
-            raise Exception(f"Vector store {vector_store} is not supported yet.")
-        if vector_store == "milvus":
-            client = MilvusVectorStore(collection_name=collection_name, **kwargs)
-        return client
+    Parameters:
+    - vector_store_name (str): Name of the vector store (e.g., "milvus").
+    - collection_name (str): Name of the collection in the vector store.
+    - dim (int, optional): Dimensionality of the vector embeddings (required for some vector stores).
+    - **kwargs: Additional keyword arguments to be passed to the vector store constructor.
 
-    def save_nodes(self, embedded_nodes):
-        self.vector_store.save_nodes(embedded_nodes)
+    Returns:
+    - BaseVectorStore: An instance of the specified vector store client.
 
-    def search_nodes_from_embeddings(self, embeddings):
-        return self.vector_store.search_nodes_from_embeddings(embeddings)
+    Raises:
+    - Exception: If the specified vector store is not supported.
 
-    async def async_search_nodes_from_embeddings(self, embeddings):
-        return await self.vector_store.async_search_nodes_from_embeddings(embeddings)
+    Example:
+    ```python
+    vector_store_name = "milvus"
+    collection_name = "my_collection"
+    dim = 128
+    client = get_vector_store_client(vector_store_name, collection_name, dim=dim, host="localhost", port=19530)
+    ```
+    """
+    if dim is not None:
+        kwargs["dim"] = dim
 
-    def delete_docs(self, doc_ids):
-        self.vector_store.delete_docs(doc_ids)
+    client = None
+    if vector_store_name not in supported_vector_stores:
+        raise Exception(f"Vector store {vector_store_name} is not supported yet.")
+
+    if vector_store_name == "milvus":
+        client = MilvusVectorStore(collection_name=collection_name, **kwargs)
+
+    return client

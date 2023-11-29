@@ -31,5 +31,5 @@ class GitHubReader(BaseReader):
         self.branch = kwargs.get("branch")
         self.reader = GithubRepositoryReader(**filter_kwargs(kwargs))
 
-    def load(self) -> list[Document]:
+    def _load(self) -> list[Document]:
         return self.reader.load_data(branch=self.branch or "main")

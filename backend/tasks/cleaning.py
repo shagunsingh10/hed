@@ -2,7 +2,7 @@ from celery.exceptions import Reject
 from tasks.app import app, CLEANER_QUEUE
 from tasks.statusupdater import StatusUpdater
 from serviceconfig import serviceconfig
-from vector_store.factory import VectorStoreFactory
+from vector_store.factory import get_vector_store_client
 from utils.logger import get_logger
 
 logger = get_logger()
@@ -24,8 +24,8 @@ def remove_docs(self, payload: dict[str, any]):
             status_updater.update_asset_status(asset_id, "deleting")
 
         # Saving the embedded nodes to the vector store
-        vector_store_client = VectorStoreFactory(
-            vector_store=vector_store,
+        vector_store_client = get_vector_store_client(
+            vector_store_name=vector_store,
             collection_name=collection_name,
             **vector_store_kwargs,
         )

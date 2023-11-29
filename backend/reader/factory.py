@@ -1,7 +1,3 @@
-import time
-
-from llama_index import Document
-
 from reader.directory import DirectoryReader
 from reader.files import FilesReader
 from reader.gdocs import GDocsReader
@@ -10,8 +6,10 @@ from reader.gsheets import GSheetsReader
 from reader.wikipedia import WikipediaReader
 from utils.exceptions import UnsupportedReaderError
 from utils.logger import get_logger
+from reader.base import BaseReader
 
-supported_types: dict[str, any] = {
+# Supported reader types mapping to their respective classes
+supported_types: dict[str, BaseReader] = {
     "file": FilesReader,
     "directory": DirectoryReader,
     "github": GitHubReader,
@@ -23,18 +21,25 @@ supported_types: dict[str, any] = {
 logger = get_logger("reader")
 
 
-class ReaderFactory:
-    def __init__(self, asset_type, extra_metadata, **kwargs):
-        self.extra_metadata = extra_metadata
-        if asset_type not in supported_types:
-            raise UnsupportedReaderError(f"Reader {asset_type} is not supported yet")
-        self.reader = supported_types[asset_type](**kwargs)
+def get_reader(asset_type, **kwargs) -> BaseReader:
+    """
+    Retrieves an instance of a reader based on the specified asset type.
 
-    def load(self) -> list[Document]:
-        start_time = time.time()
-        docs = self.reader.load()
-        docs = self.reader._add_metadata(docs, self.extra_metadata)
-        logger.debug(
-            f"Time taken to read ({len(docs)}) documents: [{round(time.time() - start_time, 4)} s]"
-        )
-        return docs
+    Parameters:
+    - asset_type (str): Type of the asset to be read (e.g., "file", "directory", "github").
+    - reader_kwargs (dict): Additional keyword arguments to be passed to the reader constructor.
+
+    Returns:
+    - BaseReader: An instance of the specified reader for the given asset type.
+
+    Raises:
+    - UnsupportedReaderError: If the specified reader type is not supported.
+
+    Example:
+    ```python
+    file_reader = get_reader("file", {"path": "example.txt", "encoding": "utf-8"})
+    ```
+    """
+    if asset_type not in supported_types:
+        raise UnsupportedReaderError(f"Reader {asset_type} is not supported yet")
+    return supported_types[asset_type](**kwargs)

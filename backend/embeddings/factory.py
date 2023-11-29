@@ -1,5 +1,3 @@
-import time
-
 from langchain.embeddings.aleph_alpha import (
     AlephAlphaAsymmetricSemanticEmbedding,
     AlephAlphaSymmetricSemanticEmbedding,
@@ -53,16 +51,16 @@ from langchain.embeddings.tensorflow_hub import TensorflowHubEmbeddings
 from langchain.embeddings.vertexai import VertexAIEmbeddings
 from langchain.embeddings.voyageai import VoyageEmbeddings
 from langchain.embeddings.xinference import XinferenceEmbeddings
-from llama_index.embeddings.base import BaseEmbedding, Embedding
-from llama_index.schema import BaseNode
-
 from embeddings.custom import CustomEmbeddings
 from embeddings.ollama import HeraldOllamaEmbeddings
+from langchain.schema.embeddings import Embeddings
 
-# from langchain.embeddings.open_clip import OpenCLIPEmbeddings
 from utils.logger import get_logger
 
-supported_models: dict[str, BaseEmbedding] = {
+logger = get_logger("embedder")
+
+
+supported_models: dict[str, Embeddings] = {
     "aleph_alpha_asymmetric": AlephAlphaAsymmetricSemanticEmbedding,
     "aleph_alpha_symmetric": AlephAlphaSymmetricSemanticEmbedding,
     "awa": AwaEmbeddings,
@@ -101,7 +99,6 @@ supported_models: dict[str, BaseEmbedding] = {
     "octoai": OctoAIEmbeddings,
     "ollama": OllamaEmbeddings,
     "herald_ollama": HeraldOllamaEmbeddings,
-    # "open_clip": OpenCLIPEmbeddings,
     "openai": OpenAIEmbeddings,
     "sagemaker_endpoint": SagemakerEndpointEmbeddings,
     "self_hosted": SelfHostedEmbeddings,
@@ -116,46 +113,28 @@ supported_models: dict[str, BaseEmbedding] = {
     "custom": CustomEmbeddings,
 }
 
-logger = get_logger("embedder")
 
+def get_embedding_model(model_name, **kwargs) -> Embeddings:
+    """
+    Retrieves an instance of an embedding model based on the specified model name.
 
-class EmbeddingsFactory:
-    def __init__(self, model_name, **kwargs):
-        if model_name.lower() in supported_models:
-            embedding_class = supported_models[model_name.lower()]
-            embed_model = embedding_class(**kwargs)
-            self.model = embed_model
-        else:
-            raise ValueError(f"{model_name} embeddings model is not supported yet.")
+    Parameters:
+    - model_name (str): Name of the embedding model to retrieve.
+    - **kwargs: Additional keyword arguments to be passed to the embedding model constructor.
 
-    def get_model(self):
-        return self.model
+    Returns:
+    - Embeddings: An instance of the specified embedding model.
 
-    def embed_documents(self, documents: list[str], **kwargs) -> Embedding:
-        return self.model.embed_documents(documents, **kwargs)
+    Raises:
+    - ValueError: If the specified embedding model is not supported.
 
-    def embed_document(self, document: str, **kwargs) -> Embedding:
-        return self.model.embed_documents(document, **kwargs)
+    Example:
+    ```python
+    model_instance = get_embedding_model("bert", max_length=512, num_layers=12)
+    ```
+    """
+    if model_name.lower() not in supported_models:
+        raise ValueError(f"{model_name} embeddings model is not supported yet.")
 
-    def embed_query(self, query: str, **kwargs) -> Embedding:
-        start_time = time.time()
-        embeddings = self.model.embed_query(query, **kwargs)
-        logger.debug(
-            f"Time taken to embed query: [{round(time.time() - start_time, 4)} s]"
-        )
-        return embeddings
-
-    def embed_nodes(self, nodes: list[BaseNode], **kwargs) -> dict[str, list[BaseNode]]:
-        start_time = time.time()
-        text = [node.text for node in nodes]
-        embeddings = self.model.embed_documents(text)
-        assert len(nodes) == len(embeddings)
-        for node, embedding in zip(nodes, embeddings):
-            node.embedding = embedding
-        dim = 0
-        if len(nodes) > 0:
-            dim = len(nodes[0].embedding)
-        logger.debug(
-            f"Time taken to embed nodes: [{round(time.time() - start_time, 4)} s]"
-        )
-        return {"nodes": nodes, "dim": dim}
+    embedding_class = supported_models[model_name.lower()]
+    return embedding_class(**kwargs)
