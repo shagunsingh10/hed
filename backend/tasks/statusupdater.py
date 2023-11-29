@@ -34,11 +34,12 @@ class StatusUpdater:
                 else:
                     tries += 1
 
-    def update_asset_status(self, asset_id, status, documents=None):
+    def update_asset_status(self, asset_id, status, user, documents=None):
         data = {
             "status": status,
             "apiKey": self.next_api_key,
             "assetId": asset_id,
+            "user": user,
         }
         if status == "success" and documents:
             data["documents"] = documents
@@ -65,13 +66,15 @@ class StatusUpdater:
             json=data,
         )
 
-    def delete_asset(self, asset_id: str):
+    def send_asset_log(self, asset_id, log, type="INFO"):
         data = {
+            "log": log,
+            "type": type,
             "apiKey": self.next_api_key,
             "assetId": asset_id,
         }
         self._make_request(
-            f"{self.next_endpoint}/api/webhooks/update-asset-status",
-            method="delete",
+            f"{self.next_endpoint}/api/webhooks/add-asset-logs",
+            method="post",
             json=data,
         )

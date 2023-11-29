@@ -1,7 +1,16 @@
 import { addNewChatApi } from '@/apis/chats'
 import { getProjectsApi } from '@/apis/projects'
 import useStore from '@/store'
-import { Button, Form, Input, message, Modal, Select, Typography } from 'antd'
+import {
+  Button,
+  Card,
+  Form,
+  Input,
+  message,
+  Modal,
+  Select,
+  Typography,
+} from 'antd'
 import { FC, useEffect, useState } from 'react'
 import styles from './form.module.scss'
 
@@ -57,7 +66,7 @@ const AddChatForm: FC<addChatFormProps> = ({ onClose, open }) => {
       closeIcon={false}
       destroyOnClose={true}
     >
-      <div className={styles.formContainer}>
+      <Card className={styles.formContainer}>
         <Typography.Title level={3}>Add new chat</Typography.Title>
         <Form onFinish={handleSubmit} onReset={onClose} layout="vertical">
           <Form.Item
@@ -92,7 +101,7 @@ const AddChatForm: FC<addChatFormProps> = ({ onClose, open }) => {
             </div>
           </Form.Item>
         </Form>
-      </div>
+      </Card>
     </Modal>
   )
 }

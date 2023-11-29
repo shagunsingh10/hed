@@ -42,9 +42,16 @@ const handler = async (
   const sessionToken = req.headers.sessiontoken as string
   const user = await getUserInfoFromSessionToken(sessionToken)
 
+  if (!user) {
+    return res.status(401).json({
+      success: true,
+      error: 'Unauthorized',
+    })
+  }
+
   switch (req.method) {
     case 'GET': {
-      const kgViewAllowed = await hasViewerAccessToKg(kgId, Number(user?.id))
+      const kgViewAllowed = await hasViewerAccessToKg(kgId, Number(user.id))
 
       if (!kgViewAllowed) {
         return res.status(404).json({
@@ -71,7 +78,6 @@ const handler = async (
     }
     case 'POST': {
       const body: CreateAssetData = req.body
-      console.log({ body })
 
       const kgContributorAccess = await hasContributorAccessToKg(
         kgId,
@@ -110,8 +116,8 @@ const handler = async (
             knowledgeGroupId: kgId,
             description: body.description,
             tags: body.tags,
-            createdBy: user?.email as string,
-            ownerUserId: user?.id as number,
+            createdBy: user.email as string,
+            ownerUserId: user.id as number,
             assetTypeId: body.assetTypeId,
             readerKwargs: JSON.stringify(body.readerKwargs),
             extraMetadata: body?.extraMetadata as any,
@@ -126,6 +132,7 @@ const handler = async (
               assetType: assetType.key,
               knowledgeGroupId: kgId,
               projectId: projectId,
+              user: user.email as string,
               kwargs: body?.readerKwargs,
               extra_metadata: body?.extraMetadata,
             }),

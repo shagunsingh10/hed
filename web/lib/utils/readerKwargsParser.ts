@@ -3,6 +3,7 @@ export type AssetIngestionInput = {
   assetType: string
   knowledgeGroupId: string
   projectId: string
+  user: string
   kwargs?: Record<string, unknown> | null
   extra_metadata?: Record<string, unknown> | null
 }
@@ -12,6 +13,7 @@ const getIngestionPayload = (data: AssetIngestionInput) => {
     collection_name: data.knowledgeGroupId,
     asset_id: data.assetId,
     asset_type: data.assetType,
+    user: data.user,
     reader_kwargs: data.kwargs || {},
     extra_metadata: data.extra_metadata || {},
   }

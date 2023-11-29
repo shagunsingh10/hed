@@ -7,15 +7,17 @@ import type { Asset } from '@/types/assets'
 import {
   CheckCircleFilled,
   CloseCircleFilled,
-  DeleteOutlined,
+  DeleteFilled,
   ExclamationCircleFilled,
+  FileTextFilled,
   ScissorOutlined,
   SettingFilled,
 } from '@ant-design/icons'
-import { Input, message, Space, Table, Tag } from 'antd'
+import { Input, message, Space, Table, Tag, Tooltip } from 'antd'
 import type { ColumnsType } from 'antd/es/table'
 import { useEffect, useMemo, useState } from 'react'
 import styles from './asset.module.scss'
+import LogModal from './logModal'
 
 type AssetListProps = {
   projectId: string
@@ -32,6 +34,8 @@ const AssetList: React.FC<AssetListProps> = ({ projectId, kgId }) => {
   const [value, setValue] = useState('')
   const [deleteWarnOpen, setDeleteWarn] = useState(false)
   const [assetIdToDelete, setAssetIdToDelete] = useState('')
+  const [logModalOpen, setLogModalOpen] = useState(false)
+  const [assetIdLogModal, setAssetIdLogModal] = useState('')
 
   const FilterByNameInput = (
     <Space style={{ display: 'flex', justifyContent: 'space-between' }}>
@@ -54,6 +58,11 @@ const AssetList: React.FC<AssetListProps> = ({ projectId, kgId }) => {
   const openDeleteWarning = (assetId: string) => {
     setAssetIdToDelete(assetId)
     setDeleteWarn(true)
+  }
+
+  const openLogModal = (assetId: string) => {
+    setAssetIdLogModal(assetId)
+    setLogModalOpen(true)
   }
 
   const deleteAsset = (kgId: string) => {
@@ -148,19 +157,33 @@ const AssetList: React.FC<AssetListProps> = ({ projectId, kgId }) => {
         key: 'action',
         align: 'center',
         width: '10%',
-        render: (_, record) =>
-          ['delete-failed', 'success'].includes(record.status) && (
-            <Space>
-              <DeleteOutlined
-                color="primary"
-                style={{ cursor: 'pointer' }}
-                onClick={() => openDeleteWarning(record.id)}
-              />
+        render: (_, record) => (
+          <>
+            {['delete-failed', 'success'].includes(record.status) && (
+              <Space>
+                <Tooltip title={'Delete Asset'}>
+                  <DeleteFilled
+                    color="primary"
+                    style={{ cursor: 'pointer' }}
+                    onClick={() => openDeleteWarning(record.id)}
+                  />
+                </Tooltip>
+              </Space>
+            )}
+            <Space style={{ marginLeft: '1em' }}>
+              <Tooltip title={'View logs'}>
+                <FileTextFilled
+                  color="primary"
+                  style={{ cursor: 'pointer' }}
+                  onClick={() => openLogModal(record.id)}
+                />
+              </Tooltip>
             </Space>
-          ),
+          </>
+        ),
       },
     ],
-    [openDeleteWarning, FilterByNameInput, kgId]
+    [openDeleteWarning, openLogModal, FilterByNameInput, kgId]
   )
 
   useEffect(() => {
@@ -183,6 +206,11 @@ const AssetList: React.FC<AssetListProps> = ({ projectId, kgId }) => {
         onCancel={() => setDeleteWarn(false)}
         onDelete={() => deleteAsset(assetIdToDelete)}
         message="Are you sure you want to delete the asset? It is non reversible."
+      />
+      <LogModal
+        open={logModalOpen}
+        onClose={() => setLogModalOpen(false)}
+        assetId={assetIdLogModal}
       />
       <Table
         loading={loading}

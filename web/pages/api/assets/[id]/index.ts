@@ -1,3 +1,4 @@
+import { getUserInfoFromSessionToken } from '@/lib/auth'
 import { prisma } from '@/lib/prisma'
 import { sendMessageToPythonService } from '@/lib/redis'
 import { ApiRes } from '@/types/api'
@@ -7,6 +8,15 @@ export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse<ApiRes<string>>
 ) {
+  const sessionToken = req.headers.sessiontoken as string
+  const user = await getUserInfoFromSessionToken(sessionToken)
+
+  if (!user) {
+    return res.status(401).json({
+      success: true,
+      error: 'Unauthorized',
+    })
+  }
   if (req.method === 'DELETE') {
     try {
       const assetId = req.query.id as string
@@ -32,6 +42,7 @@ export default async function handler(
             doc_ids: asset?.docs.map((e) => e.vector_db_doc_id),
             asset_id: assetId,
             collection_name: asset?.KnowledgeGroup.id,
+            user: user?.email as string,
           },
         })
       )

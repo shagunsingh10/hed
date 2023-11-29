@@ -1,5 +1,5 @@
 import { FileFilled, GithubFilled, UserOutlined } from '@ant-design/icons'
-import { Avatar, Modal, Tag, Typography } from 'antd'
+import { Avatar, Card, Modal, Tag, Typography } from 'antd'
 import React, { FC, useState } from 'react'
 import styles from './source.module.scss'
 
@@ -54,7 +54,7 @@ const SourceInfoModal: FC<SourceInfoModalProps> = ({ data }) => {
         onCancel={() => setOpenSourceInfo(false)}
         footer={false}
       >
-        <div style={{ padding: '2em' }}>
+        <Card style={{ padding: '0 1em' }}>
           <Typography.Title level={3}>
             <a href={getLink(data)} rel="noopener noreferrer" target="_blank">
               {iconsMap[data.assetType]}
@@ -73,7 +73,7 @@ const SourceInfoModal: FC<SourceInfoModalProps> = ({ data }) => {
               </>
             ))}
           </div>
-        </div>
+        </Card>
       </Modal>
     </>
   )

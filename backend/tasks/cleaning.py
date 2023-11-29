@@ -18,6 +18,7 @@ def remove_docs(self, payload: dict[str, any]):
         doc_ids = payload.get("doc_ids")
         collection_name = payload.get("collection_name")
         asset_id = payload.get("asset_id")
+        user = payload.get("user")
 
         # Updating asset status to 'ingesting' for first try
         if self.request.retries == 0:
@@ -32,12 +33,14 @@ def remove_docs(self, payload: dict[str, any]):
         vector_store_client.delete_docs(doc_ids)
 
         # Updating asset status to 'success'
-        status_updater.delete_asset(asset_id)
+        status_updater.update_asset_status(asset_id, status="deleted", user=user)
     except Exception as e:
         # Handling task failure and retries
         if self.request.retries == 2:
             asset_id = payload.get("asset_id")
-            status_updater.update_asset_status(asset_id, status="delete-failed")
+            status_updater.update_asset_status(
+                asset_id, status="delete-failed", user=payload.get("user")
+            )
             logger.error(f"Task Failed: {str(e)}")
             raise Reject()
         else:

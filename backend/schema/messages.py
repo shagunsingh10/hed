@@ -7,6 +7,7 @@ class IngestionPayload(BaseModel):
     asset_type: str
     asset_id: str
     collection_name: str
+    user: str
     reader_kwargs: Dict[str, Any]
     extra_metadata: Dict[str, Any]
 
@@ -22,3 +23,4 @@ class AssetDeletionPayload(BaseModel):
     asset_id: str
     collection_name: str
     doc_ids: List[str]
+    user: str

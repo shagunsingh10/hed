@@ -154,8 +154,21 @@ model Asset {
   KnowledgeGroup KnowledgeGroup @relation(fields: [knowledgeGroupId], references: [id])
   docs           Doc[]
   User           User           @relation(fields: [ownerUserId], references: [id])
+  Logs           AssetLog[]
 
   @@map("assets")
+}
+
+model AssetLog {
+  id        String   @id @default(cuid())
+  timestamp DateTime @default(now())
+  content   String
+  type      String   @default("INFO")
+  assetId   String
+
+  Asset Asset @relation(fields: [assetId], references: [id])
+
+  @@map("asset_logs")
 }
 
 model Doc {

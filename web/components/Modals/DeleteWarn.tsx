@@ -1,5 +1,5 @@
 import { WarningFilled } from '@ant-design/icons'
-import { Button, Modal } from 'antd'
+import { Button, Card, Modal } from 'antd'
 import { FC } from 'react'
 
 type DeleteConfirmationModalProps = {
@@ -19,25 +19,23 @@ const DeleteConfirmationModal: FC<DeleteConfirmationModalProps> = ({
       mask={true}
       footer={false}
       open={open}
-      width={'50vw'}
+      width={'35vw'}
       closeIcon={false}
     >
-      <div
-        style={{
-          display: 'flex',
-          justifyContent: 'space-between',
-          alignItems: 'center',
-          gap: '1em',
-          margin: '0 3em',
-          padding: '3em 0.5em',
-        }}
-      >
-        <div style={{ display: 'flex', alignItems: 'center', gap: '1em' }}>
+      <Card style={{ padding: '2em 0.5em' }}>
+        <div
+          style={{
+            display: 'flex',
+            alignItems: 'center',
+            gap: '1em',
+            justifyContent: 'center',
+          }}
+        >
           <WarningFilled style={{ fontSize: '1.7em', color: '#DC3545' }} />
           <span style={{ opacity: 0.7, fontSize: '1.2em' }}>{message}</span>
         </div>
 
-        <div>
+        <div style={{ textAlign: 'center', marginTop: '2em' }}>
           <Button onClick={onCancel} style={{ marginRight: '1em' }}>
             Cancel
           </Button>
@@ -45,7 +43,7 @@ const DeleteConfirmationModal: FC<DeleteConfirmationModalProps> = ({
             Delete
           </Button>
         </div>
-      </div>
+      </Card>
     </Modal>
   )
 }

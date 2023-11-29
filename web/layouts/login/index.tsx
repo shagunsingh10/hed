@@ -6,7 +6,7 @@ import styles from './login.module.scss'
 
 export default function LoginScreen() {
   return (
-    <div>
+    <div className={styles.loginScreen}>
       <Row className={styles.loginContainer}>
         <Col span={8} className={styles.content}>
           <Card className={styles.loginCard}>

@@ -70,3 +70,12 @@ export const uploadFileApi = async (
   }
   return resData.data
 }
+
+export const getAssetLogsApi = async (assetId: string) => {
+  const res = await fetcher.get(`/api/assets/${assetId}/logs`)
+  const resData = await res.json()
+  if (!resData.success) {
+    throw Error(resData.error)
+  }
+  return resData.data
+}

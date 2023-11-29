@@ -28,6 +28,12 @@ export type Asset = {
   knowledgeGroupName?: string
 }
 
+export type AssetLog = {
+  timestamp: string
+  content: string
+  type: string
+}
+
 export type Doc = {
   name: string
   id: string

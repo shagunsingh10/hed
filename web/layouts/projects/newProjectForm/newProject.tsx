@@ -1,6 +1,6 @@
 import { createProjectApi } from '@/apis/projects'
 import useStore from '@/store'
-import { Button, Form, Input, message, Modal } from 'antd'
+import { Button, Card, Form, Input, message, Modal, Typography } from 'antd'
 import { useState } from 'react'
 import styles from './form.module.scss'
 
@@ -49,7 +49,8 @@ const CreateProjectForm: React.FC<createProjectFormProps> = ({
       closeIcon={false}
       destroyOnClose={true}
     >
-      <div className={styles.newProjectFormContainer}>
+      <Card className={styles.newProjectFormContainer}>
+        <Typography.Title level={3}>Create new project</Typography.Title>
         <Form
           onFinish={handleSubmit}
           onReset={closeProjectCreationForm}
@@ -97,7 +98,7 @@ const CreateProjectForm: React.FC<createProjectFormProps> = ({
             </div>
           </Form.Item>
         </Form>
-      </div>
+      </Card>
     </Modal>
   )
 }
