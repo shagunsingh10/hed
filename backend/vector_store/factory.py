@@ -1,5 +1,5 @@
-from vector_store.milvus import MilvusVectorStore
 from vector_store.base import BaseVectorStore
+from vector_store.milvus import MilvusVectorStore
 
 supported_vector_stores = {"milvus": MilvusVectorStore}
 

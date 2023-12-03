@@ -1,5 +1,6 @@
 from celery import Celery
 from celery.signals import setup_logging
+
 from config import appconfig
 
 app = Celery(

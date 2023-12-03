@@ -5,9 +5,12 @@ from llama_index.llms.azure_openai import AzureOpenAI
 from llama_index.llms.bedrock import Bedrock
 from llama_index.llms.clarifai import Clarifai
 from llama_index.llms.cohere import Cohere
+from llama_index.llms.custom import CustomLLM
 from llama_index.llms.everlyai import EverlyAI
-from llama_index.llms.gradient import GradientBaseModelLLM, GradientModelAdapterLLM
-from llama_index.llms.huggingface import HuggingFaceInferenceAPI, HuggingFaceLLM
+from llama_index.llms.gradient import (GradientBaseModelLLM,
+                                       GradientModelAdapterLLM)
+from llama_index.llms.huggingface import (HuggingFaceInferenceAPI,
+                                          HuggingFaceLLM)
 from llama_index.llms.konko import Konko
 from llama_index.llms.langchain import LangChainLLM
 from llama_index.llms.litellm import LiteLLM
@@ -25,10 +28,9 @@ from llama_index.llms.replicate import Replicate
 from llama_index.llms.vertex import Vertex
 from llama_index.llms.watsonx import WatsonX
 from llama_index.llms.xinference import Xinference
-from llama_index.llms.custom import CustomLLM
 
-from llms.kobold import KoboldCPP
 from llms.custom import HeraldCustomLLM
+from llms.kobold import KoboldCPP
 
 supported_llms = {
     "ai21": AI21,

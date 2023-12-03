@@ -1,12 +1,13 @@
 from celery.exceptions import Reject
-from tasks.app import app, INGESTION_QUEUE
-from serviceconfig import serviceconfig
-from tasks.statusupdater import StatusUpdater
-from embeddings.factory import EmbeddingsFactory
 from chunker.base import NodeParser
+
+from embeddings.factory import EmbeddingsFactory
 from reader.factory import ReaderFactory
-from vector_store.factory import VectorStoreFactory
+from serviceconfig import serviceconfig
+from tasks.app import INGESTION_QUEUE, app
+from tasks.statusupdater import StatusUpdater
 from utils.logger import get_logger
+from vector_store.factory import VectorStoreFactory
 
 logger = get_logger()
 status_updater = StatusUpdater()

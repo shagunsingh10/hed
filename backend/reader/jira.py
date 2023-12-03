@@ -1,5 +1,5 @@
-from llama_index import Document
 from llama_hub.jira import JiraReader as LlamaHubJiraReader
+from llama_index import Document
 
 from reader.base import BaseReader
 

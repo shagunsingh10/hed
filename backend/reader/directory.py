@@ -1,6 +1,6 @@
 from llama_index import Document, SimpleDirectoryReader
-from config import appconfig
 
+from config import appconfig
 from reader.base import BaseReader
 
 

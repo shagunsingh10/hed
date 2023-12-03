@@ -1,9 +1,10 @@
 from celery.exceptions import Reject
-from tasks.app import app, CLEANER_QUEUE
-from tasks.statusupdater import StatusUpdater
+
 from serviceconfig import serviceconfig
-from vector_store.factory import get_vector_store_client
+from tasks.app import CLEANER_QUEUE, app
+from tasks.statusupdater import StatusUpdater
 from utils.logger import get_logger
+from vector_store.factory import get_vector_store_client
 
 logger = get_logger()
 status_updater = StatusUpdater()

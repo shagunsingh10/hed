@@ -1,14 +1,15 @@
 from celery.exceptions import Reject, SoftTimeLimitExceeded
-from llama_index.response.schema import StreamingResponse, Response
-from tasks.app import app, QUERY_PROCESSOR_QUEUE
-from serviceconfig import serviceconfig
-from tasks.statusupdater import StatusUpdater
 from llama_index import ServiceContext
 from llama_index.query_engine import RetrieverQueryEngine
+from llama_index.response.schema import Response, StreamingResponse
 from llama_index.response_synthesizers import get_response_synthesizer
+
 from llms.factory import get_llm
 from prompts.custom import strict_context_qa_template
 from retriever.fusion import FusionRetriever
+from serviceconfig import serviceconfig
+from tasks.app import QUERY_PROCESSOR_QUEUE, app
+from tasks.statusupdater import StatusUpdater
 from utils.logger import get_logger
 
 logger = get_logger()

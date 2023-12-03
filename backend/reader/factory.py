@@ -1,3 +1,4 @@
+from reader.base import BaseReader
 from reader.directory import DirectoryReader
 from reader.files import FilesReader
 from reader.gdocs import GDocsReader
@@ -6,7 +7,6 @@ from reader.gsheets import GSheetsReader
 from reader.wikipedia import WikipediaReader
 from utils.exceptions import UnsupportedReaderError
 from utils.logger import get_logger
-from reader.base import BaseReader
 
 # Supported reader types mapping to their respective classes
 supported_types: dict[str, BaseReader] = {

@@ -1,8 +1,9 @@
 import os
 import sys
 import traceback
-from servicequeue.redis import RedisClient
+
 from config import appconfig
+from servicequeue.redis import RedisClient
 
 if __name__ == "__main__":
     try:

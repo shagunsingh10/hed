@@ -1,8 +1,7 @@
 from llama_index import Document
-from reader.custom.confluence import ConfluenceReader as LlamaConfluenceReader
 
 from reader.base import BaseReader
-
+from reader.custom.confluence import ConfluenceReader as LlamaConfluenceReader
 
 """
 reader_kwargs = {

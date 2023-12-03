@@ -1,10 +1,10 @@
 from langchain.embeddings.aleph_alpha import (
     AlephAlphaAsymmetricSemanticEmbedding,
-    AlephAlphaSymmetricSemanticEmbedding,
-)
+    AlephAlphaSymmetricSemanticEmbedding)
 from langchain.embeddings.awa import AwaEmbeddings
 from langchain.embeddings.azure_openai import AzureOpenAIEmbeddings
-from langchain.embeddings.baidu_qianfan_endpoint import QianfanEmbeddingsEndpoint
+from langchain.embeddings.baidu_qianfan_endpoint import \
+    QianfanEmbeddingsEndpoint
 from langchain.embeddings.bedrock import BedrockEmbeddings
 from langchain.embeddings.cache import CacheBackedEmbeddings
 from langchain.embeddings.clarifai import ClarifaiEmbeddings
@@ -15,16 +15,14 @@ from langchain.embeddings.edenai import EdenAiEmbeddings
 from langchain.embeddings.elasticsearch import ElasticsearchEmbeddings
 from langchain.embeddings.embaas import EmbaasEmbeddings
 from langchain.embeddings.ernie import ErnieEmbeddings
-from langchain.embeddings.fake import DeterministicFakeEmbedding, FakeEmbeddings
+from langchain.embeddings.fake import (DeterministicFakeEmbedding,
+                                       FakeEmbeddings)
 from langchain.embeddings.google_palm import GooglePalmEmbeddings
 from langchain.embeddings.gpt4all import GPT4AllEmbeddings
 from langchain.embeddings.gradient_ai import GradientEmbeddings
 from langchain.embeddings.huggingface import (
-    HuggingFaceBgeEmbeddings,
-    HuggingFaceEmbeddings,
-    HuggingFaceInferenceAPIEmbeddings,
-    HuggingFaceInstructEmbeddings,
-)
+    HuggingFaceBgeEmbeddings, HuggingFaceEmbeddings,
+    HuggingFaceInferenceAPIEmbeddings, HuggingFaceInstructEmbeddings)
 from langchain.embeddings.huggingface_hub import HuggingFaceHubEmbeddings
 from langchain.embeddings.javelin_ai_gateway import JavelinAIGatewayEmbeddings
 from langchain.embeddings.jina import JinaEmbeddings
@@ -42,19 +40,18 @@ from langchain.embeddings.openai import OpenAIEmbeddings
 from langchain.embeddings.sagemaker_endpoint import SagemakerEndpointEmbeddings
 from langchain.embeddings.self_hosted import SelfHostedEmbeddings
 from langchain.embeddings.self_hosted_hugging_face import (
-    SelfHostedHuggingFaceEmbeddings,
-    SelfHostedHuggingFaceInstructEmbeddings,
-)
-from langchain.embeddings.sentence_transformer import SentenceTransformerEmbeddings
+    SelfHostedHuggingFaceEmbeddings, SelfHostedHuggingFaceInstructEmbeddings)
+from langchain.embeddings.sentence_transformer import \
+    SentenceTransformerEmbeddings
 from langchain.embeddings.spacy_embeddings import SpacyEmbeddings
 from langchain.embeddings.tensorflow_hub import TensorflowHubEmbeddings
 from langchain.embeddings.vertexai import VertexAIEmbeddings
 from langchain.embeddings.voyageai import VoyageEmbeddings
 from langchain.embeddings.xinference import XinferenceEmbeddings
-from embeddings.custom import CustomEmbeddings
-from embeddings.ollama import HeraldOllamaEmbeddings
 from langchain.schema.embeddings import Embeddings
 
+from embeddings.custom import CustomEmbeddings
+from embeddings.ollama import HeraldOllamaEmbeddings
 from utils.logger import get_logger
 
 logger = get_logger("embedder")

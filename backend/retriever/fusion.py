@@ -2,13 +2,14 @@ import asyncio
 import time
 
 from llama_index import QueryBundle
+from llama_index.callbacks.base import CallbackManager
 from llama_index.retrievers import BaseRetriever
 from llama_index.schema import NodeWithScore
-from llama_index.callbacks.base import CallbackManager
+from llama_index.vector_stores import VectorStoreQueryResult
+
 from embeddings.factory import get_embedding_model
 from utils.logger import get_logger
 from vector_store.factory import get_vector_store_client
-from llama_index.vector_stores import VectorStoreQueryResult
 
 logger = get_logger("fusion-retriever")
 

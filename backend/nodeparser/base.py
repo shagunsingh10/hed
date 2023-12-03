@@ -3,6 +3,7 @@ import time
 from llama_index.node_parser import SimpleNodeParser
 from llama_index.schema import BaseNode, Document
 from llama_index.text_splitter import CodeSplitter
+
 from embeddings.factory import get_embedding_model
 from utils.logger import get_logger
 

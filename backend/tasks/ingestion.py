@@ -1,11 +1,12 @@
 from celery.exceptions import Reject
-from tasks.app import app, INGESTION_QUEUE
-from serviceconfig import serviceconfig
-from tasks.statusupdater import StatusUpdater
+
 from nodeparser.base import NodeParser
 from reader.factory import get_reader
-from vector_store.factory import get_vector_store_client
+from serviceconfig import serviceconfig
+from tasks.app import INGESTION_QUEUE, app
+from tasks.statusupdater import StatusUpdater
 from utils.logger import get_logger
+from vector_store.factory import get_vector_store_client
 
 logger = get_logger()
 status_updater = StatusUpdater()

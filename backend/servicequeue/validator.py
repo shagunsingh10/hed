@@ -1,13 +1,9 @@
 import json
 
-from schema.messages import (
-    BaseModel,
-    IngestionPayload,
-    QueryPayload,
-    AssetDeletionPayload,
-)
-from utils.logger import get_logger
+from schema.messages import (AssetDeletionPayload, BaseModel, IngestionPayload,
+                             QueryPayload)
 from tasks.statusupdater import StatusUpdater
+from utils.logger import get_logger
 
 logger = get_logger("queue-message-validator")
 

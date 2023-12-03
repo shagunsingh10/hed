@@ -1,7 +1,7 @@
+from servicequeue.validator import MessageValidator
+from tasks.cleaning import remove_docs
 from tasks.ingestion import ingest_asset
 from tasks.query import process_query
-from tasks.cleaning import remove_docs
-from servicequeue.validator import MessageValidator
 from utils.logger import get_logger
 
 logger = get_logger("queue-processor")
