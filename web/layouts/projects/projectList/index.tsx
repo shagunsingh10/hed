@@ -1,30 +1,29 @@
 import UserAvatar from '@/components/Avatar'
 import CustomTable from '@/components/Table'
 import { globalDateFormatParser } from '@/lib/functions'
-import { Kg } from '@/types/kgs'
+import { Project } from '@/types/projects'
 import { CalendarOutlined, UserOutlined } from '@ant-design/icons'
 import { Avatar, Tag, Tooltip } from 'antd'
 import type { ColumnsType } from 'antd/es/table'
 import { useRouter } from 'next/navigation'
 import { FC, useMemo } from 'react'
-import styles from './kggrid.module.scss'
+import styles from './projectlist.module.scss'
 
-type KgListProps = {
-  projectId: string
-  kgs: Kg[]
+type ProjectListProps = {
+  projects: Project[]
   loading: boolean
 }
 
-const KGList: FC<KgListProps> = ({ projectId, kgs, loading }) => {
+const ProjectList: FC<ProjectListProps> = ({ projects, loading }) => {
   const { push } = useRouter()
 
-  const handleKgClick = (id: string) => {
-    push(`/projects/${projectId}/kgs/${id}`, {
+  const handleProjectClick = (id: string) => {
+    push(`/projects/${id}`, {
       scroll: false,
     })
   }
 
-  const columns: ColumnsType<Kg> = useMemo(
+  const columns: ColumnsType<Project> = useMemo(
     () => [
       {
         title: 'Name',
@@ -32,8 +31,8 @@ const KGList: FC<KgListProps> = ({ projectId, kgs, loading }) => {
         key: 'name',
         width: '20%',
         render: (_, record) => (
-          <span className={styles.kgTitle}>
-            <img src="/icons/kg.svg" width={20} height={20} />
+          <span className={styles.projectTitle}>
+            <img src="/icons/project.svg" width={20} height={20} />
             {record.name}
           </span>
         ),
@@ -99,9 +98,9 @@ const KGList: FC<KgListProps> = ({ projectId, kgs, loading }) => {
         dataIndex: 'createdAt',
         align: 'center',
         render: (_, record) => (
-          <Avatar.Group className={styles.kgMembers} maxCount={4}>
+          <Avatar.Group className={styles.projectMembers} maxCount={4}>
             {record.members?.map((e) => (
-              <Tooltip title={`${e.name} (${e.role})`}>
+              <Tooltip title={`${e.name}`}>
                 <UserAvatar userId={e.id} />
               </Tooltip>
             ))}
@@ -113,18 +112,18 @@ const KGList: FC<KgListProps> = ({ projectId, kgs, loading }) => {
   )
 
   return (
-    <div className={styles.kgCardsContainer}>
+    <div className={styles.projectListContainer}>
       <CustomTable
-        loading={loading}
         className={styles.assetList}
         rowClassName={styles.tableRow}
+        loading={loading}
+        onRow={(record) => ({ onClick: () => handleProjectClick(record.id) })}
         columns={columns}
-        dataSource={kgs}
+        dataSource={projects}
         pagination={false}
-        onRow={(record) => ({ onClick: () => handleKgClick(record.id) })}
       />
     </div>
   )
 }
 
-export default KGList
+export default ProjectList

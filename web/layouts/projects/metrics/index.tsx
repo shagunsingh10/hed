@@ -1,25 +1,41 @@
 import { CloudUploadOutlined, GlobalOutlined } from '@ant-design/icons'
-import { Card, Col, Row, Statistic } from 'antd'
-import React from 'react'
+import { Card, Statistic } from 'antd'
+import styles from './metrics.module.scss'
 
 const AppMetrics: React.FC = () => (
   <Card>
-    <Row gutter={16}>
-      <Col span={12}>
-        <Statistic
-          title="Total Assets"
-          value={1128}
-          prefix={<GlobalOutlined />}
-        />
-      </Col>
-      <Col span={12}>
-        <Statistic
-          title="Added Today"
-          value={93}
-          prefix={<CloudUploadOutlined />}
-        />
-      </Col>
-    </Row>
+    <div className={styles.metricsContainer}>
+      <Statistic
+        title="Total Projects"
+        value={20}
+        prefix={<GlobalOutlined />}
+      />
+      <Statistic
+        title="Added Today"
+        value={3}
+        prefix={<CloudUploadOutlined />}
+      />
+      <Statistic
+        title="Total Assets"
+        value={1233}
+        prefix={<GlobalOutlined />}
+      />
+      <Statistic
+        title="Added Today"
+        value={93}
+        prefix={<CloudUploadOutlined />}
+      />
+      <Statistic
+        title="Added Today"
+        value={93}
+        prefix={<CloudUploadOutlined />}
+      />
+      <Statistic
+        title="Added Today"
+        value={93}
+        prefix={<CloudUploadOutlined />}
+      />
+    </div>
   </Card>
 )
 

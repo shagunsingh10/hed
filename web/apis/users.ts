@@ -17,3 +17,12 @@ export const getUserByEmail = async (email: string) => {
   }
   return resData.data
 }
+
+export const getUserAvatarApi = async (id: number) => {
+  const res = await fetcher.get(`/api/users/image?id=${id}`)
+  const resData = await res.json()
+  if (!resData.success) {
+    throw Error(resData.error)
+  }
+  return resData.data
+}

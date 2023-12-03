@@ -60,6 +60,30 @@ export const addUserToKgApi = async (
   return resData.data
 }
 
+export const removeUserToKgApi = async (
+  kgId: string,
+  userId: string,
+  role: string
+) => {
+  const res = await fetcher.delete(
+    `/api/kgs/${kgId}/users`,
+    {
+      userId: userId,
+      role: role,
+    },
+    {
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    }
+  )
+  const resData = await res.json()
+  if (!resData.success) {
+    throw Error(resData.error)
+  }
+  return resData.data
+}
+
 export const getKgMemebersApi = async (kgId: string) => {
   const res = await fetcher.get(`/api/kgs/${kgId}/users`)
   const resData = await res.json()

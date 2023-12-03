@@ -1,31 +1,25 @@
-import CreateAssetForm from '@/layouts/asset/createAsset'
+import CreateKGForm from '@/layouts/kg/createKg'
 import { PlusCircleOutlined } from '@ant-design/icons'
 import { Button } from 'antd'
 import { FC, useState } from 'react'
-import AddUserForm from '../kgUsers/addUserForm'
+import AddUserForm from '../projectAdmins/addAdminForm'
 
 type TabContentProps = {
   activeTab: number
   projectId: string
-  kgId: string
 }
 
-const TabContentAsset: FC<TabContentProps> = ({
-  activeTab,
-  projectId,
-  kgId,
-}) => {
+const TabContentKg: FC<TabContentProps> = ({ activeTab, projectId }) => {
   const [open, setOpen] = useState(false)
 
   if (activeTab === 1) {
     return (
       <div>
         <Button onClick={() => setOpen(true)} type="primary" size="middle">
-          <PlusCircleOutlined /> Create Asset
+          <PlusCircleOutlined /> Create New
         </Button>
-        <CreateAssetForm
+        <CreateKGForm
           projectId={projectId}
-          kgId={kgId}
           open={open}
           onClose={() => setOpen(false)}
         />
@@ -37,9 +31,13 @@ const TabContentAsset: FC<TabContentProps> = ({
     return (
       <div>
         <Button onClick={() => setOpen(true)} type="primary" size="middle">
-          <PlusCircleOutlined /> Add User
+          <PlusCircleOutlined /> Add Admin
         </Button>
-        <AddUserForm kgId={kgId} open={open} onClose={() => setOpen(false)} />
+        <AddUserForm
+          projectId={projectId}
+          open={open}
+          onClose={() => setOpen(false)}
+        />
       </div>
     )
   }
@@ -47,4 +45,4 @@ const TabContentAsset: FC<TabContentProps> = ({
   return <></>
 }
 
-export default TabContentAsset
+export default TabContentKg

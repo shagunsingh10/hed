@@ -21,7 +21,7 @@ const processTags = (project: PrismaProjectRecord): Project => {
   const processed = {
     ...project,
     members: getUniqueItemsByProperties(
-      project?.knowledgeGroups.flatMap(
+      project?.knowledgeGroups?.flatMap(
         (kg: any) => kg?.UserRole?.map((user: any) => user.User)
       ) as User[],
       'id'
@@ -65,7 +65,6 @@ const handler = async (
                 select: {
                   User: {
                     select: {
-                      image: true,
                       name: true,
                       id: true,
                     },

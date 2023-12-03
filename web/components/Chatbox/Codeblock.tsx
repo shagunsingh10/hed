@@ -1,4 +1,4 @@
-import { CopyOutlined } from '@ant-design/icons'
+import { CopyFilled, CopyOutlined } from '@ant-design/icons'
 import { Button, message } from 'antd'
 import React, { useEffect, useRef, useState } from 'react'
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter'
@@ -56,7 +56,7 @@ const CodeBlock = (props: any) => {
     >
       {isHovered && (
         <Button
-          icon={<CopyOutlined />}
+          icon={copied ? <CopyFilled /> : <CopyOutlined />}
           onClick={handleCopyClick}
           className={styles.copyButton}
         />

@@ -5,10 +5,9 @@ import { Project } from '@/types/projects'
 import { PlusCircleOutlined, SearchOutlined } from '@ant-design/icons'
 import { Button, Input, message, Typography } from 'antd'
 import { useEffect, useState } from 'react'
-import ProjectEvents from './events'
 import AppMetrics from './metrics'
 import CreateProjectForm from './newProjectForm/newProject'
-import ProjectsGrid from './projectGrid'
+import ProjectsList from './projectList'
 import styles from './projects.module.scss'
 
 const ProjectsScreen = () => {
@@ -51,45 +50,37 @@ const ProjectsScreen = () => {
 
   return (
     <div className={styles.pageContainer}>
-      <Typography.Title level={3} className={styles.pageTitle}>
-        <img src="/icons/project.svg" width={25} height={25} />
-        My Projects
-      </Typography.Title>
-      <div className={styles.projectsScreen}>
-        <div className={styles.projectsContainer}>
-          <div className={styles.screenHeader}>
-            <Input
-              prefix={<SearchOutlined />}
-              className={styles.search}
-              placeholder="Search projects by name or tags or description"
-              onChange={(e) => onChange(e.target.value)}
-            />
-            <Button onClick={() => setCreateProjectTab(true)} type="primary">
-              <PlusCircleOutlined /> Create New
-            </Button>
-          </div>
-
-          <ProjectsGrid projects={filteredProjects} loading={loading} />
-          <CreateProjectForm
-            open={createProjectTab}
-            closeProjectCreationForm={() => setCreateProjectTab(false)}
-          />
+      <div className={styles.topContainer}>
+        <div className={styles.appMetricsContainer}>
+          <AppMetrics />
         </div>
-        <div className={styles.rightContainer}>
-          <div className={styles.appMetricsContainer}>
-            <Typography.Title level={3} className={styles.eventsTitle}>
-              Metrics
-            </Typography.Title>
-            <AppMetrics />
-          </div>
-          <div className={styles.eventsContainer}>
-            <Typography.Title level={3} className={styles.eventsTitle}>
-              Recent Events
-            </Typography.Title>
-            <ProjectEvents />
+      </div>
+      <div className={styles.mainContainer}>
+        <div className={styles.screenHeader}>
+          <Typography.Title level={3} className={styles.pageTitle}>
+            <img src="/icons/project.svg" width={25} height={25} />
+            My Projects
+          </Typography.Title>
+          <Button onClick={() => setCreateProjectTab(true)} type="primary">
+            <PlusCircleOutlined /> Create New
+          </Button>
+        </div>
+        <div className={styles.projectsContainer}>
+          <Input
+            prefix={<SearchOutlined />}
+            className={styles.search}
+            placeholder="Search projects by name or tags or description"
+            onChange={(e) => onChange(e.target.value)}
+          />
+          <div className={styles.projectTable}>
+            <ProjectsList projects={filteredProjects} loading={loading} />
           </div>
         </div>
       </div>
+      <CreateProjectForm
+        open={createProjectTab}
+        closeProjectCreationForm={() => setCreateProjectTab(false)}
+      />
     </div>
   )
 }

@@ -11,6 +11,7 @@ export const globalDateFormatParser = (date: Date) => {
 }
 
 export const getUniqueItemsByProperties = (items: any[], key: string) => {
+  if (!items) return items
   return items.filter((v, i, a) => {
     return a.findIndex((v2) => v2[key] === v[key]) === i
   })

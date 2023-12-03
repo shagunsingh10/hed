@@ -1,5 +1,6 @@
 import { deleteAssetApi, getAssetsApi, getAssetTypesApi } from '@/apis/assets'
 import DeleteConfirmationModal from '@/components/Modals/DeleteWarn'
+import CustomTable from '@/components/Table'
 import {
   ASSET_APPROVAL_PENDING,
   ASSET_DELETE_FAILED,
@@ -8,6 +9,7 @@ import {
   ASSET_INGESTION_FAILED,
   ASSET_INGESTION_PENDING,
   ASSET_INGESTION_SUCCESS,
+  ASSET_REJECTED,
   PRIMARY_COLOR_DARK,
 } from '@/constants'
 import { useDebouncedCallback } from '@/hooks/useDebounceCallback'
@@ -15,6 +17,7 @@ import { globalDateFormatParser } from '@/lib/functions'
 import useStore from '@/store'
 import type { Asset } from '@/types/assets'
 import {
+  CalendarOutlined,
   CheckCircleFilled,
   CloseCircleFilled,
   DeleteFilled,
@@ -24,8 +27,9 @@ import {
   ScissorOutlined,
   SearchOutlined,
   SettingFilled,
+  UserOutlined,
 } from '@ant-design/icons'
-import { Input, message, Space, Table, Tag, Tooltip } from 'antd'
+import { Input, message, Space, Tag, Tooltip } from 'antd'
 import type { ColumnsType } from 'antd/es/table'
 import { useEffect, useMemo, useState } from 'react'
 import styles from './asset.module.scss'
@@ -138,13 +142,36 @@ const AssetList: React.FC<AssetListProps> = ({ projectId, kgId }) => {
         dataIndex: 'createdBy',
         align: 'center',
         key: 'createdBy',
+        render: (_, record) => (
+          <span
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              gap: '0.3em',
+              justifyContent: 'center',
+            }}
+          >
+            <UserOutlined />
+            {record.createdBy}
+          </span>
+        ),
       },
       {
         title: 'Created At',
         dataIndex: 'createdAt',
         align: 'center',
         render: (_, record) => (
-          <Space>{globalDateFormatParser(new Date(record.createdAt))}</Space>
+          <span
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              gap: '0.3em',
+              justifyContent: 'center',
+            }}
+          >
+            <CalendarOutlined />
+            {globalDateFormatParser(new Date(record.createdAt))}
+          </span>
         ),
       },
       {
@@ -158,6 +185,7 @@ const AssetList: React.FC<AssetListProps> = ({ projectId, kgId }) => {
           if (status === ASSET_INGESTING) color = 'processing'
           if (status === ASSET_DELETING) color = 'orange'
           if (status === ASSET_DELETE_FAILED) color = 'error'
+          if (status === ASSET_REJECTED) color = 'error'
           return (
             <Tag color={color} key={status} bordered>
               {status === ASSET_INGESTION_PENDING && (
@@ -165,6 +193,7 @@ const AssetList: React.FC<AssetListProps> = ({ projectId, kgId }) => {
               )}
               {status === ASSET_INGESTION_SUCCESS && <CheckCircleFilled />}
               {status === ASSET_INGESTION_FAILED && <CloseCircleFilled />}
+              {status === ASSET_REJECTED && <CloseCircleFilled />}
               {status === ASSET_INGESTING && <SettingFilled spin />}
               {status === ASSET_DELETING && <ScissorOutlined rotate={-20} />}
               {status === ASSET_DELETE_FAILED && <ExclamationCircleFilled />}
@@ -243,7 +272,7 @@ const AssetList: React.FC<AssetListProps> = ({ projectId, kgId }) => {
         placeholder="Search assets by name, tags, description, status or creator"
         onChange={(e) => onChange(e.target.value)}
       />
-      <Table
+      <CustomTable
         loading={loading}
         className={styles.assetList}
         columns={columns}

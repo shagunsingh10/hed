@@ -1,0 +1,37 @@
+@use '../../../global.scss' as *;
+
+.projectAsminContainer {
+  height: 82vh;
+  overflow-y: auto !important;
+  transition: opacity 0.5s ease-in;
+  padding-right: 0.5em;
+
+  .memberTitle {
+    display: flex;
+    align-items: center;
+    font-weight: bold;
+    gap: 1em;
+  }
+}
+
+.newProjectFormContainer {
+  overflow-y: auto;
+  display: flex;
+  padding: 0.5em;
+  flex-direction: column;
+  justify-content: space-between;
+
+  .formItemsContainer {
+    textarea {
+      resize: none;
+    }
+  }
+
+  .formButtonGroup {
+    margin-top: 2em;
+    display: flex;
+    gap: 1em;
+    justify-content: flex-end;
+    align-items: flex-end;
+  }
+}

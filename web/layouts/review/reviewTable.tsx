@@ -1,13 +1,18 @@
 import { approveAssetApi, getAssetsToReviewApi } from '@/apis/assets'
-import { ASSET_INGESTION_PENDING, PRIMARY_COLOR_DARK } from '@/constants'
+import { ASSET_INGESTION_PENDING, ASSET_REJECTED } from '@/constants'
 import { useDebouncedCallback } from '@/hooks/useDebounceCallback'
 import { globalDateFormatParser } from '@/lib/functions'
 import useStore from '@/store'
 import type { Asset } from '@/types/assets'
-import { Input, message, Space, Table, Tag, Tooltip } from 'antd'
+import { Input, message, Space, Tag, Tooltip } from 'antd'
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import '@/constants'
-import { CheckCircleFilled, SearchOutlined } from '@ant-design/icons'
+import CustomTable from '@/components/Table'
+import {
+  CheckCircleOutlined,
+  CloseCircleOutlined,
+  SearchOutlined,
+} from '@ant-design/icons'
 import type { ColumnsType } from 'antd/es/table'
 import styles from './review.module.scss'
 
@@ -18,11 +23,11 @@ const AssetReviewList = () => {
   const [dataSource, setDataSource] = useState<Asset[]>(assetsToReview)
   const [loading, setLoading] = useState(false)
 
-  const approveAsset = useCallback(
-    async (id: string) => {
+  const sendAssetStatus = useCallback(
+    async (id: string, status: string) => {
       setLoading(true)
       try {
-        await approveAssetApi(id, ASSET_INGESTION_PENDING)
+        await approveAssetApi(id, status)
       } catch (e: any) {
         message.error(e?.message?.toString())
       } finally {
@@ -57,7 +62,7 @@ const AssetReviewList = () => {
         key: 'name',
         width: '20%',
         render: (_, { name }) => (
-          <span style={{ display: 'flex', alignItems: 'center', gap: '0.3em' }}>
+          <span className={styles.assetTitle}>
             <img src="/icons/asset.svg" width={20} height={20} />
             {name}
           </span>
@@ -72,7 +77,7 @@ const AssetReviewList = () => {
           <>
             {tags?.map((tag) => {
               return (
-                <Tag color={PRIMARY_COLOR_DARK} key={tag}>
+                <Tag color={'blue'} key={tag}>
                   {tag.toUpperCase()}
                 </Tag>
               )
@@ -104,9 +109,17 @@ const AssetReviewList = () => {
           <>
             <Space>
               <Tooltip title={'Approve'}>
-                <CheckCircleFilled
+                <CheckCircleOutlined
                   style={{ cursor: 'pointer', color: '#00DD00' }}
-                  onClick={() => approveAsset(record.id)}
+                  onClick={() =>
+                    sendAssetStatus(record.id, ASSET_INGESTION_PENDING)
+                  }
+                />
+              </Tooltip>
+              <Tooltip title={'Reject'}>
+                <CloseCircleOutlined
+                  style={{ cursor: 'pointer', marginLeft: '1em' }}
+                  onClick={() => sendAssetStatus(record.id, ASSET_REJECTED)}
                 />
               </Tooltip>
             </Space>
@@ -137,7 +150,7 @@ const AssetReviewList = () => {
           onChange={(e) => onChange(e.target.value)}
         />
       </div>
-      <Table
+      <CustomTable
         loading={loading}
         columns={columns}
         dataSource={dataSource}

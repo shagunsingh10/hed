@@ -1,3 +1,4 @@
+import { ASSET_INGESTION_PENDING } from '@/constants'
 import { getUserInfoFromSessionToken } from '@/lib/auth'
 import { hasOwnerAccessToKg } from '@/lib/auth/access'
 import { prisma } from '@/lib/prisma'
@@ -61,11 +62,14 @@ const handler = async (
       }
 
       await prisma.$transaction(async (tx) => {
+        const approved = status === ASSET_INGESTION_PENDING
         await Promise.all([
           tx.assetLog.create({
             data: {
               assetId: assetId,
-              content: `Asset approved by ${user.email}`,
+              content: `Asset ${approved ? 'approved' : 'rejected'} by ${
+                user.email
+              }`,
             },
           }),
           tx.asset.update({
@@ -77,20 +81,22 @@ const handler = async (
             },
           }),
         ])
-        sendMessageToPythonService(
-          JSON.stringify({
-            job_type: 'ingestion',
-            payload: getIngestionPayload({
-              assetId: asset.id,
-              assetType: asset.AssetType.key,
-              knowledgeGroupId: asset.knowledgeGroupId,
-              projectId: asset.KnowledgeGroup.projectId,
-              user: asset.createdBy as string,
-              kwargs: JSON.parse(asset.readerKwargs || '{}'),
-              extra_metadata: asset?.extraMetadata as any,
-            }),
-          })
-        )
+        if (status === ASSET_INGESTION_PENDING) {
+          sendMessageToPythonService(
+            JSON.stringify({
+              job_type: 'ingestion',
+              payload: getIngestionPayload({
+                assetId: asset.id,
+                assetType: asset.AssetType.key,
+                knowledgeGroupId: asset.knowledgeGroupId,
+                projectId: asset.KnowledgeGroup.projectId,
+                user: asset.createdBy as string,
+                kwargs: JSON.parse(asset.readerKwargs || '{}'),
+                extra_metadata: asset?.extraMetadata as any,
+              }),
+            })
+          )
+        }
       })
 
       res.status(201).json({

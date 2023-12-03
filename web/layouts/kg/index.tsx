@@ -2,8 +2,8 @@ import { getKgsApi } from '@/apis/kgs'
 import { useDebouncedCallback } from '@/hooks/useDebounceCallback'
 import useStore from '@/store'
 import { Kg } from '@/types/kgs'
-import { PlusCircleOutlined, SearchOutlined } from '@ant-design/icons'
-import { Button, Input, message } from 'antd'
+import { SearchOutlined } from '@ant-design/icons'
+import { Input, message } from 'antd'
 import { useEffect, useState } from 'react'
 import CreateKGForm from './createKg'
 import styles from './kg.module.scss'
@@ -61,9 +61,6 @@ const KGScreen: React.FC<KGScreenProps> = ({ projectId }) => {
           placeholder="Search knowledge groups by name, tags, description or creator"
           onChange={(e) => onChange(e.target.value)}
         />
-        <Button onClick={() => setOpen(true)} type="primary">
-          <PlusCircleOutlined /> Create New
-        </Button>
       </div>
       <KgList projectId={projectId} kgs={filteredKgs} loading={loading} />
       <CreateKGForm

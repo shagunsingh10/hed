@@ -14,9 +14,9 @@ import {
   Typography,
 } from 'antd'
 import { FC, useEffect, useRef, useState } from 'react'
-import styles from './asset.module.scss'
-import GithubForm, { extractUserAndRepo } from './create/github'
-import WikipediaForm from './create/wikipedia'
+import styles from './create.module.scss'
+import GithubForm, { extractUserAndRepo } from './github'
+import WikipediaForm from './wikipedia'
 
 const { Option } = Select
 

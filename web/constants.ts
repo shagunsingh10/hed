@@ -21,3 +21,6 @@ export const ASSET_REJECTED = 'rejected'
 export const ASSET_INGESTING = 'ingesting'
 export const ASSET_DELETING = 'deleting'
 export const ASSET_INGESTION_SUCCESS = 'success'
+
+// OTHER
+export const USER_IMAGES_LOCALSTORAGE_KEY = 'userImages'

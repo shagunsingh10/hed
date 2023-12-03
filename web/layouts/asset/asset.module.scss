@@ -1,46 +1,7 @@
 @use '../../global.scss' as *;
 
-.assetContainer {
-  position: relative;
-
-  .assetScreenHeader {
-    display: flex;
-    justify-content: right;
-    align-items: center;
-    padding: 0.5em 0;
-    height: 6vh;
-  }
-
-  .search {
-    margin-bottom: 1em;
-  }
-}
-
-.newAssetFormContainer {
-  height: 97%;
-  overflow: auto;
-  display: flex;
-  padding: 0.5em;
-  flex-direction: column;
-  justify-content: space-between;
-
-  .formItemsContainer {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 2em;
-
-    textarea {
-      resize: none;
-    }
-  }
-
-  .formButtonGroup {
-    margin-top: 4em;
-    display: flex;
-    gap: 1em;
-    justify-content: flex-end;
-    align-items: flex-end;
-  }
+.assetList {
+  margin-top: 1em;
 }
 
 /* Media query for screens smaller than a certain width, e.g., tablets and phones */

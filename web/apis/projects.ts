@@ -40,3 +40,47 @@ export const getProjectAdminsByIdApi = async (projectId: string) => {
   }
   return resData.data
 }
+
+export const addAdminToprojectApi = async (
+  projectId: string,
+  userId: string
+) => {
+  const res = await fetcher.post(
+    `/api/projects/${projectId}/admin`,
+    {
+      userId: userId,
+    },
+    {
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    }
+  )
+  const resData = await res.json()
+  if (!resData.success) {
+    throw Error(resData.error)
+  }
+  return resData.data
+}
+
+export const removeAdminToprojectApi = async (
+  projectId: string,
+  userId: string
+) => {
+  const res = await fetcher.delete(
+    `/api/projects/${projectId}/admin`,
+    {
+      userId: userId,
+    },
+    {
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    }
+  )
+  const resData = await res.json()
+  if (!resData.success) {
+    throw Error(resData.error)
+  }
+  return resData.data
+}

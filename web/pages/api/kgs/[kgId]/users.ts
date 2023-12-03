@@ -2,12 +2,11 @@ import { getUserInfoFromSessionToken } from '@/lib/auth'
 import { hasOwnerAccessToKg } from '@/lib/auth/access'
 import { prisma } from '@/lib/prisma'
 import type { ApiRes } from '@/types/api'
-import { User } from '@prisma/client'
 import { NextApiRequest, NextApiResponse } from 'next'
 
 const handler = async (
   req: NextApiRequest,
-  res: NextApiResponse<ApiRes<boolean | User[]>>
+  res: NextApiResponse<ApiRes<boolean | unknown>>
 ) => {
   const sessionToken = req.headers.sessiontoken as string
   const user = await getUserInfoFromSessionToken(sessionToken)
@@ -24,7 +23,10 @@ const handler = async (
             },
           },
         },
-        include: {
+        select: {
+          id: true,
+          name: true,
+          email: true,
           UserRole: {
             select: {
               role: true,
@@ -66,6 +68,43 @@ const handler = async (
           knowledgeGroupId: kgId,
           userId: userId,
           role: role,
+        },
+      })
+
+      res.status(201).json({
+        success: true,
+        data: true,
+      })
+      break
+    }
+
+    case 'DELETE': {
+      const body = await req.body
+      const userId = Number(body.userId)
+      const kgId = req.query.kgId as string
+
+      if (!user?.id) {
+        return res.status(201).json({
+          success: false,
+          error: 'User not found',
+        })
+      }
+
+      const isAllowed = await hasOwnerAccessToKg(kgId, Number(user?.id))
+
+      if (!isAllowed) {
+        return res.status(403).json({
+          success: false,
+          error: 'Only owners can remove members from knowledge groups',
+        })
+      }
+
+      await prisma.userRole.delete({
+        where: {
+          UserKnowledgeGroupIndex: {
+            userId: userId,
+            knowledgeGroupId: kgId,
+          },
         },
       })
 

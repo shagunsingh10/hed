@@ -10,6 +10,7 @@ import KGScreen from '../../kg'
 import ProjectAdmins from '../projectAdmins'
 import ProjectSettings from '../projectSettings'
 import styles from './projectDetails.module.scss'
+import TabContentKg from './tabExtras'
 
 const ProjectDetailsScreen = () => {
   const smallScreen = useMediaQuery(768)
@@ -17,6 +18,7 @@ const ProjectDetailsScreen = () => {
   const project = useStore((state) => state.selectedprojectDetails)
   const setProject = useStore((state) => state.setSelectedProjectDetails)
   const [loading, setLoading] = useState<boolean>(false)
+  const [activeTab, setActiveTab] = useState<number>(1)
 
   const tabs = useMemo(
     () => [
@@ -38,6 +40,10 @@ const ProjectDetailsScreen = () => {
     ],
     [projectId, project]
   )
+
+  const handleTabChange = (e: string) => {
+    setActiveTab(Number(e))
+  }
 
   useEffect(() => {
     setLoading(true)
@@ -66,6 +72,10 @@ const ProjectDetailsScreen = () => {
           defaultActiveKey="1"
           type="card"
           tabBarGutter={10}
+          onChange={handleTabChange}
+          tabBarExtraContent={
+            <TabContentKg activeTab={activeTab} projectId={projectId} />
+          }
           tabPosition={smallScreen ? 'top' : 'top'}
           items={tabs.map((tab, i) => {
             return {

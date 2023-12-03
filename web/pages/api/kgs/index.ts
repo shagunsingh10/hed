@@ -52,7 +52,12 @@ const handler = async (
         include: {
           UserRole: {
             select: {
-              User: true,
+              User: {
+                select: {
+                  id: true,
+                  name: true,
+                },
+              },
               role: true,
             },
           },

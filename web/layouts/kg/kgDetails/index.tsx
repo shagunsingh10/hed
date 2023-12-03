@@ -9,11 +9,11 @@ import {
 import { message, Tabs } from 'antd'
 import { useParams } from 'next/navigation'
 import { useEffect, useState } from 'react'
-import AssetScreen from '../../asset'
+import AssetScreen from '../../asset/assetList'
 import KgSettings from '../kgSettings'
 import KgUsers from '../kgUsers'
 import styles from './kgDetails.module.scss'
-import TabContent from './TabButton'
+import TabContent from './tabExtras'
 
 const KgDetailsScreen = () => {
   const { projectId, kgId }: { projectId: string; kgId: string } = useParams()
