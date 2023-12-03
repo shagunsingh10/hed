@@ -63,7 +63,10 @@ const KgDetailsScreen = () => {
   return (
     <div className={styles.kgDetailsContainer}>
       <div className={styles.kgDetailsHead}>
-        <span className={styles.kgTitle}>{kg?.name}</span>
+        <span className={styles.kgTitle}>
+          <img src="/icons/kg.svg" width={25} height={25} />
+          {kg?.name}
+        </span>
       </div>
       <div className={styles.kgDetailsContent}>
         <Tabs

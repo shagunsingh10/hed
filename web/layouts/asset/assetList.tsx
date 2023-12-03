@@ -10,6 +10,7 @@ import {
   ASSET_INGESTION_SUCCESS,
   PRIMARY_COLOR_DARK,
 } from '@/constants'
+import { useDebouncedCallback } from '@/hooks/useDebounceCallback'
 import { globalDateFormatParser } from '@/lib/functions'
 import useStore from '@/store'
 import type { Asset } from '@/types/assets'
@@ -21,6 +22,7 @@ import {
   EyeFilled,
   FileTextFilled,
   ScissorOutlined,
+  SearchOutlined,
   SettingFilled,
 } from '@ant-design/icons'
 import { Input, message, Space, Table, Tag, Tooltip } from 'antd'
@@ -41,34 +43,35 @@ const AssetList: React.FC<AssetListProps> = ({ projectId, kgId }) => {
 
   const [dataSource, setDataSource] = useState<Asset[]>(assets)
   const [loading, setLoading] = useState(false)
-  const [value, setValue] = useState('')
   const [deleteWarnOpen, setDeleteWarn] = useState(false)
   const [assetIdToDelete, setAssetIdToDelete] = useState('')
   const [logModalOpen, setLogModalOpen] = useState(false)
   const [assetIdLogModal, setAssetIdLogModal] = useState('')
 
-  const FilterByNameInput = (
-    <Space style={{ display: 'flex', justifyContent: 'space-between' }}>
-      Name
-      <Input
-        placeholder="Search Asset"
-        value={value}
-        onChange={(e) => {
-          const currValue = e.target.value
-          setValue(currValue)
-          const filteredData = assets.filter((entry) =>
-            entry.name.includes(currValue)
-          )
-          setDataSource(filteredData)
-        }}
-      />
-    </Space>
-  )
-
   const openDeleteWarning = (assetId: string) => {
     setAssetIdToDelete(assetId)
     setDeleteWarn(true)
   }
+
+  const onChange = useDebouncedCallback((text: string) => {
+    setDataSource(
+      assets.filter(
+        (e) =>
+          e.name.toLocaleLowerCase().includes(text.toLocaleLowerCase()) ||
+          e?.tags
+            ?.toString()
+            ?.toLocaleLowerCase()
+            ?.includes(text.toLocaleLowerCase()) ||
+          e.description
+            ?.toLocaleLowerCase()
+            .includes(text.toLocaleLowerCase()) ||
+          e.createdBy
+            ?.toLocaleLowerCase()
+            ?.includes(text.toLocaleLowerCase()) ||
+          e.status?.toLocaleLowerCase()?.includes(text.toLocaleLowerCase())
+      )
+    )
+  }, 100)
 
   const openLogModal = (assetId: string) => {
     setAssetIdLogModal(assetId)
@@ -94,12 +97,21 @@ const AssetList: React.FC<AssetListProps> = ({ projectId, kgId }) => {
   const columns: ColumnsType<Asset> = useMemo(
     () => [
       {
-        title: FilterByNameInput,
+        title: 'Name',
         dataIndex: 'name',
         key: 'name',
         width: '20%',
         render: (_, record) => (
-          <b style={{ cursor: 'pointer' }} onClick={deepDiveAsset}>
+          <b
+            style={{
+              cursor: 'pointer',
+              display: 'flex',
+              alignItems: 'center',
+              gap: '0.3em',
+            }}
+            onClick={() => deepDiveAsset(record.id)}
+          >
+            <img src="/icons/asset.svg" width={20} height={20} />
             {record.name}
           </b>
         ),
@@ -196,7 +208,7 @@ const AssetList: React.FC<AssetListProps> = ({ projectId, kgId }) => {
         ),
       },
     ],
-    [openDeleteWarning, openLogModal, FilterByNameInput, kgId]
+    [openDeleteWarning, openLogModal, kgId]
   )
 
   useEffect(() => {
@@ -225,14 +237,17 @@ const AssetList: React.FC<AssetListProps> = ({ projectId, kgId }) => {
         onClose={() => setLogModalOpen(false)}
         assetId={assetIdLogModal}
       />
+      <Input
+        prefix={<SearchOutlined />}
+        className={styles.search}
+        placeholder="Search assets by name, tags, description, status or creator"
+        onChange={(e) => onChange(e.target.value)}
+      />
       <Table
         loading={loading}
         className={styles.assetList}
         columns={columns}
         dataSource={dataSource}
-        scroll={{ y: 600 }}
-        showSorterTooltip={true}
-        sortDirections={['ascend', 'descend']}
         pagination={false}
       />
     </>

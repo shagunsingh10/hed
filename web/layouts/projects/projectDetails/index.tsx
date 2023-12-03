@@ -56,7 +56,10 @@ const ProjectDetailsScreen = () => {
   ) : (
     <div className={styles.projectDetailsContainer}>
       <div className={styles.projectDetailsHead}>
-        <span className={styles.projectTitle}>{project?.name} </span>
+        <span className={styles.projectTitle}>
+          <img src="/icons/project.svg" width={25} height={25} />
+          {project?.name}
+        </span>
       </div>
       <div className={styles.projectDetailsContent}>
         <Tabs

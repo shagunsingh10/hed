@@ -1,0 +1,13 @@
+@use '../../../global.scss' as *;
+
+.kgCardsContainer {
+  height: 80vh;
+  overflow-y: auto !important;
+  transition: opacity 0.5s ease-in;
+  padding-right: 0.5em;
+
+  .kgMembers {
+    padding: 0;
+    margin: 0;
+  }
+}

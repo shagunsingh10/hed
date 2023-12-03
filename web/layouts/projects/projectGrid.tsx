@@ -33,7 +33,7 @@ const ProjectsGrid: FC<KGGridProps> = ({ projects, loading }) => {
             onClick={() => handleProjectClick(item.id)}
             title={
               <div className={styles.projectTitle}>
-                <img src="/icons/library.svg" width={25} height={25} />
+                <img src="/icons/project.svg" width={25} height={25} />
                 {item.name}
               </div>
             }

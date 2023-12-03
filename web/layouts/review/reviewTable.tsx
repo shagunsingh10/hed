@@ -56,6 +56,12 @@ const AssetReviewList = () => {
         dataIndex: 'name',
         key: 'name',
         width: '20%',
+        render: (_, { name }) => (
+          <span style={{ display: 'flex', alignItems: 'center', gap: '0.3em' }}>
+            <img src="/icons/asset.svg" width={20} height={20} />
+            {name}
+          </span>
+        ),
       },
       {
         title: 'Tags',

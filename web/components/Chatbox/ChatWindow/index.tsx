@@ -113,7 +113,7 @@ const ChatWindow: FC<ChatWindowProps> = ({ projectId }) => {
         <div className={styles.chatProject}>
           {projects.find((e) => activeChat?.projectId === e.id)?.name && (
             <Tag className={styles.projectTag}>
-              <img src="/icons/library.svg" width={20} height={20} />
+              <img src="/icons/project.svg" width={20} height={20} />
               Project :{' '}
               {projects.find((e) => activeChat?.projectId === e.id)?.name}
             </Tag>

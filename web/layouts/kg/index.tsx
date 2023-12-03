@@ -7,7 +7,7 @@ import { Button, Input, message } from 'antd'
 import { useEffect, useState } from 'react'
 import CreateKGForm from './createKg'
 import styles from './kg.module.scss'
-import KGGrid from './kgGrid'
+import KgList from './kgList'
 
 type KGScreenProps = {
   projectId: string
@@ -65,7 +65,7 @@ const KGScreen: React.FC<KGScreenProps> = ({ projectId }) => {
           <PlusCircleOutlined /> Create New
         </Button>
       </div>
-      <KGGrid projectId={projectId} kgs={filteredKgs} loading={loading} />
+      <KgList projectId={projectId} kgs={filteredKgs} loading={loading} />
       <CreateKGForm
         projectId={projectId}
         open={open}
