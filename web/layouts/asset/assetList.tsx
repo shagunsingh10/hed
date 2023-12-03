@@ -1,6 +1,15 @@
 import { deleteAssetApi, getAssetsApi, getAssetTypesApi } from '@/apis/assets'
 import DeleteConfirmationModal from '@/components/Modals/DeleteWarn'
-import { PRIMARY_COLOR_DARK } from '@/constants'
+import {
+  ASSET_APPROVAL_PENDING,
+  ASSET_DELETE_FAILED,
+  ASSET_DELETING,
+  ASSET_INGESTING,
+  ASSET_INGESTION_FAILED,
+  ASSET_INGESTION_PENDING,
+  ASSET_INGESTION_SUCCESS,
+  PRIMARY_COLOR_DARK,
+} from '@/constants'
 import { globalDateFormatParser } from '@/lib/functions'
 import useStore from '@/store'
 import type { Asset } from '@/types/assets'
@@ -9,6 +18,7 @@ import {
   CloseCircleFilled,
   DeleteFilled,
   ExclamationCircleFilled,
+  EyeFilled,
   FileTextFilled,
   ScissorOutlined,
   SettingFilled,
@@ -130,20 +140,23 @@ const AssetList: React.FC<AssetListProps> = ({ projectId, kgId }) => {
         dataIndex: 'status',
         align: 'center',
         render: (_, { status }) => {
-          let color = 'success'
-          if (status === 'failed') color = 'error'
-          if (status === 'pending') color = 'warning'
-          if (status === 'ingesting') color = 'processing'
-          if (status === 'deleting') color = 'orange'
-          if (status === 'delete-failed') color = 'error'
+          let color = 'warning'
+          if (status === ASSET_INGESTION_FAILED) color = 'error'
+          if (status === ASSET_INGESTION_SUCCESS) color = 'success'
+          if (status === ASSET_INGESTING) color = 'processing'
+          if (status === ASSET_DELETING) color = 'orange'
+          if (status === ASSET_DELETE_FAILED) color = 'error'
           return (
             <Tag color={color} key={status} bordered>
-              {status === 'pending' && <ExclamationCircleFilled />}
-              {status === 'success' && <CheckCircleFilled />}
-              {status === 'failed' && <CloseCircleFilled />}
-              {status === 'ingesting' && <SettingFilled spin />}
-              {status === 'deleting' && <ScissorOutlined rotate={-20} />}
-              {status === 'delete-failed' && <ExclamationCircleFilled />}
+              {status === ASSET_INGESTION_PENDING && (
+                <ExclamationCircleFilled />
+              )}
+              {status === ASSET_INGESTION_SUCCESS && <CheckCircleFilled />}
+              {status === ASSET_INGESTION_FAILED && <CloseCircleFilled />}
+              {status === ASSET_INGESTING && <SettingFilled spin />}
+              {status === ASSET_DELETING && <ScissorOutlined rotate={-20} />}
+              {status === ASSET_DELETE_FAILED && <ExclamationCircleFilled />}
+              {status === ASSET_APPROVAL_PENDING && <EyeFilled />}
 
               <span style={{ marginLeft: '0.5em', fontSize: '0.9em' }}>
                 {status.toUpperCase()}

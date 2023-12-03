@@ -64,7 +64,6 @@ const SocketConnector = () => {
       socket.on(
         'chat-response',
         ({ chatId, messageId, timestamp, response, complete, sources }) => {
-          console.log(sources)
           addMessage({
             chatId: chatId,
             id: messageId,

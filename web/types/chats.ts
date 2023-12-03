@@ -18,6 +18,7 @@ export interface ChatWithoutMessage {
   userId: number
   projectId: string | null
   createdAt: Date
+  lastMessageAt: Date
 }
 
 export interface MessagesSlice {

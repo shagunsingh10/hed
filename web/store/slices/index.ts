@@ -2,6 +2,7 @@ import { createAssetsSlice } from './assets'
 import { createChatsSlice, createMessagesSlice } from './chats'
 import { createKgsSlice } from './kgs'
 import { createProjectsSlice } from './projects'
+import { createAssetsReviewSlice } from './review'
 import { createSocketSlice } from './socket'
 import { createUsersSlice } from './user'
 
@@ -13,4 +14,5 @@ export {
   createAssetsSlice,
   createSocketSlice,
   createUsersSlice,
+  createAssetsReviewSlice,
 }

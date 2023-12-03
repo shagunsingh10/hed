@@ -8,9 +8,21 @@
 
   .chatHistoryContainer {
     width: 20%;
+    border-right: 1px solid $chatMessageBorder;
   }
 
   .chatBoxContainer {
     width: 80%;
+  }
+}
+
+.codeBlockContainer {
+  position: relative;
+  border-radius: 0.4em;
+
+  .copyButton {
+    position: absolute;
+    right: 1em;
+    top: 1em;
   }
 }

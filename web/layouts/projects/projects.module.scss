@@ -4,6 +4,11 @@
   height: 100%;
   position: relative;
 
+  .pageTitle {
+    display: flex;
+    align-items: center;
+    gap: 0.3em;
+  }
   .projectsScreen {
     height: 90%;
     position: relative;
@@ -30,9 +35,9 @@
         transition: opacity 0.5s ease-in;
         padding-right: 0.5em;
         display: grid;
-        grid-template-columns: repeat(3, 1fr);
+        grid-template-columns: repeat(2, 1fr);
         grid-template-rows: auto auto 1fr;
-        grid-gap: 1.2em;
+        grid-gap: 1em;
 
         .projectCard {
           cursor: pointer;
@@ -46,6 +51,9 @@
         }
 
         .projectTitle {
+          display: flex;
+          align-items: center;
+          gap: 0.2em;
           font-size: 1.5em !important;
           overflow: hidden;
           white-space: nowrap;
@@ -53,7 +61,7 @@
         }
 
         .projectTags {
-          height: 5vh;
+          height: 3vh;
           overflow: hidden;
           white-space: nowrap;
           text-overflow: ellipsis;
@@ -68,7 +76,7 @@
         }
 
         .projectMembers {
-          height: 6vh;
+          height: 5vh;
         }
       }
     }

@@ -19,7 +19,7 @@ const handler = async (
           userId: user?.id,
         },
         orderBy: {
-          createdAt: 'desc',
+          lastMessageAt: 'desc',
         },
       })
       res.status(200).json({

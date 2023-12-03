@@ -12,7 +12,7 @@ vector_store = serviceconfig.get("vector_store")
 vector_store_kwargs = serviceconfig.get("vector_store_kwargs") or {}
 
 
-@app.task(bind=True, queue=CLEANER_QUEUE, max_retries=3, default_retry_delay=1)
+@app.task(bind=True, queue=CLEANER_QUEUE, default_retry_delay=1)
 def remove_docs(self, payload: dict[str, any]):
     try:
         doc_ids = payload.get("doc_ids")
@@ -20,9 +20,8 @@ def remove_docs(self, payload: dict[str, any]):
         asset_id = payload.get("asset_id")
         user = payload.get("user")
 
-        # Updating asset status to 'ingesting' for first try
-        if self.request.retries == 0:
-            status_updater.update_asset_status(asset_id, "deleting")
+        # Updating asset status to 'deleting' for first try
+        status_updater.update_asset_status(asset_id, "deleting", user=user)
 
         # Saving the embedded nodes to the vector store
         vector_store_client = get_vector_store_client(
@@ -32,18 +31,17 @@ def remove_docs(self, payload: dict[str, any]):
         )
         vector_store_client.delete_docs(doc_ids)
 
-        # Updating asset status to 'success'
+        # Updating asset status to 'deleted'
         status_updater.update_asset_status(asset_id, status="deleted", user=user)
     except Exception as e:
-        # Handling task failure and retries
-        if self.request.retries == 2:
-            asset_id = payload.get("asset_id")
-            status_updater.update_asset_status(
-                asset_id, status="delete-failed", user=payload.get("user")
-            )
-            logger.error(f"Task Failed: {str(e)}")
-            raise Reject()
-        else:
-            retry_num = self.request.retries + 1
-            logger.warning(f"Retrying task [{retry_num}/2] -> Error: {str(e)}")
-            self.retry()
+        asset_id = payload.get("asset_id")
+        status_updater.update_asset_status(
+            asset_id, status="delete-failed", user=payload.get("user")
+        )
+        status_updater.send_asset_log(
+            asset_id,
+            f"Failed to delete asset. \nError: {e} \nRequest Id: {self.request.id}",
+            "ERROR",
+        )
+        logger.error(f"Task Failed: {str(e)}")
+        raise Reject()

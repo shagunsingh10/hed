@@ -5,7 +5,7 @@
   width: 100%;
   border-radius: 0.8em;
   font-weight: normal;
-  font-size: 1.2em;
+  font-size: 1em;
   border-top-left-radius: 0;
 
   pre:has(code) {
@@ -14,8 +14,9 @@
 
   .chatResponseMessage {
     background-color: $chatMessageBg;
+    border: 1px solid $chatMessageBorder;
     border-radius: 0.6em;
-    border-top-left-radius: 0;
+    // border-top-left-radius: 0;
     padding: 0.7em 2em;
   }
   .chatResponseMessageSources {

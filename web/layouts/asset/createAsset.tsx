@@ -69,7 +69,7 @@ const CreateAssetForm: FC<CreateAssetFormProps> = ({
     })
       .then((asset) => {
         addNewAsset(asset)
-        message.info('Asset created and sent for ingestion')
+        message.info('Asset created successfully.')
         handleReset()
       })
       .catch((e: Error) => {

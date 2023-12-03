@@ -5,8 +5,18 @@
   display: flex;
   flex-direction: column;
 
+  .logoContainer {
+    padding: 1em 0;
+    height: 7%;
+    display: flex;
+    justify-content: center;
+    img {
+      border-radius: 50%;
+    }
+  }
+
   .menuContainer {
-    height: 90%;
+    height: 80%;
     padding-top: 20px;
     display: flex;
     flex-direction: column;
@@ -55,9 +65,19 @@
     height: 10%;
     display: flex;
     flex-direction: column;
-    justify-content: space-between;
+    justify-content: flex-end;
     align-items: center;
-    padding-bottom: 0.5vh;
+    padding-bottom: 2vh;
+
+    .profileIcon {
+      cursor: pointer;
+      font-size: 0.4em;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 0.4em;
+    }
   }
 }
 

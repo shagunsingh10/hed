@@ -1,13 +1,8 @@
 import { addNewChatApi, loadMessagesApi } from '@/apis/chats'
-import { COLOR_BG_TEXT, PRIMARY_COLOR } from '@/constants'
+import { AVATAR_BG, COLOR_BG_TEXT, PRIMARY_COLOR } from '@/constants'
 import { globalDateFormatParser } from '@/lib/functions'
 import { Message } from '@/types/chats'
-import {
-  BulbOutlined,
-  PaperClipOutlined,
-  RobotOutlined,
-  SendOutlined,
-} from '@ant-design/icons'
+import { BulbOutlined, RobotOutlined, SendOutlined } from '@ant-design/icons'
 import {
   Avatar,
   Button,
@@ -87,7 +82,7 @@ const ChatWindow: FC<ChatWindowProps> = ({ projectId }) => {
     if (chatWindowRef.current) {
       chatWindowRef.current.scrollTop = chatWindowRef.current.scrollHeight
     }
-  }, [messages])
+  }, [{ ...messages }])
 
   useEffect(() => {
     setLoading(true)
@@ -97,7 +92,7 @@ const ChatWindow: FC<ChatWindowProps> = ({ projectId }) => {
         .catch(() => message.error('Failed to load previous messages'))
         .finally(() => setLoading(false))
     }
-  }, [activeChat?.id])
+  }, [activeChat])
 
   useEffect(() => {
     setLoading(true)
@@ -112,13 +107,14 @@ const ChatWindow: FC<ChatWindowProps> = ({ projectId }) => {
     <div className={styles.chatWindow}>
       <div className={styles.chatHeader}>
         <div className={styles.chatTitle}>
-          <Avatar icon={<RobotOutlined />} />
+          <Avatar icon={<RobotOutlined />} style={{ background: AVATAR_BG }} />
           {activeChat?.title}
         </div>
         <div className={styles.chatProject}>
           {projects.find((e) => activeChat?.projectId === e.id)?.name && (
-            <Tag color="geekblue">
-              <PaperClipOutlined /> Project :{' '}
+            <Tag className={styles.projectTag}>
+              <img src="/icons/library.svg" width={20} height={20} />
+              Project :{' '}
               {projects.find((e) => activeChat?.projectId === e.id)?.name}
             </Tag>
           )}

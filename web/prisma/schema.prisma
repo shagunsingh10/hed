@@ -54,10 +54,11 @@ model User {
   emailVerified DateTime?
   image         String?
 
-  ownedAssets   Asset[]
-  chats         Chat[]
-  UserRole      UserRole[]
-  projectAdmins ProjectAdmin[]
+  ownedAssets         Asset[]
+  chats               Chat[]
+  UserRole            UserRole[]
+  projectAdmins       ProjectAdmin[]
+  AssetReviewComments AssetReviewComments[]
 
   @@map("users")
 }
@@ -150,11 +151,12 @@ model Asset {
   createdBy        String
   createdAt        DateTime @default(now())
 
-  AssetType      AssetType      @relation(fields: [assetTypeId], references: [id])
-  KnowledgeGroup KnowledgeGroup @relation(fields: [knowledgeGroupId], references: [id])
-  docs           Doc[]
-  User           User           @relation(fields: [ownerUserId], references: [id])
-  Logs           AssetLog[]
+  AssetType           AssetType             @relation(fields: [assetTypeId], references: [id])
+  KnowledgeGroup      KnowledgeGroup        @relation(fields: [knowledgeGroupId], references: [id])
+  docs                Doc[]
+  User                User                  @relation(fields: [ownerUserId], references: [id])
+  Logs                AssetLog[]
+  AssetReviewComments AssetReviewComments[]
 
   @@map("assets")
 }
@@ -171,6 +173,19 @@ model AssetLog {
   @@map("asset_logs")
 }
 
+model AssetReviewComments {
+  id        String   @id @default(cuid())
+  timestamp DateTime @default(now())
+  comment   String
+  userId    Int
+  assetId   String
+
+  Asset Asset @relation(fields: [assetId], references: [id])
+  User  User  @relation(fields: [userId], references: [id])
+
+  @@map("asset_review_comments")
+}
+
 model Doc {
   id               String  @id @default(cuid())
   vector_db_doc_id String
@@ -182,13 +197,13 @@ model Doc {
 }
 
 model Chat {
-  id        String   @id @default(cuid())
-  title     String?
-  userId    Int
-  projectId String?
-  isActive  Boolean  @default(true)
-  createdAt DateTime @default(now())
-  updatedAt String?
+  id            String   @id @default(cuid())
+  title         String?
+  userId        Int
+  projectId     String?
+  isActive      Boolean  @default(true)
+  createdAt     DateTime @default(now())
+  lastMessageAt DateTime @default(now())
 
   User    User      @relation(fields: [userId], references: [id])
   Message Message[]

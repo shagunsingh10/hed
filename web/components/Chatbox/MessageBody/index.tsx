@@ -27,7 +27,7 @@ const MessageBody: FC<MessageProps> = ({ chatMessage }) => {
                 />
               </span>
             </div>
-            {chatMessage.sources && (
+            {chatMessage.sources && chatMessage.sources.length > 0 && (
               <div className={styles.chatResponseMessageSources}>
                 <h5>Sources: </h5>
                 {chatMessage.sources.map((e) => (

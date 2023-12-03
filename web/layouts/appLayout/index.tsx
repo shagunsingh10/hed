@@ -5,7 +5,7 @@ import { User } from '@/types/users'
 import type { Metadata } from 'next'
 import { useSession } from 'next-auth/react'
 import { useEffect } from 'react'
-import Header from '../header'
+// import Header from '../header'
 import LoginScreen from '../login'
 import Sider from '../sider'
 import styles from './newlayout.module.scss'
@@ -44,9 +44,9 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
           <Sider />
         </div>
         <div className={styles.contentBody}>
-          <div className={styles.header}>
+          {/* <div className={styles.header}>
             <Header />
-          </div>
+          </div> */}
           <div className={styles.mainBody}>{children}</div>
         </div>
       </div>

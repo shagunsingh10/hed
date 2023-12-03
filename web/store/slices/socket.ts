@@ -6,7 +6,7 @@ export const createSocketSlice: StateCreator<
   [],
   [],
   SocketSlice
-> = (set, get) => ({
+> = (set) => ({
   socket: null,
   setSocket: async (socket) => {
     set({

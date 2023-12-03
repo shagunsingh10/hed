@@ -14,6 +14,7 @@ export interface Project {
   createdBy: string
   createdAt: Date
   admins?: User[]
+  members?: User[]
 }
 
 export interface ProjectsSlice {

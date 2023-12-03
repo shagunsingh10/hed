@@ -1,6 +1,8 @@
+import { ASSET_APPROVAL_PENDING } from '@/constants'
 import { getUserInfoFromSessionToken } from '@/lib/auth'
 import {
   hasContributorAccessToKg,
+  hasOwnerAccessToKg,
   hasViewerAccessToKg,
 } from '@/lib/auth/access'
 import { prisma } from '@/lib/prisma'
@@ -79,10 +81,10 @@ const handler = async (
     case 'POST': {
       const body: CreateAssetData = req.body
 
-      const kgContributorAccess = await hasContributorAccessToKg(
-        kgId,
-        Number(user?.id)
-      )
+      const [kgContributorAccess, kgOwner] = await Promise.all([
+        hasContributorAccessToKg(kgId, Number(user?.id)),
+        hasOwnerAccessToKg(kgId, Number(user?.id)),
+      ])
 
       if (!kgContributorAccess) {
         return res.status(403).json({
@@ -121,23 +123,33 @@ const handler = async (
             assetTypeId: body.assetTypeId,
             readerKwargs: JSON.stringify(body.readerKwargs),
             extraMetadata: body?.extraMetadata as any,
+            status: kgOwner ? 'pending' : ASSET_APPROVAL_PENDING,
+            Logs: {
+              create: {
+                content: kgOwner
+                  ? `Asset approved by ${user.email}`
+                  : 'Asset approval pending',
+              },
+            },
           },
         })
 
-        sendMessageToPythonService(
-          JSON.stringify({
-            job_type: 'ingestion',
-            payload: getIngestionPayload({
-              assetId: newA.id,
-              assetType: assetType.key,
-              knowledgeGroupId: kgId,
-              projectId: projectId,
-              user: user.email as string,
-              kwargs: body?.readerKwargs,
-              extra_metadata: body?.extraMetadata,
-            }),
-          })
-        )
+        if (kgOwner) {
+          sendMessageToPythonService(
+            JSON.stringify({
+              job_type: 'ingestion',
+              payload: getIngestionPayload({
+                assetId: newA.id,
+                assetType: assetType.key,
+                knowledgeGroupId: kgId,
+                projectId: projectId,
+                user: user.email as string,
+                kwargs: body?.readerKwargs,
+                extra_metadata: body?.extraMetadata,
+              }),
+            })
+          )
+        }
         return newA
       })
 

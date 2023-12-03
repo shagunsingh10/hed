@@ -51,7 +51,10 @@ const ProjectsScreen = () => {
 
   return (
     <div className={styles.pageContainer}>
-      <Typography.Title level={3}>My Projects</Typography.Title>
+      <Typography.Title level={3} className={styles.pageTitle}>
+        <img src="/icons/library.svg" width={25} height={25} />
+        My Projects
+      </Typography.Title>
       <div className={styles.projectsScreen}>
         <div className={styles.projectsContainer}>
           <div className={styles.screenHeader}>

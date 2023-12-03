@@ -45,7 +45,12 @@ const SourceInfoModal: FC<SourceInfoModalProps> = ({ data }) => {
 
   return (
     <>
-      <Tag className={styles.sourceTag} onClick={() => setOpenSourceInfo(true)}>
+      <Tag
+        className={styles.sourceTag}
+        onClick={() => setOpenSourceInfo(true)}
+        bordered={false}
+        color="#111b276F"
+      >
         {iconsMap[data.assetType]}
         {' ' + getFileName(data) || 'Untitled'}
       </Tag>
@@ -63,7 +68,6 @@ const SourceInfoModal: FC<SourceInfoModalProps> = ({ data }) => {
               </span>
             </a>
           </Typography.Title>
-          {/* <Typography.Text>Description: {data.description}</Typography.Text> */}
           <Typography.Title level={5}>Authors</Typography.Title>
           <div className={styles.authors}>
             {data.authors?.map((email: string) => (

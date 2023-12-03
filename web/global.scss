@@ -2,11 +2,12 @@
 $primaryColor: #0a6dc2;
 $primaryDark: #323236;
 $bgColor: #010409;
-$dark1: #0d1117;
-$dark2: #1a1e24;
+$dark1: #0b0f15;
+$dark2: #141920;
 $dark3: #3a3a3c;
 $colorBgText: #75797b7a;
-$chatMessageBg: #202a3aaf;
+$chatMessageBg: #10171fa6;
+$chatMessageBorder: #2233456f;
 
 .customFileInput {
   width: 100%;
@@ -33,11 +34,6 @@ $chatMessageBg: #202a3aaf;
 }
 
 /* ANTD MODS */
-
-.ant-table-cell {
-  border: none !important;
-}
-
 .ant-message-notice-content {
   background-color: $dark2 !important;
   color: #fafafa !important;
@@ -55,4 +51,47 @@ $chatMessageBg: #202a3aaf;
   background-color: $dark1 !important;
   color: #ffffff !important;
   font-weight: bold;
+}
+
+.ant-badge-count {
+  color: #fff !important;
+  font-size: 10px !important;
+}
+
+.ant-table-wrapper {
+  height: 100% !important;
+
+  .ant-spin-nested-loading {
+    height: 100% !important;
+
+    .ant-spin-container {
+      height: 100% !important;
+      display: flex !important;
+      flex-flow: column nowrap !important;
+
+      .ant-table {
+        flex: auto !important;
+        overflow: hidden !important;
+
+        .ant-table-container {
+          height: 100% !important;
+          display: flex !important;
+          flex-flow: column nowrap !important;
+
+          .ant-table-header {
+            flex: none !important;
+          }
+
+          .ant-table-body {
+            flex: auto !important;
+            overflow: scroll !important;
+          }
+        }
+      }
+
+      .ant-table-pagination {
+        flex: none !important;
+      }
+    }
+  }
 }

@@ -30,7 +30,10 @@ const KGScreen: React.FC<KGScreenProps> = ({ projectId }) => {
             .toString()
             .toLocaleLowerCase()
             .includes(text.toLocaleLowerCase()) ||
-          e.description?.toLocaleLowerCase().includes(text.toLocaleLowerCase())
+          e.description
+            ?.toLocaleLowerCase()
+            .includes(text.toLocaleLowerCase()) ||
+          e.createdBy?.toLocaleLowerCase().includes(text.toLocaleLowerCase())
       )
     )
   }, 100)
@@ -55,7 +58,7 @@ const KGScreen: React.FC<KGScreenProps> = ({ projectId }) => {
         <Input
           prefix={<SearchOutlined />}
           className={styles.search}
-          placeholder="Search knowledge groups by name or tags or description"
+          placeholder="Search knowledge groups by name, tags, description or creator"
           onChange={(e) => onChange(e.target.value)}
         />
         <Button onClick={() => setOpen(true)} type="primary">

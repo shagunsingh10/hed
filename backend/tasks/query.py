@@ -1,4 +1,4 @@
-from celery.exceptions import Reject
+from celery.exceptions import Reject, SoftTimeLimitExceeded
 from llama_index.response.schema import StreamingResponse, Response
 from tasks.app import app, QUERY_PROCESSOR_QUEUE
 from serviceconfig import serviceconfig
@@ -15,6 +15,7 @@ logger = get_logger()
 status_updater = StatusUpdater()
 
 failed_response = "Sorry, some error occurred in generating a response. Please try again after some time."
+timeout_response = "The server is facing high loads so it is unable to process your request at the time. Please try again after sometime."
 out_of_context_response = "I'm sorry, but I cannot answer that question based on the given context information."
 llm_model = serviceconfig.get("llm")
 llm_kwargs = serviceconfig.get("llm_kwargs") or {}
@@ -29,9 +30,10 @@ similarity_top_k = serviceconfig.get("max_sources", 5)
 @app.task(
     bind=True,
     queue=QUERY_PROCESSOR_QUEUE,
-    max_retries=2,
+    max_retries=1,
     default_retry_delay=1,
-    time_limit=200,
+    soft_time_limit=40,
+    time_limit=45,
 )
 def process_query(self, payload):
     """
@@ -102,11 +104,19 @@ def process_query(self, payload):
             sources=sources,
         )
 
+    except SoftTimeLimitExceeded:
+        status_updater.send_query_response_chunk(
+            chunk=f"{timeout_response} \nRequest Id: {self.request.id}",
+            chat_id=payload.get("chat_id"),
+            user=payload.get("user"),
+            complete=True,
+        )
+        raise Reject()
     except Exception as e:
         # Handling task failure and retries
-        if self.request.retries == 2:
+        if self.request.retries == 1:
             status_updater.send_query_response_chunk(
-                chunk=failed_response,
+                chunk=f"{failed_response} \nRequest Id: {self.request.id}",
                 chat_id=payload.get("chat_id"),
                 user=payload.get("user"),
                 complete=True,
@@ -115,7 +125,7 @@ def process_query(self, payload):
             raise Reject()
         else:
             retries = self.request.retries + 1
-            logger.warning(f"Retrying task [{retries}/2] -> Error: {str(e)}")
+            logger.warning(f"Retrying task [{retries}/1] -> Error: {str(e)}")
             self.retry()
 
 

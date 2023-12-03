@@ -79,3 +79,40 @@ export const getAssetLogsApi = async (assetId: string) => {
   }
   return resData.data
 }
+
+export const getAssetsToReviewApi = async () => {
+  const res = await fetcher.get(`/api/assets/review`)
+  const resData = await res.json()
+  if (!resData.success) {
+    throw Error(resData.error)
+  }
+  return resData.data
+}
+
+export const getAssetsToReviewCountApi = async () => {
+  const res = await fetcher.get(`/api/assets/review-count`)
+  const resData = await res.json()
+  if (!resData.success) {
+    throw Error(resData.error)
+  }
+  return resData.data
+}
+
+export const approveAssetApi = async (assetId: string, status: string) => {
+  const res = await fetcher.post(
+    `/api/assets/${assetId}/approve`,
+    {
+      status: status,
+    },
+    {
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    }
+  )
+  const resData = await res.json()
+  if (!resData.success) {
+    throw Error(resData.error)
+  }
+  return resData.data
+}

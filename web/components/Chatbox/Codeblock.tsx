@@ -1,8 +1,9 @@
 import { CopyOutlined } from '@ant-design/icons'
-import { Button, Card, message } from 'antd'
-import React, { useEffect, useState } from 'react'
+import { Button, message } from 'antd'
+import React, { useEffect, useRef, useState } from 'react'
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter'
-import { nightOwl } from 'react-syntax-highlighter/dist/cjs/styles/prism'
+import { coldarkDark } from 'react-syntax-highlighter/dist/cjs/styles/prism'
+import styles from './chat.module.scss'
 
 const getLanguageFromClassName = (className: string | undefined) => {
   if (!className) return 'text'
@@ -19,6 +20,16 @@ const CodeBlock = (props: any) => {
   const hasLang = /language-(\w+)/.exec(props.className || '')
 
   const [copied, setCopied] = useState(false)
+  const [isHovered, setIsHovered] = useState(false)
+  const codeContainerRef = useRef(null)
+
+  const handleMouseEnter = () => {
+    setIsHovered(true)
+  }
+
+  const handleMouseLeave = () => {
+    setIsHovered(false)
+  }
 
   const handleCopyClick = () => {
     navigator.clipboard.writeText(props.children)
@@ -37,27 +48,27 @@ const CodeBlock = (props: any) => {
   }, [copied])
 
   return hasLang ? (
-    <Card
-      type="inner"
-      bodyStyle={{ padding: 0 }}
-      style={{ margin: '1em 0' }}
-      title={language}
-      extra={
+    <div
+      className={styles.codeBlockContainer}
+      ref={codeContainerRef}
+      onMouseEnter={handleMouseEnter}
+      onMouseLeave={handleMouseLeave}
+    >
+      {isHovered && (
         <Button
-          type="primary"
           icon={<CopyOutlined />}
           onClick={handleCopyClick}
-          size="small"
-          ghost
-        >
-          {copied ? 'Copied!' : 'Copy code'}
-        </Button>
-      }
-    >
-      <SyntaxHighlighter language={language} style={nightOwl}>
+          className={styles.copyButton}
+        />
+      )}
+      <SyntaxHighlighter
+        language={language}
+        style={coldarkDark}
+        customStyle={{ borderRadius: '0.5em' }}
+      >
         {props.children}
       </SyntaxHighlighter>
-    </Card>
+    </div>
   ) : (
     <code className={props.className} {...props} />
   )

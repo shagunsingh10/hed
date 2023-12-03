@@ -29,7 +29,6 @@ const CreateKGForm: FC<createKgFormProps> = ({ projectId, open, onClose }) => {
         handleReset()
       })
       .catch((e: Error) => {
-        console.log(e.message.toString())
         message.error(e.message.toString())
       })
       .finally(() => {

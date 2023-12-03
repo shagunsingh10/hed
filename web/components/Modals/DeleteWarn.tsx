@@ -19,7 +19,7 @@ const DeleteConfirmationModal: FC<DeleteConfirmationModalProps> = ({
       mask={true}
       footer={false}
       open={open}
-      width={'35vw'}
+      width={'40vw'}
       closeIcon={false}
     >
       <Card style={{ padding: '2em 0.5em' }}>

@@ -1,6 +1,6 @@
 import getRandomColor from '@/lib/utils/getRandomColor'
 import { Project } from '@/types/projects'
-import { Avatar, Card, Empty, Skeleton, Tag } from 'antd'
+import { Avatar, Card, Empty, Skeleton, Tag, Tooltip } from 'antd'
 import { useRouter } from 'next/navigation'
 import { FC } from 'react'
 import styles from './projects.module.scss'
@@ -31,12 +31,17 @@ const ProjectsGrid: FC<KGGridProps> = ({ projects, loading }) => {
             type="inner"
             className={styles.projectCard}
             onClick={() => handleProjectClick(item.id)}
-            title={<div className={styles.projectTitle}>{item.name}</div>}
+            title={
+              <div className={styles.projectTitle}>
+                <img src="/icons/library.svg" width={25} height={25} />
+                {item.name}
+              </div>
+            }
           >
             <Skeleton loading={loading} avatar active>
               <div className={styles.projectTags}>
                 {item.tags.map((tag) => (
-                  <Tag key={tag} bordered={false} color={getRandomColor(tag)}>
+                  <Tag key={tag} color={getRandomColor(tag)}>
                     {tag}
                   </Tag>
                 ))}
@@ -46,12 +51,14 @@ const ProjectsGrid: FC<KGGridProps> = ({ projects, loading }) => {
                   {item.description || 'No description added'}
                 </div>
               </div>
-              <Avatar.Group className={styles.projectMembers} maxCount={4}>
-                <Avatar src="https://xsgames.co/randomusers/avatar.php?g=pixel&key=1" />
-                <Avatar src="https://xsgames.co/randomusers/avatar.php?g=pixel&key=2" />
-                <Avatar src="https://xsgames.co/randomusers/avatar.php?g=pixel&key=3" />
-                <Avatar src="https://xsgames.co/randomusers/avatar.php?g=pixel&key=4" />
-                <Avatar src="https://xsgames.co/randomusers/avatar.php?g=pixel&key=5" />
+              <Avatar.Group className={styles.projectMembers} maxCount={6}>
+                {item.members?.map((e) => (
+                  <Tooltip title={`${e.name}`}>
+                    <Avatar
+                      src={<img src={e.image} referrerPolicy="no-referrer" />}
+                    />
+                  </Tooltip>
+                ))}
               </Avatar.Group>
             </Skeleton>
           </Card>

@@ -7,6 +7,7 @@ from schema.messages import (
     AssetDeletionPayload,
 )
 from utils.logger import get_logger
+from tasks.statusupdater import StatusUpdater
 
 logger = get_logger("queue-message-validator")
 
@@ -15,6 +16,8 @@ jobs = {
     "query": QueryPayload,
     "asset-deletion": AssetDeletionPayload,
 }
+
+status_updater = StatusUpdater()
 
 
 class MessageValidator:

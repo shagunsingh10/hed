@@ -1,7 +1,9 @@
 import { getUserInfoFromSessionToken } from '@/lib/auth'
+import { getUniqueItemsByProperties } from '@/lib/functions'
 import { prisma } from '@/lib/prisma'
 import type { ApiRes } from '@/types/api'
 import { Project } from '@/types/projects'
+import { User } from '@/types/users'
 import { NextApiRequest, NextApiResponse } from 'next'
 
 type PrismaProjectRecord = {
@@ -12,13 +14,22 @@ type PrismaProjectRecord = {
   isActive: boolean
   createdBy: string
   createdAt: Date
+  knowledgeGroups?: any
 }
 
 const processTags = (project: PrismaProjectRecord): Project => {
-  return {
+  const processed = {
     ...project,
+    members: getUniqueItemsByProperties(
+      project?.knowledgeGroups.flatMap(
+        (kg: any) => kg?.UserRole?.map((user: any) => user.User)
+      ) as User[],
+      'id'
+    ),
     tags: project.tags?.split(',').map((tag) => tag?.trim()) || [],
   }
+  delete processed['knowledgeGroups']
+  return processed
 }
 
 const handler = async (
@@ -48,6 +59,21 @@ const handler = async (
         },
         include: {
           admins: true,
+          knowledgeGroups: {
+            select: {
+              UserRole: {
+                select: {
+                  User: {
+                    select: {
+                      image: true,
+                      name: true,
+                      id: true,
+                    },
+                  },
+                },
+              },
+            },
+          },
         },
       })
       res.status(200).json({

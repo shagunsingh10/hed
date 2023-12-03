@@ -87,7 +87,9 @@ def ingest_asset(self, payload: dict[str, any]):
             asset_id = payload.get("asset_id")
             status_updater.update_asset_status(asset_id, "failed", payload.get("user"))
             status_updater.send_asset_log(
-                asset_id, f"Failed to ingest asset. Error: {e}", "ERROR"
+                asset_id,
+                f"Failed to ingest asset. \nError: {e} \nRequest Id: {self.request.id}",
+                "ERROR",
             )
             logger.error(f"Task Failed: {str(e)}")
             raise Reject()
@@ -98,5 +100,5 @@ def ingest_asset(self, payload: dict[str, any]):
                 f"Failed to ingest asset. Error: {e}. Retrying task [{retry_num}/2]",
                 "WARNING",
             )
-            logger.warning(f"Retrying task [{retry_num}/2] -> Error: {str(e)}")
+            logger.warning(f"Retrying task [{retry_num}/1] -> Error: {str(e)}")
             self.retry()

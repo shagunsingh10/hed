@@ -22,10 +22,14 @@ const handler = async (
         orderBy: {
           timestamp: 'asc',
         },
+        take: 100,
       })
       res.status(200).json({
         success: true,
-        data: messages,
+        data: messages.map((e) => ({
+          ...e,
+          sources: e.sources as Record<string, any>[],
+        })),
       })
       break
     }
@@ -40,9 +44,12 @@ const handler = async (
               isResponse: false,
             },
           }),
-          tx.chat.findFirst({
+          tx.chat.update({
             where: {
               id: chatId,
+            },
+            data: {
+              lastMessageAt: new Date(),
             },
             select: {
               projectId: true,
@@ -100,7 +107,10 @@ const handler = async (
 
       res.status(201).json({
         success: true,
-        data: newMessage,
+        data: {
+          ...newMessage,
+          sources: newMessage.sources as Record<string, any>[],
+        },
       })
       break
     }

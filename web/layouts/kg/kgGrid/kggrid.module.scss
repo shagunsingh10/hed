@@ -1,48 +1,48 @@
 @use '../../../global.scss' as *;
 
 .kgCardsContainer {
-  height: 100%;
-  overflow-y: hidden;
+  height: 82vh;
+  overflow-y: auto !important;
   transition: opacity 0.5s ease-in;
   padding-right: 0.5em;
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  grid-template-rows: auto auto 1fr;
-  grid-gap: 1em;
-
-  .kgCard {
-    cursor: pointer;
-    height: 26vh;
-    transition: opacity 0.3s ease;
-  }
-
-  .kgCard:hover {
-    opacity: 0.7;
-  }
 
   .kgTitle {
-    font-size: 1.5em !important;
-    overflow: hidden;
-    white-space: nowrap;
-    text-overflow: ellipsis;
+    display: flex;
+    gap: 0.5em;
+    align-items: center;
   }
 
   .kgTags {
-    height: 5vh;
+    height: 3vh;
     overflow: hidden;
     white-space: nowrap;
     text-overflow: ellipsis;
   }
 
   .kgDescriptionContainer {
-    height: 10vh;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    overflow-wrap: break-word;
-    opacity: 0.5;
+    width: 70%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 1em;
+
+    .kgDescription {
+      max-height: 8vh;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      overflow-wrap: break-word;
+      opacity: 0.5;
+      width: 80%;
+    }
   }
 
   .kgMembers {
-    height: 6vh;
+    height: 4vh;
+  }
+
+  .kgInfo {
+    display: flex;
+    align-items: center;
+    gap: 0.4em;
   }
 }

@@ -36,14 +36,24 @@ const handler = async (
           })
         }
       } else {
-        const message = await prisma.message.create({
-          data: {
-            chatId: chatId,
-            content: chunk,
-            isResponse: true,
-            sources: sources,
-          },
-        })
+        const message = await prisma.$transaction([
+          prisma.message.create({
+            data: {
+              chatId: chatId,
+              content: chunk,
+              isResponse: true,
+              sources: sources,
+            },
+          }),
+          prisma.chat.update({
+            where: {
+              id: chatId,
+            },
+            data: {
+              lastMessageAt: new Date(),
+            },
+          }),
+        ])
         const io = res.socket.server.io
         if (user && io) {
           getSocketClientId(user).then((socketId) => {
@@ -51,8 +61,8 @@ const handler = async (
               io.to(socketId).emit('chat-response', {
                 chatId: chatId,
                 response: chunk,
-                messageId: message.id,
-                timestamp: message.timestamp,
+                messageId: message[0].id,
+                timestamp: message[0].timestamp,
                 complete: true,
                 sources: sources,
               })

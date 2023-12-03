@@ -26,6 +26,7 @@ export type Asset = {
   createdAt: string
   createdBy?: string
   knowledgeGroupName?: string
+  AssetType?: AssetType
 }
 
 export type AssetLog = {
