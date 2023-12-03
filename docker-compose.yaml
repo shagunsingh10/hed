@@ -98,6 +98,7 @@ services:
     volumes:
       - ./.etc/llama_index/:/tmp/llama_index/
       - ./.etc/uploads/:/app/uploads/
+      - ./.env:/app/.env
     depends_on:
       redis:
         condition: service_healthy
@@ -111,6 +112,7 @@ services:
       - "3000:3000"
     volumes:
       - ./.etc/uploads/:/app/uploads/
+      - ./.env:/app/.env
     restart: unless-stopped
     healthcheck:
       test: ["CMD", "true"]
