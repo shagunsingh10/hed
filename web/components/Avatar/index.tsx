@@ -17,7 +17,7 @@ const UserAvatar = ({
       `${USER_IMAGES_LOCALSTORAGE_KEY}_${userId}`
     )
     if (userAvatarSrcObj) userAvatarSrcObj = JSON.parse(userAvatarSrcObj)
-    if (!userAvatarSrcObj && userAvatarSrcObj.expires > Date.now()) {
+    if (!userAvatarSrcObj || userAvatarSrcObj?.expires > Date.now()) {
       getUserAvatarApi(userId)
         .then((avatarSrc) => {
           setSrc(avatarSrc)
