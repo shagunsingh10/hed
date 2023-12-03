@@ -46,7 +46,7 @@ export const addAdminToprojectApi = async (
   userId: string
 ) => {
   const res = await fetcher.post(
-    `/api/projects/${projectId}/admin`,
+    `/api/projects/${projectId}/admins`,
     {
       userId: userId,
     },
@@ -63,12 +63,12 @@ export const addAdminToprojectApi = async (
   return resData.data
 }
 
-export const removeAdminToprojectApi = async (
+export const removeAdminFromprojectApi = async (
   projectId: string,
-  userId: string
+  userId: number
 ) => {
   const res = await fetcher.delete(
-    `/api/projects/${projectId}/admin`,
+    `/api/projects/${projectId}/admins`,
     {
       userId: userId,
     },

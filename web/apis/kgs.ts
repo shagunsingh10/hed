@@ -60,16 +60,11 @@ export const addUserToKgApi = async (
   return resData.data
 }
 
-export const removeUserToKgApi = async (
-  kgId: string,
-  userId: string,
-  role: string
-) => {
+export const removeUserFromKgApi = async (kgId: string, userId: number) => {
   const res = await fetcher.delete(
     `/api/kgs/${kgId}/users`,
     {
       userId: userId,
-      role: role,
     },
     {
       headers: {

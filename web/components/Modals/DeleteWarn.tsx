@@ -26,13 +26,18 @@ const DeleteConfirmationModal: FC<DeleteConfirmationModalProps> = ({
         <div
           style={{
             display: 'flex',
+            flexDirection: 'column',
             alignItems: 'center',
             gap: '1em',
             justifyContent: 'center',
           }}
         >
-          <WarningFilled style={{ fontSize: '1.7em', color: '#DC3545' }} />
-          <span style={{ opacity: 0.7, fontSize: '1.2em' }}>{message}</span>
+          <WarningFilled style={{ fontSize: '4em', color: '#DC3545' }} />
+          <span
+            style={{ opacity: 0.7, fontSize: '1.2em', textAlign: 'center' }}
+          >
+            {message}
+          </span>
         </div>
 
         <div style={{ textAlign: 'center', marginTop: '2em' }}>
