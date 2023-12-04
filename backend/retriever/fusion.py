@@ -155,5 +155,7 @@ class FusionRetriever(BaseRetriever):
         embeddings = self._embedder.embed_query(query_bundle.query_str)
         query_results = asyncio.run(self._search_embeddings_in_vector_db(embeddings))
         scored_nodes = self._get_scored_nodes_from_query_results(query_results)
+        print("SCORED NODES: ", scored_nodes)
         reranked_nodes = self._reciprocal_rerank_fusion(scored_nodes)
+        print("RERANKED NODES: ", reranked_nodes, self._similarity_top_k)
         return reranked_nodes[: self._similarity_top_k]

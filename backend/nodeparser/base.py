@@ -7,6 +7,9 @@ from llama_index.text_splitter import CodeSplitter
 from embeddings.factory import get_embedding_model
 from utils.logger import get_logger
 
+DEFAULT_CHUNK_SIZE = 1024
+MAX_TOKEN_IN_ONE_REQ = 150000
+
 supported_languages = {
     ".bash": "bash",
     ".c": "c",
@@ -102,7 +105,9 @@ class NodeParser:
                 text_splitter = CodeSplitter(language=language)
 
             try:
-                np = SimpleNodeParser.from_defaults(text_splitter=text_splitter)
+                np = SimpleNodeParser.from_defaults(
+                    text_splitter=text_splitter, chunk_size=DEFAULT_CHUNK_SIZE
+                )
                 nodes = np.get_nodes_from_documents(doc_list)
                 all_nodes.extend(nodes)
             except Exception as e:
@@ -124,11 +129,15 @@ class NodeParser:
         - list[BaseNode]: List of nodes with embedded representations.
         """
         start_time = time.time()
-        text = [node.text for node in nodes]
-        embeddings = self.model.embed_documents(text)
-        assert len(nodes) == len(embeddings)
-        for node, embedding in zip(nodes, embeddings):
-            node.embedding = embedding
+        batch_size = min(int(MAX_TOKEN_IN_ONE_REQ / DEFAULT_CHUNK_SIZE), len(nodes))
+        for i in range(0, len(nodes), batch_size):
+            batch_nodes = nodes[i : i + batch_size]
+            batch_text = [node.text for node in batch_nodes]
+            print(batch_text)
+            batch_embeddings = self.model.embed_documents(batch_text)
+            assert len(batch_nodes) == len(batch_embeddings)
+            for node, embedding in zip(batch_nodes, batch_embeddings):
+                node.embedding = embedding
         logger.debug(f"Embedded nodes in: [{round(time.time() - start_time, 4)} s]")
         return nodes
 

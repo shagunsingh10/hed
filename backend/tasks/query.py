@@ -132,6 +132,7 @@ def process_query(self, payload):
 
 def get_sources_from_response(response: StreamingResponse | Response):
     sources = []
+    print(response.source_nodes)
     for node in response.source_nodes:
         sources.append(node.metadata)
     return sources

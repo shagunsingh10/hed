@@ -1,3 +1,10 @@
+import {
+  ASSET_DELETE_FAILED,
+  ASSET_DELETING,
+  ASSET_INGESTING,
+  ASSET_INGESTION_FAILED,
+  ASSET_INGESTION_SUCCESS,
+} from '@/constants'
 import useStore from '@/store'
 import { message } from 'antd'
 import { Session } from 'next-auth'
@@ -39,17 +46,17 @@ const SocketConnector = () => {
 
       socket.on('update-asset-status', ({ assetId, status }) => {
         if (status) {
-          if (status === 'success') {
+          if (status === ASSET_INGESTION_SUCCESS) {
             message.success('Asset ingested successfully!')
-          } else if (status === 'ingestion-failed') {
+          } else if (status === ASSET_INGESTION_FAILED) {
             message.error('Asset ingestion failed!')
-          } else if (status === 'ingesting') {
+          } else if (status === ASSET_INGESTING) {
             message.info('Asset ingestion started!')
           } else if (status === 'deleted') {
             message.success('Asset deleted successfully!')
-          } else if (status === 'deleting') {
+          } else if (status === ASSET_DELETING) {
             message.info('Asset deletion started!')
-          } else if (status === 'delete-failed') {
+          } else if (status === ASSET_DELETE_FAILED) {
             message.error('Asset deletion failed!')
           } else {
             return
