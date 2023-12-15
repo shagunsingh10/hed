@@ -1,5 +1,5 @@
-import { WarningFilled } from '@ant-design/icons'
-import { Button, Card, Modal } from 'antd'
+import { Button, Group, Modal } from '@mantine/core'
+import { IconAlertTriangle } from '@tabler/icons-react'
 import { FC } from 'react'
 
 type DeleteConfirmationModalProps = {
@@ -15,40 +15,27 @@ const DeleteConfirmationModal: FC<DeleteConfirmationModalProps> = ({
   onCancel,
 }) => {
   return (
-    <Modal
-      mask={true}
-      footer={false}
-      open={open}
-      width={'40vw'}
-      closeIcon={false}
-    >
-      <Card style={{ padding: '2em 0.5em' }}>
-        <div
-          style={{
-            display: 'flex',
-            flexDirection: 'column',
-            alignItems: 'center',
-            gap: '1em',
-            justifyContent: 'center',
-          }}
-        >
-          <WarningFilled style={{ fontSize: '4em', color: '#DC3545' }} />
-          <span
-            style={{ opacity: 0.7, fontSize: '1.2em', textAlign: 'center' }}
-          >
-            {message}
-          </span>
-        </div>
+    <Modal opened={open} onClose={onCancel}>
+      <div
+        style={{
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'center',
+          gap: '1rem',
+          justifyContent: 'center',
+        }}
+      >
+        <IconAlertTriangle size={30} color="red" />
+        <span style={{ opacity: 0.7, fontSize: '1.2em', textAlign: 'center' }}>
+          {message}
+        </span>
+      </div>
 
-        <div style={{ textAlign: 'center', marginTop: '2em' }}>
-          <Button onClick={onCancel} style={{ marginRight: '1em' }}>
-            Cancel
-          </Button>
-          <Button onClick={onDelete} danger type="primary">
-            Delete
-          </Button>
-        </div>
-      </Card>
+      <Group mt="lg" justify="flex-end">
+        <Button onClick={onDelete} size="xs">
+          Delete
+        </Button>
+      </Group>
     </Modal>
   )
 }

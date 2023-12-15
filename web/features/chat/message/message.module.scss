@@ -1,0 +1,35 @@
+@use '../../../global.scss' as *;
+
+.chatMessageContent {
+  width: 100%;
+  font-size: 0.7rem;
+  line-height: 1.8;
+
+  pre:has(code) {
+    padding: 0;
+  }
+
+  .messageText {
+    background-color: var(--mantine-color-blue-9);
+  }
+
+  .chatResponseMessageSources {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-top: 20px;
+  }
+}
+
+.codeBlock {
+  padding: 0.5rem;
+  border-radius: 0.5rem;
+  margin: 0.5rem 0;
+}
+
+// Source Modal
+.title {
+  display: flex;
+  align-items: center;
+  margin-left: 0.5rem;
+}

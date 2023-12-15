@@ -1,4 +1,4 @@
-import fetcher from '@/lib/fetcher'
+import fetcher from '@/lib/utils/fetcher'
 import { PostMessage } from '@/types/chats'
 
 export const getChatsApi = async (projectId?: string) => {

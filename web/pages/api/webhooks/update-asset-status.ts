@@ -1,6 +1,6 @@
 import { config as appConfig } from '@/config'
-import { sendAssetStatusNotification } from '@/lib/notification/assets'
 import { prisma } from '@/lib/prisma'
+import { sendAssetStatusNotification } from '@/lib/utils/notification/assets'
 import type { ApiRes } from '@/types/api'
 import { Doc } from '@/types/assets'
 import { NextApiRequest } from 'next'

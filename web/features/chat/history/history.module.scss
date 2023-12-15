@@ -1,0 +1,42 @@
+@use '../../../global.scss' as *;
+
+.chatHistory {
+  height: 88vh;
+  width: 100%;
+  margin-top: 1rem;
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+
+  .chatHistoryList {
+    height: 100%;
+    overflow-y: hidden;
+    width: 100%;
+
+    .timeline {
+      padding-left: 0.5rem;
+      font-size: 0.7rem;
+      margin-top: 1rem;
+    }
+
+    .chatItem {
+      * {
+        font-size: 0.85em;
+      }
+    }
+
+    .chatListItem:hover {
+      opacity: 0.5;
+    }
+  }
+
+  .chatHistoryList:hover {
+    overflow-y: auto;
+  }
+}
+
+.search {
+  width: 100%;
+  padding: 0.5rem 0.4rem;
+  margin-top: 0.5rem;
+}

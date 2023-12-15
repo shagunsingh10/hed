@@ -1,14 +1,14 @@
 import { getUserAvatarApi } from '@/apis/users'
 import { USER_IMAGES_LOCALSTORAGE_KEY } from '@/constants'
-import { Avatar } from 'antd'
+import { Avatar } from '@mantine/core'
 import { useEffect, useState } from 'react'
 
 const UserAvatar = ({
   userId,
-  size = 'small',
+  size = 'sm',
 }: {
   userId: number
-  size?: 'small' | 'default' | 'large'
+  size?: 'sm' | 'xs' | 'md' | 'lg'
 }) => {
   const [src, setSrc] = useState('')
 
@@ -35,10 +35,7 @@ const UserAvatar = ({
     }
   }, [])
 
-  console.log({ src })
-  return (
-    <Avatar size={size} src={<img src={src} referrerPolicy="no-referrer" />} />
-  )
+  return <Avatar size={size} src={src} />
 }
 
 export default UserAvatar

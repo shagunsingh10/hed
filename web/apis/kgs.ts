@@ -1,4 +1,4 @@
-import fetcher from '@/lib/fetcher'
+import fetcher from '@/lib/utils/fetcher'
 import { CreateKgData } from '@/types/kgs'
 
 export const getKgsApi = async (projectId: string) => {

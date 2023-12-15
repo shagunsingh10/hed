@@ -1,0 +1,54 @@
+@use '../../../global.scss' as *;
+
+.assetListContainer {
+  width: 100%;
+  height: auto;
+  min-height: 20vh;
+  overflow-y: auto !important;
+  transition: opacity 0.5s ease-in;
+
+  * {
+    font-size: 0.7rem;
+  }
+
+  .assetMembers {
+    padding: 0;
+    margin: 0;
+    display: flex;
+    justify-content: center;
+  }
+
+  .assetTitle {
+    display: flex;
+    align-items: center;
+    font-weight: bold;
+    gap: 1rem;
+  }
+
+  .tableCell {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 0.3rem;
+  }
+
+  .tags {
+    display: flex;
+    gap: 0.5rem;
+    justify-content: center;
+  }
+
+  .headerRow {
+    font-weight: bold;
+    background-color: var(--mantine-color-blue-8);
+  }
+
+  .status {
+    display: flex;
+    padding: 0.1rem 0.4rem;
+    align-items: center;
+    gap: 0.2rem;
+    border-radius: 0.4rem;
+    justify-content: center;
+  }
+}

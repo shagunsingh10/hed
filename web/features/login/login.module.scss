@@ -1,0 +1,37 @@
+@use '../../global.scss' as *;
+
+.loginScreen {
+  height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  .loginCard {
+    height: 50vh;
+    border-radius: 0.4rem;
+    padding: 5em;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 1rem;
+
+    .loginText {
+      font-size: 2em;
+      font-weight: bold;
+      margin-bottom: 2em;
+      text-align: center;
+    }
+  }
+}
+
+.loginScreen::before {
+  background-image: url('/images/bgIcons.svg');
+  opacity: 0.1;
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 100vh;
+  width: 100vw;
+  content: '';
+}

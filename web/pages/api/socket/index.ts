@@ -1,6 +1,6 @@
 import type { Server as HTTPServer } from 'http'
 import type { Socket as NetSocket } from 'net'
-import { saveSocketClientId } from '@/lib/socket/handler'
+import { saveSocketClientId } from '@/lib/utils/socket/handler'
 import type { NextApiRequest, NextApiResponse } from 'next'
 import { Server, type Server as IOServer } from 'socket.io'
 

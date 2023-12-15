@@ -1,4 +1,4 @@
-import fetcher from '@/lib/fetcher'
+import fetcher from '@/lib/utils/fetcher'
 import { CreateProjectData } from '@/types/projects'
 
 export const getProjectsApi = async () => {

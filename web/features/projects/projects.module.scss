@@ -1,0 +1,38 @@
+@use '../../global.scss' as *;
+
+.pageContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
+  .mainContainer {
+    height: 80vh;
+    width: 100%;
+    padding: 0 1rem;
+
+    .pageTitle {
+      display: flex;
+      align-items: center;
+      gap: 0.3rem;
+    }
+
+    .screenHeader {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 2em;
+      margin-bottom: 0.5rem;
+    }
+
+    .projectsContainer {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+
+      .search {
+        margin-bottom: 0.5rem;
+        width: 100%;
+      }
+    }
+  }
+}

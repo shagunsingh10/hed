@@ -1,4 +1,4 @@
-import ProjectDetailsScreen from '@/layouts/projects/projectDetails'
+import ProjectDetailsScreen from '@/features/projects/details'
 
 const ProjectsPage = () => {
   return <ProjectDetailsScreen />

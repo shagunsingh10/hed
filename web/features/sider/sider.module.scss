@@ -1,0 +1,80 @@
+@use '../../global.scss' as *;
+
+.siderContainer {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+
+  .logoContainer {
+    padding: 1rem 0;
+    height: 7%;
+    display: flex;
+    justify-content: center;
+    img {
+      border-radius: 50%;
+    }
+  }
+
+  .menuContainer {
+    height: 85%;
+    padding-top: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1.5em;
+
+    .navItem {
+      cursor: pointer;
+      display: flex;
+      width: 90%;
+      justify-content: center;
+      transition: color 1s;
+      padding: 10%;
+
+      .navItemLink {
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 0.3rem;
+
+        * {
+          font-size: 1.1rem;
+        }
+
+        .navItemTitle {
+          font-size: 0.3rem !important;
+        }
+      }
+    }
+
+    .activeNavItem {
+      font-weight: bold;
+      color: var(--mantine-color-blue-8);
+      border-right: 4px solid var(--mantine-color-blue-8);
+    }
+
+    .navItem:hover {
+      opacity: 0.9;
+    }
+  }
+
+  .footer {
+    height: 8%;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    align-items: center;
+    padding-bottom: 1vh;
+
+    .profileIcon {
+      cursor: pointer;
+      font-size: 0.4rem;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 0.4rem;
+    }
+  }
+}

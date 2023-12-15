@@ -1,0 +1,28 @@
+@use '../../../global.scss' as *;
+
+.newAssetFormContainer {
+  height: 97%;
+  overflow: auto;
+  display: flex;
+  padding: 0.5rem;
+  flex-direction: column;
+  justify-content: space-between;
+
+  .formItemsContainer {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2em;
+
+    textarea {
+      resize: none;
+    }
+  }
+
+  .formButtonGroup {
+    margin-top: 4em;
+    display: flex;
+    gap: 1rem;
+    justify-content: flex-end;
+    align-items: flex-end;
+  }
+}

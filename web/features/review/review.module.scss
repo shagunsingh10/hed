@@ -1,0 +1,30 @@
+@use '../../global.scss' as *;
+
+.reviewContainer {
+  padding: 1rem;
+
+  .screenHeader {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 1rem;
+  }
+
+  .search {
+    width: 100%;
+    margin-bottom: 1rem;
+  }
+
+  .reviewTable {
+    height: 75vh;
+
+    * {
+      font-size: 0.7rem;
+    }
+  }
+
+  .headerRow {
+    font-weight: bold;
+    background-color: var(--mantine-color-blue-8);
+  }
+}

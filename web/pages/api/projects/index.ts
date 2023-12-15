@@ -1,6 +1,6 @@
 import { getUserInfoFromSessionToken } from '@/lib/auth'
-import { getUniqueItemsByProperties } from '@/lib/functions'
 import { prisma } from '@/lib/prisma'
+import { getUniqueItemsByProperties } from '@/lib/utils/functions'
 import type { ApiRes } from '@/types/api'
 import { Project } from '@/types/projects'
 import { User } from '@/types/users'

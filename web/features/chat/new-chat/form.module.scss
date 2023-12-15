@@ -1,0 +1,12 @@
+.formContainer {
+  padding: 0 1rem;
+
+  .buttonGroup {
+    display: flex;
+    justify-content: flex-end;
+    gap: 1rem;
+  }
+}
+.addChatBtn {
+  width: 18vw;
+}

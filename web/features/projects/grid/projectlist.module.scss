@@ -1,0 +1,10 @@
+@use '../../../global.scss' as *;
+
+.projectListContainer {
+  height: 78vh;
+  width: 93vw;
+  overflow-y: auto !important;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(16em, 1fr));
+  gap: 1rem;
+}

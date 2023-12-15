@@ -2,9 +2,15 @@
 
 .breadcrumbContainer {
   .breadcrumbItem {
-    border-radius: 1em;
-    padding: 0.1em 0.5em;
-    color: $primaryColor;
+    border-radius: 1rem;
+    padding: 0.1rem 0.5rem;
+    color: var(--mantine-color-blue-8);
     font-weight: bold;
   }
+}
+
+.welcome {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
 }

@@ -33,9 +33,9 @@ export interface MessagesSlice {
 
 export interface ChatsSlice {
   chats: ChatWithoutMessage[]
+  setChats: (chats: ChatWithoutMessage[]) => void
   activeChat: ChatWithoutMessage | undefined
   setActiveChat: (chatId: string) => void
-  loadChats: (projectId?: string) => Promise<void>
   addChat: (chat: ChatWithoutMessage) => void
   deleteteChat?: () => void
 }

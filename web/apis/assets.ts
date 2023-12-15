@@ -1,5 +1,6 @@
-import fetcher from '@/lib/fetcher'
+import fetcher from '@/lib/utils/fetcher'
 import { CreateAssetData } from '@/types/assets'
+import { FileWithPath } from '@mantine/dropzone'
 
 export const getAssetTypesApi = async () => {
   const res = await fetcher.get(`/api/asset-types`)
@@ -53,10 +54,12 @@ export const deleteAssetApi = async (assetId: string) => {
 export const uploadFileApi = async (
   projectId: string,
   kgId: string,
-  file: File
+  files: FileWithPath[]
 ) => {
   const formData = new FormData()
-  formData.append('file', file)
+  files.forEach((file, index) => {
+    formData.append(`file${index}`, file)
+  })
   const res = await fetcher.post(
     `/api/assets/upload?projectId=${projectId}&kgId=${kgId}`,
     {},

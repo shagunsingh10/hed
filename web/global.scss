@@ -1,97 +1,11 @@
 /* variables */
-$primaryColor: #0a6dc2;
-$primaryDark: #323236;
-$bgColor: #010409;
-$dark1: #0b0f15;
-$dark2: #141920;
-$dark3: #3a3a3c;
-$colorBgText: #75797b7a;
-$chatMessageBg: #10171fa6;
-$chatMessageBorder: #2233456f;
-
-.customFileInput {
-  width: 100%;
-  max-width: 100%;
-  padding: 0.2em;
-  border-radius: 0.5em;
-  border: 1px solid #555 !important;
-  color: #555;
-}
-
-.customFileInput::file-selector-button {
-  margin-right: 20px;
-  border: none;
-  background: #1890ff;
-  padding: 0.3em 1em;
-  border-radius: 0.4em;
-  color: #fff;
-  cursor: pointer;
-  transition: background 0.2s ease-in-out;
-}
-
-.customFileInput::file-selector-button:hover {
-  background: $primaryColor;
-}
-
-/* ANTD MODS */
-.ant-message-notice-content {
-  background-color: $dark2 !important;
-  color: #fafafa !important;
-}
-
-.ant-modal-content {
-  padding: 0 !important;
-}
-
-.antd-column-hide {
-  display: none;
-}
-
-.ant-menu-item-selected {
-  background-color: $dark1 !important;
-  color: #ffffff !important;
-  font-weight: bold;
-}
-
-.ant-badge-count {
-  color: #fff !important;
-  font-size: 10px !important;
-}
-
-// .ant-table-wrapper {
-//   height: 100% !important;
-
-//   .ant-spin-nested-loading {
-//     height: 100% !important;
-
-//     .ant-spin-container {
-//       height: 100% !important;
-//       display: flex !important;
-//       flex-flow: column nowrap !important;
-
-//       .ant-table {
-//         flex: auto !important;
-//         overflow: hidden !important;
-
-//         .ant-table-container {
-//           height: 100% !important;
-//           display: flex !important;
-//           flex-flow: column nowrap !important;
-
-//           .ant-table-header {
-//             flex: none !important;
-//           }
-
-//           .ant-table-body {
-//             flex: auto !important;
-//             overflow: scroll !important;
-//           }
-//         }
-//       }
-
-//       .ant-table-pagination {
-//         flex: none !important;
-//       }
-//     }
-//   }
-// }
+$color1: #111d2c;
+$color2: #112a45;
+$color3: #15395b;
+$color4: #164c7e;
+$color5: #1765ad;
+$color6: #177ddc;
+$color7: #3c9ae8;
+$color8: #65b7f3;
+$color9: #8dcff8;
+$color10: #b7e3fa;

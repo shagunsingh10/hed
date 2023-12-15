@@ -1,4 +1,4 @@
-import { getChatsApi, postQueryApi } from '@/apis/chats'
+import { postQueryApi } from '@/apis/chats'
 import type { ChatsSlice, Message, MessagesSlice } from '@/types/chats'
 import type { ProjectsSlice } from '@/types/projects'
 import { StateCreator } from 'zustand'
@@ -10,6 +10,13 @@ export const createChatsSlice: StateCreator<
   ChatsSlice
 > = (set, get) => ({
   chats: [],
+  setChats: (chats) => {
+    set({
+      chats: chats,
+      messages: [],
+      activeChat: chats ? chats[0] : undefined,
+    })
+  },
   activeChat: undefined,
   setActiveChat: (chatId) => {
     const activeChat = get().chats.find((e) => e.id === chatId)
@@ -17,14 +24,7 @@ export const createChatsSlice: StateCreator<
       activeChat: activeChat,
     })
   },
-  loadChats: async (projectId?: string) => {
-    const chats = projectId ? await getChatsApi(projectId) : await getChatsApi()
-    set({
-      chats: chats,
-      messages: [],
-      activeChat: chats ? chats[0] : undefined,
-    })
-  },
+
   addChat: (newChat) => {
     set({
       chats: [newChat, ...get().chats],

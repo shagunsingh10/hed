@@ -1,5 +1,4 @@
-import fs from 'fs/promises'
-import path from 'path'
+import minioClient from '@/lib/minio/client'
 import { prisma } from '@/lib/prisma'
 import { ApiRes } from '@/types/api'
 import { NextApiRequest, NextApiResponse } from 'next'
@@ -40,20 +39,22 @@ export default async function handler(
         })
       }
 
-      const relFilePath = `${fileInfo.KnowledgeGroup.projectId}/${fileInfo.knowledgeGroupId}/${uploadId}`
-      const filePath = path.join(process.cwd(), relFilePath)
+      const objectName = `${fileInfo.KnowledgeGroup.projectId}/${fileInfo.knowledgeGroupId}/${uploadId}`
 
-      const fileExists = await fs
-        .access(filePath, fs.constants.W_OK)
-        .then(() => true)
-        .catch(() => false)
+      // Check if the object exists
+      const exists = await minioClient
+        .statObject('your-bucket-name', objectName)
+        .then(
+          () => true,
+          () => false
+        )
 
-      if (!fileExists) {
+      if (!exists) {
         return res.status(404).json({ success: false, error: 'File not found' })
       }
 
-      // Delete the folder
-      await fs.rm(filePath, { recursive: true, force: true })
+      // Delete the object
+      await minioClient.removeObject('your-bucket-name', objectName)
 
       res.status(200).json({ success: true, data: 'File deleted successfully' })
     } catch (error) {

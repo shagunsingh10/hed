@@ -1,4 +1,4 @@
-import KgDetailsScreen from '@/layouts/kg/kgDetails'
+import KgDetailsScreen from '@/features/kg/details'
 
 const KgPage = () => {
   return <KgDetailsScreen />

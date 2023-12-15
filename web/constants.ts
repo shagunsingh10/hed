@@ -1,16 +1,12 @@
 // THEMES
-export const PRIMARY_COLOR = '#0A6DC2'
-export const CHAT_MESSAGE_BG = '#10171fa6'
-export const PRIMARY_COLOR_DARK = '#323236'
-export const BORDER_RADIUS = 5
-export const COLOR_BG = '#010409'
-export const COLOR_OUTLINE = 'none'
-export const COLOR_BG_TEXT = '#75797b7A'
-export const COLOR_BG_BASE = '#020304'
-export const COLOR_CARD = '#212123'
-export const COLOR_DARK1 = '#181818'
-export const AVATAR_BG = '#223345'
-export const BORDER_COLOR = '#2233456f'
+export const PRIMARY_COLOR = '#0a6dc2'
+export const COLOR_BG_BASE = '#141414'
+
+// STATUS COLORS
+export const SUCCESS_COLOR = 'rgba(40, 167, 69, 0.5)'
+export const ERROR_COLOR = '#B000209F'
+export const WARNING_COLOR = '#ffa7009F'
+export const INFO_COLOR = '#0a6dc2AF'
 
 // ASSET STATUS
 export const ASSET_APPROVAL_PENDING = 'approval pending'

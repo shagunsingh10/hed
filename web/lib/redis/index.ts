@@ -1,5 +1,5 @@
 import { config } from '@/config'
-import redis from './client'
+import { connection as redis } from './connection'
 
 const MAX_RETRIES = 3
 const RETRY_INTERVAL_IN_MS = 100

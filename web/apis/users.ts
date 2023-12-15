@@ -1,4 +1,4 @@
-import fetcher from '@/lib/fetcher'
+import fetcher from '@/lib/utils/fetcher'
 
 export const getAllUsers = async () => {
   const res = await fetcher.get(`/api/users`)

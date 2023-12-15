@@ -1,0 +1,26 @@
+.cardContainer {
+  height: 18.5em;
+  width: 17.5em;
+
+  .label {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-top: 0.5rem;
+  }
+
+  .like {
+    color: var(--mantine-color-red-6);
+    width: 1rem;
+    height: 1rem;
+  }
+
+  .projectName {
+    display: flex;
+    align-items: center;
+    gap: 0.2rem;
+    white-space: nowrap; /* Prevent text from wrapping to the next line */
+    overflow: hidden; /* Hide the overflowing content */
+    text-overflow: ellipsis;
+  }
+}

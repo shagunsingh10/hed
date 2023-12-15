@@ -6,7 +6,7 @@ import {
   ASSET_INGESTION_SUCCESS,
 } from '@/constants'
 import useStore from '@/store'
-import { message } from 'antd'
+import { showNotification } from '@mantine/notifications'
 import { Session } from 'next-auth'
 import { useSession } from 'next-auth/react'
 import { useCallback, useEffect } from 'react'
@@ -47,17 +47,35 @@ const SocketConnector = () => {
       socket.on('update-asset-status', ({ assetId, status }) => {
         if (status) {
           if (status === ASSET_INGESTION_SUCCESS) {
-            message.success('Asset ingested successfully!')
+            showNotification({
+              message: 'Asset ingested successfully!',
+              color: 'green',
+            })
           } else if (status === ASSET_INGESTION_FAILED) {
-            message.error('Asset ingestion failed!')
+            showNotification({
+              message: 'Asset ingestion failed!',
+              color: 'red',
+            })
           } else if (status === ASSET_INGESTING) {
-            message.info('Asset ingestion started!')
+            showNotification({
+              message: 'Asset ingestion started!',
+              color: 'blue',
+            })
           } else if (status === 'deleted') {
-            message.success('Asset deleted successfully!')
+            showNotification({
+              message: 'Asset deleted successfully!',
+              color: 'green',
+            })
           } else if (status === ASSET_DELETING) {
-            message.info('Asset deletion started!')
+            showNotification({
+              message: 'Asset deletion started!',
+              color: 'info',
+            })
           } else if (status === ASSET_DELETE_FAILED) {
-            message.error('Asset deletion failed!')
+            showNotification({
+              message: 'Asset deletion failed!',
+              color: 'red',
+            })
           } else {
             return
           }

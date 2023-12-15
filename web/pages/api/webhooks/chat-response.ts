@@ -1,6 +1,6 @@
 import { config as appConfig } from '@/config'
 import { prisma } from '@/lib/prisma'
-import { getSocketClientId } from '@/lib/socket/handler'
+import { getSocketClientId } from '@/lib/utils/socket/handler'
 import type { ApiRes } from '@/types/api'
 import { NextApiRequest } from 'next'
 import type { NextApiResponseWithSocket } from '../socket'
