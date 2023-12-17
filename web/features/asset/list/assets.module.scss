@@ -2,10 +2,13 @@
 
 .assetListContainer {
   width: 100%;
-  height: auto;
-  min-height: 20vh;
+  max-height: 80vh;
   overflow-y: auto !important;
   transition: opacity 0.5s ease-in;
+
+  .assetList {
+    max-width: 100%;
+  }
 
   * {
     font-size: 0.7rem;
@@ -40,6 +43,7 @@
 
   .headerRow {
     font-weight: bold;
+    max-width: 100%;
     background-color: var(--mantine-color-blue-8);
   }
 

@@ -1,8 +1,10 @@
 import { createAssetApi, getAssetTypesApi } from '@/apis/assets'
+import OverlayLoader from '@/components/Loader'
 import useStore from '@/store'
-import { Button, Grid, Group, Loader, Modal } from '@mantine/core'
+import { Button, Card, Grid, Group, Modal, Stack, Text } from '@mantine/core'
 import { isNotEmpty, useForm } from '@mantine/form'
 import { showNotification } from '@mantine/notifications'
+import { IconExclamationCircle } from '@tabler/icons-react'
 import { FC, useCallback, useEffect, useState } from 'react'
 import FilesAssetUploader from './asset-form/File'
 import GithubForm from './asset-form/Github'
@@ -14,6 +16,7 @@ type CreateAssetFormProps = {
   kgId: string
   open: boolean
   onClose: () => void
+  hideOneOnCreate: boolean
 }
 
 const CreateAssetForm: FC<CreateAssetFormProps> = ({
@@ -21,6 +24,7 @@ const CreateAssetForm: FC<CreateAssetFormProps> = ({
   kgId,
   open,
   onClose,
+  hideOneOnCreate,
 }) => {
   const [loading, setLoading] = useState(false)
   const addNewAsset = useStore((state) => state.addNewAsset)
@@ -96,7 +100,7 @@ const CreateAssetForm: FC<CreateAssetFormProps> = ({
       },
     })
       .then((asset) => {
-        addNewAsset(asset)
+        addNewAsset(asset, hideOneOnCreate)
         showNotification({
           message: 'Asset created successfully.',
           color: 'green',
@@ -111,6 +115,7 @@ const CreateAssetForm: FC<CreateAssetFormProps> = ({
 
   const handleReset = () => {
     form.reset()
+    setLoading(false)
     onClose()
   }
 
@@ -137,14 +142,14 @@ const CreateAssetForm: FC<CreateAssetFormProps> = ({
   }, [loadUsers])
 
   if (!assetTypes || !users) {
-    return <Loader />
+    return <OverlayLoader />
   }
 
   return (
     <Modal
       opened={open}
       size="xl"
-      onClose={onClose}
+      onClose={handleReset}
       title="Add Asset"
       closeOnClickOutside={false}
     >
@@ -163,6 +168,16 @@ const CreateAssetForm: FC<CreateAssetFormProps> = ({
             )}
             {getAssetTypeFromId(form.values.assetType) === 'github' && (
               <GithubForm form={form} />
+            )}
+            {!form.values.assetType && (
+              <Card mih={150} mt="lg">
+                <Stack justify="center" align="center">
+                  <IconExclamationCircle size={40} opacity={0.4} />
+                  <Text size="sm" opacity={0.4}>
+                    Please select asset type to proceed
+                  </Text>
+                </Stack>
+              </Card>
             )}
           </Grid.Col>
         </Grid>

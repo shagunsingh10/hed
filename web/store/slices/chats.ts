@@ -24,7 +24,6 @@ export const createChatsSlice: StateCreator<
       activeChat: activeChat,
     })
   },
-
   addChat: (newChat) => {
     set({
       chats: [newChat, ...get().chats],
@@ -83,7 +82,7 @@ export const createMessagesSlice: StateCreator<
       set({
         waitingForResponse: false,
       })
-    }, 30000)
+    }, 5000)
   },
   setMessages: (messages) => {
     set({

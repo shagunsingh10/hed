@@ -1,5 +1,5 @@
 import { Message } from '@/types/chats'
-import { Card, Loader } from '@mantine/core'
+import { Card, Group, Loader, Text } from '@mantine/core'
 import { FC } from 'react'
 import ReactMarkdown from 'react-markdown'
 import CodeBlock from './Codeblock'
@@ -14,7 +14,10 @@ const MessageBody: FC<MessageProps> = ({ chatMessage }) => {
     <div className={styles.chatMessageContent}>
       {chatMessage.isResponse ? (
         chatMessage.id === 'waiting-for-response' ? (
-          <Loader size="xs" />
+          <Group align="center" gap="sm">
+            <Loader size="xs" />
+            <Text size="xs">Looking for answers...</Text>
+          </Group>
         ) : (
           <>
             <Card className={styles.responseMessageText}>

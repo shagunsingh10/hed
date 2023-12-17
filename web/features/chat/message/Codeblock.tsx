@@ -18,7 +18,7 @@ const Codeblock = (props: any) => {
   return hasLang ? (
     <CodeHighlight
       className={styles.codeBlock}
-      code={props.children}
+      code={props.children || ' '}
       language={language}
       copyLabel="Copy"
       copiedLabel="Copied!"

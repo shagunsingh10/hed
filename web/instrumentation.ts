@@ -1,5 +1,5 @@
-export const register = async () => {
+export async function register() {
   if (process.env.NEXT_RUNTIME === 'nodejs') {
-    await import('@/lib/bullmq/workers')
+    await import('./events')
   }
 }

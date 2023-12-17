@@ -3,9 +3,8 @@ version: "3.5"
 services:
   backend:
     build:
-      context: ./backend
+      context: ./server
     environment:
       LOGURU_COLORIZE: "true"
     volumes:
       - ./.etc/llama_index/:/tmp/llama_index/
-      - ./.etc/uploads/:/app/uploads/

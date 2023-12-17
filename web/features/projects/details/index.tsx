@@ -1,6 +1,7 @@
 import { getProjectByIdApi } from '@/apis/projects'
+import OverlayLoader from '@/components/Loader'
 import useStore from '@/store'
-import { Divider, Loader, NavLink, Title } from '@mantine/core'
+import { Divider, NavLink, Title } from '@mantine/core'
 import { showNotification } from '@mantine/notifications'
 import {
   IconHexagonalPrism,
@@ -38,7 +39,7 @@ const ProjectDetailsScreen = () => {
   }, [projectId])
 
   return !projectId || loading ? (
-    <Loader />
+    <OverlayLoader />
   ) : (
     <div className={styles.projectDetailsContainer}>
       <div className={styles.title}>

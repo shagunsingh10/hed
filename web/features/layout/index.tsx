@@ -1,7 +1,7 @@
 import { getUserByEmail } from '@/apis/users'
+import OverlayLoader from '@/components/Loader'
 import SocketConnector from '@/components/Socket'
 import { User } from '@/types/users'
-import { Loader } from '@mantine/core'
 import type { Metadata } from 'next'
 import { useSession } from 'next-auth/react'
 import { useEffect } from 'react'
@@ -29,7 +29,7 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
   }, [session])
 
   if (status === 'loading') {
-    return <Loader />
+    return <OverlayLoader />
   }
 
   if (status === 'unauthenticated') {

@@ -14,14 +14,22 @@ export const createAssetsSlice: StateCreator<
     })
   },
   assets: [],
-  addNewAsset: (newAsset) => {
+  addNewAsset: (newAsset, hideOne) => {
+    const prev = hideOne ? get().assets.slice(0, -1) : get().assets
     set({
-      assets: [newAsset, ...get().assets],
+      assets: [newAsset, ...prev],
+      totalAssets: get().totalAssets + 1,
     })
   },
   setAssets: (assets) => {
     set({
       assets: assets,
+    })
+  },
+  totalAssets: 0,
+  setTotalAssets: (n) => {
+    set({
+      totalAssets: n,
     })
   },
   updateAssetStatus: (assetId, status) => {

@@ -187,13 +187,30 @@ model AssetReviewComments {
 }
 
 model Doc {
-  id               String  @id @default(cuid())
-  vector_db_doc_id String
-  name             String
-  assetId          String
-  metadata         String?
+  id       String  @id @default(cuid())
+  doc_id   String
+  name     String
+  assetId  String
+  metadata String?
 
-  asset Asset @relation(fields: [assetId], references: [id], onDelete: Cascade)
+  asset     Asset       @relation(fields: [assetId], references: [id], onDelete: Cascade)
+  DocStatus DocStatus[]
+
+  @@unique([doc_id])
+  @@map("docs")
+}
+
+model DocStatus {
+  id        String   @id @default(cuid())
+  doc_id    String
+  error     Boolean  @default(false)
+  status    String
+  timestamp DateTime @default(now())
+  message   String?
+
+  doc Doc @relation(fields: [doc_id], references: [doc_id], onDelete: Cascade)
+
+  @@map("doc_status")
 }
 
 model Chat {

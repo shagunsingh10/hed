@@ -15,12 +15,17 @@ type KGScreenProps = {
   kgId: string
 }
 
+const PAGE_SIZE = 12
+
 const KGScreen: React.FC<KGScreenProps> = ({ projectId, kgId }) => {
   const [loading, setLoading] = useState<boolean>(false)
   const [filteredAsset, setFilteredAsset] = useState<Asset[]>([])
   const [open, setOpen] = useState<boolean>(false)
+  const [page, setPage] = useState(1)
 
   const assets = useStore((state) => state.assets)
+  const totalAssets = useStore((state) => state.totalAssets)
+  const setTotalAssets = useStore((state) => state.setTotalAssets)
   const setAssets = useStore((state) => state.setAssets)
 
   const onChange = useDebouncedCallback((text: string) => {
@@ -39,9 +44,13 @@ const KGScreen: React.FC<KGScreenProps> = ({ projectId, kgId }) => {
   useEffect(() => setFilteredAsset(assets), [assets])
 
   useEffect(() => {
-    getAssetsApi(projectId, kgId)
-      .then((kgs) => {
-        setAssets(kgs)
+    const start = PAGE_SIZE * (page - 1)
+    const end = PAGE_SIZE * page
+    setLoading(true)
+    getAssetsApi(projectId, kgId, start, end)
+      .then((assetsData) => {
+        setAssets(assetsData.assets)
+        setTotalAssets(assetsData.totalAssets)
       })
       .catch((e: Error) => {
         console.error(e)
@@ -51,7 +60,7 @@ const KGScreen: React.FC<KGScreenProps> = ({ projectId, kgId }) => {
         })
       })
       .finally(() => setLoading(false))
-  }, [])
+  }, [page])
 
   return (
     <div className={styles.assetContainer}>
@@ -71,12 +80,20 @@ const KGScreen: React.FC<KGScreenProps> = ({ projectId, kgId }) => {
           Create new
         </Button>
       </div>
-      <AssetList assets={filteredAsset} loading={loading} />
+      <AssetList
+        assets={filteredAsset}
+        loading={loading}
+        page={page}
+        onPageChange={(p) => setPage(p)}
+        pageSize={PAGE_SIZE}
+        totalSize={totalAssets}
+      />
       <CreateAssetForm
         projectId={projectId}
         kgId={kgId}
         open={open}
         onClose={() => setOpen(false)}
+        hideOneOnCreate={totalAssets + 1 > PAGE_SIZE}
       />
     </div>
   )

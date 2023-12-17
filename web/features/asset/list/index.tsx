@@ -1,4 +1,5 @@
 import { deleteAssetApi } from '@/apis/assets'
+import OverlayLoader from '@/components/Loader'
 import DeleteConfirmationModal from '@/components/Modals/DeleteWarn'
 import {
   ASSET_APPROVAL_PENDING,
@@ -16,14 +17,14 @@ import {
 } from '@/constants'
 import { globalDateFormatParser } from '@/lib/utils/functions'
 import type { Asset } from '@/types/assets'
-import { ActionIcon, Badge, Loader } from '@mantine/core'
+import { ActionIcon, Badge } from '@mantine/core'
 import { showNotification } from '@mantine/notifications'
 import {
-  IconBuildingFactory,
   IconCalendar,
   IconChecklist,
   IconCircleCheck,
   IconCircleX,
+  IconCpu,
   IconCube,
   IconEraserOff,
   IconExclamationCircle,
@@ -33,23 +34,31 @@ import {
 } from '@tabler/icons-react'
 import { DataTable } from 'mantine-datatable'
 import { useMemo, useState } from 'react'
+import AssetDocs from '../docs'
 import LogModal from '../logs'
 import styles from './assets.module.scss'
 
 type AssetListProps = {
   assets: Asset[]
   loading: boolean
+  pageSize: number
+  page: number
+  totalSize: number
+  onPageChange: (p: number) => void
 }
 
-const AssetList: React.FC<AssetListProps> = ({ assets, loading }) => {
+const AssetList: React.FC<AssetListProps> = ({
+  assets,
+  loading,
+  page,
+  onPageChange,
+  pageSize,
+  totalSize,
+}) => {
   const [deleteWarnOpen, setDeleteWarn] = useState(false)
   const [assetIdToDelete, setAssetIdToDelete] = useState('')
   const [logModalOpen, setLogModalOpen] = useState(false)
   const [assetIdLogModal, setAssetIdLogModal] = useState('')
-
-  const handleAsset = () => {
-    showNotification({ message: 'Deep dive into asset coming soon' })
-  }
 
   const openLogModal = (assetId: string) => {
     setAssetIdLogModal(assetId)
@@ -80,7 +89,7 @@ const AssetList: React.FC<AssetListProps> = ({ assets, loading }) => {
         accessor: 'name',
         width: '20%',
         render: (record: Asset) => (
-          <span className={styles.assetTitle} onClick={handleAsset}>
+          <span className={styles.assetTitle}>
             <IconCube size={15} />
             {record.name}
           </span>
@@ -95,9 +104,11 @@ const AssetList: React.FC<AssetListProps> = ({ assets, loading }) => {
           <div className={styles.tags}>
             {record?.tags?.slice(0, 2)?.map((tag: string) => {
               return (
-                <Badge variant="light" size="xs">
-                  {tag}
-                </Badge>
+                tag.trim() && (
+                  <Badge variant="light" size="xs">
+                    {tag}
+                  </Badge>
+                )
               )
             })}
           </div>
@@ -147,7 +158,7 @@ const AssetList: React.FC<AssetListProps> = ({ assets, loading }) => {
               )}
               {status === ASSET_INGESTION_FAILED && <IconCircleX size={12} />}
               {status === ASSET_REJECTED && <IconCircleX size={12} />}
-              {status === ASSET_INGESTING && <IconBuildingFactory size={12} />}
+              {status === ASSET_INGESTING && <IconCpu size={12} />}
               {status === ASSET_DELETING && <IconEraserOff size={12} />}
               {status === ASSET_DELETE_FAILED && (
                 <IconExclamationCircle size={12} />
@@ -188,7 +199,7 @@ const AssetList: React.FC<AssetListProps> = ({ assets, loading }) => {
     []
   )
 
-  if (loading) return <Loader />
+  if (loading) return <OverlayLoader />
 
   return (
     <div className={styles.assetListContainer}>
@@ -213,7 +224,14 @@ const AssetList: React.FC<AssetListProps> = ({ assets, loading }) => {
         withTableBorder
         borderRadius="sm"
         striped
+        totalRecords={totalSize}
+        recordsPerPage={pageSize}
+        page={page}
+        onPageChange={onPageChange}
         highlightOnHover
+        rowExpansion={{
+          content: ({ record }) => <AssetDocs assetId={record.id} />,
+        }}
       />
     </div>
   )

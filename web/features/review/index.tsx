@@ -1,20 +1,18 @@
 import { approveAssetApi, getAssetsToReviewApi } from '@/apis/assets'
+import OverlayLoader from '@/components/Loader'
 import { ASSET_INGESTION_PENDING, ASSET_REJECTED } from '@/constants'
 import { useDebouncedCallback } from '@/hooks/useDebounceCallback'
 import { globalDateFormatParser } from '@/lib/utils/functions'
 import useStore from '@/store'
 import type { Asset } from '@/types/assets'
-import {
-  ActionIcon,
-  Badge,
-  Group,
-  Input,
-  Loader,
-  Space,
-  Title,
-} from '@mantine/core'
+import { ActionIcon, Group, Input, Space, Text, Title } from '@mantine/core'
 import { showNotification } from '@mantine/notifications'
-import { IconCircleCheck, IconCircleX, IconSearch } from '@tabler/icons-react'
+import {
+  IconCircleCheck,
+  IconCircleX,
+  IconCube,
+  IconSearch,
+} from '@tabler/icons-react'
 import { DataTable } from 'mantine-datatable'
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import styles from './review.module.scss'
@@ -63,26 +61,12 @@ const AssetReviewList = () => {
         label: 'Name',
         accessor: 'name',
         render: (record: any) => (
-          <span className={styles.assetTitle}>
-            <img src="/icons/asset.svg" width={20} height={20} />
-            {record.name}
-          </span>
-        ),
-      },
-      {
-        label: 'Tags',
-        accessor: 'tags',
-        textAlign: 'center',
-        render: (record: any) => (
-          <>
-            {record?.tags?.map((tag: any) => {
-              return (
-                <Badge variant="transparent" key={tag}>
-                  {tag.toUpperCase()}
-                </Badge>
-              )
-            })}
-          </>
+          <Group align="center" gap="xs">
+            <IconCube size={15} />
+            <Text size="xs" fw="500">
+              {record.name}
+            </Text>
+          </Group>
         ),
       },
       {
@@ -138,7 +122,7 @@ const AssetReviewList = () => {
   useEffect(() => setDataSource(assetsToReview), [assetsToReview])
 
   return loading ? (
-    <Loader />
+    <OverlayLoader />
   ) : (
     <div className={styles.reviewContainer}>
       <div className={styles.screenHeader}>

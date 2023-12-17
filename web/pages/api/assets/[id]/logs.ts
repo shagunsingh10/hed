@@ -33,7 +33,7 @@ export default async function handler(
 
       res.status(200).json({ success: true, data: assetLogs })
     } catch (error) {
-      console.error('Error deleting file:', error)
+      console.error('Error fetching logs:', error)
       res.status(500).json({ success: false, error: 'Internal Server Error' })
     }
   } else {

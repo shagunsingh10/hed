@@ -1,0 +1,43 @@
+.docsContainer {
+  padding: 0.3em 1em;
+  max-width: 100%;
+
+  .docItems {
+    max-height: 40vh;
+    overflow-y: auto;
+
+    .title {
+      font-size: 0.8em !important;
+      font-weight: bold;
+    }
+    .docItem {
+      display: flex;
+      gap: 1em;
+      align-items: center;
+      width: 100%;
+      padding: 0.4em;
+      border-bottom: 1px solid var(--mantine-color-gray-7);
+
+      .docNameContainer {
+        display: flex;
+        align-items: center;
+        gap: 0.4em;
+        font-size: 0.75rem;
+        width: 20%;
+
+        .docName {
+          width: 80%;
+          white-space: nowrap;
+          overflow: hidden;
+          text-overflow: ellipsis;
+          direction: rtl;
+        }
+      }
+
+      .docStatus {
+        width: 80%;
+        overflow-x: auto;
+      }
+    }
+  }
+}

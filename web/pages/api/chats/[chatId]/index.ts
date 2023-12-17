@@ -1,6 +1,6 @@
 import { getUserInfoFromSessionToken } from '@/lib/auth'
 import { prisma } from '@/lib/prisma'
-import { sendMessageToPythonService } from '@/lib/redis'
+import { enqueueQueryJob } from '@/lib/queue'
 import type { ApiRes } from '@/types/api'
 import { Message } from '@/types/chats'
 import { NextApiRequest, NextApiResponse } from 'next'
@@ -14,6 +14,7 @@ const handler = async (
   const chatId = req.query.chatId as string
 
   switch (req.method) {
+    /********************** GET *******************/
     case 'GET': {
       const messages = await prisma.message.findMany({
         where: {
@@ -33,6 +34,8 @@ const handler = async (
       })
       break
     }
+
+    /********************** POST *******************/
     case 'POST': {
       const { content } = req.body
       const newMessage = await prisma.$transaction(async (tx) => {
@@ -90,18 +93,13 @@ const handler = async (
           })
         }
 
-        // send qury and collection name to query processing engine
-        await sendMessageToPythonService(
-          JSON.stringify({
-            job_type: 'query',
-            payload: {
-              query: content,
-              collections: collections.map((e) => e.id),
-              chat_id: chatId,
-              user: user?.email,
-            },
-          })
-        )
+        // send query to query processing engine
+        await enqueueQueryJob({
+          query: content,
+          collections: collections.map((e) => e.id),
+          chat_id: chatId,
+          user: user?.email as string,
+        })
         return nm
       })
 
@@ -114,6 +112,8 @@ const handler = async (
       })
       break
     }
+
+    /********************** MENTHOD NOT ALLOWED *******************/
     default: {
       res.status(405).json({
         success: true,

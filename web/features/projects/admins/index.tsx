@@ -3,11 +3,12 @@ import {
   removeAdminFromprojectApi,
 } from '@/apis/projects'
 import UserAvatar from '@/components/Avatar'
+import OverlayLoader from '@/components/Loader'
 import DeleteConfirmationModal from '@/components/Modals/DeleteWarn'
 import { useDebouncedCallback } from '@/hooks/useDebounceCallback'
 import useStore from '@/store'
 import { User } from '@/types/users'
-import { ActionIcon, Button, Group, Input, Loader, Text } from '@mantine/core'
+import { ActionIcon, Button, Group, Input, Text } from '@mantine/core'
 import { showNotification } from '@mantine/notifications'
 import { IconSearch, IconTrash, IconUserPlus } from '@tabler/icons-react'
 import { DataTable } from 'mantine-datatable'
@@ -114,7 +115,7 @@ const ProjectAdmins: React.FC<ProjectAdminsProps> = ({ projectId }) => {
 
   useEffect(() => setFilteredAdmins(admins), [admins])
 
-  if (loading) return <Loader />
+  if (loading) return <OverlayLoader />
 
   return (
     <div className={styles.adminContainer}>

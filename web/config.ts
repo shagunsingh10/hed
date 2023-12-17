@@ -16,8 +16,8 @@ type configType = {
   dbUrl: string
   redisHost: string
   redisPort: number
-  pythonConsumerQueue: string
-  assetUploadPath: string
+  nextToPythonQueue: string
+  pythonToNextQueue: string
   serviceApiKey: string
 }
 
@@ -25,7 +25,7 @@ export const config: configType = {
   dbUrl: getEnv('DATABASE_URL'),
   redisHost: getEnv('REDIS_HOST'),
   redisPort: Number(getEnv('REDIS_PORT')),
-  pythonConsumerQueue: getEnv('PYTHON_CONSUMER_QUEUE'),
-  assetUploadPath: getEnv('ASSET_UPLOAD_PATH_NEXT'),
+  nextToPythonQueue: getEnv('NEXT_TO_PYTHON_QUEUE'),
+  pythonToNextQueue: getEnv('PYTHON_TO_NEXT_QUEUE'),
   serviceApiKey: getEnv('SERVICE_API_KEY'),
 }

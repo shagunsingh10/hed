@@ -11,9 +11,14 @@ export const getAssetTypesApi = async () => {
   return resData.data
 }
 
-export const getAssetsApi = async (projectId: string, kgId: string) => {
+export const getAssetsApi = async (
+  projectId: string,
+  kgId: string,
+  start: number = 0,
+  end: number = 10
+) => {
   const res = await fetcher.get(
-    `/api/assets?projectId=${projectId}&kgId=${kgId}`
+    `/api/assets?projectId=${projectId}&kgId=${kgId}&start=${start}&end=${end}`
   )
   const resData = await res.json()
   if (!resData.success) {
@@ -76,6 +81,15 @@ export const uploadFileApi = async (
 
 export const getAssetLogsApi = async (assetId: string) => {
   const res = await fetcher.get(`/api/assets/${assetId}/logs`)
+  const resData = await res.json()
+  if (!resData.success) {
+    throw Error(resData.error)
+  }
+  return resData.data
+}
+
+export const getAssetDocsApi = async (assetId: string) => {
+  const res = await fetcher.get(`/api/assets/${assetId}/docs`)
   const resData = await res.json()
   if (!resData.success) {
     throw Error(resData.error)

@@ -1,4 +1,4 @@
-import { connection as redis } from '@/lib/redis/connection'
+import { connection as redis } from '@/lib/redis'
 
 const MAX_RETRIES = 3
 const RETRY_INTERVAL_IN_MS = 100

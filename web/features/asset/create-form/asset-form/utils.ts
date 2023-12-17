@@ -3,16 +3,16 @@ import { extractUserAndRepo } from './Github'
 export const getReaderKwargs = (values: any, assetTypeKey: string) => {
   if (assetTypeKey === 'files') {
     return {
-      bucketName: values.bucketName,
+      bucket_name: values.bucketName,
     }
   }
 
   if (assetTypeKey === 'github') {
-    const githubDetails = extractUserAndRepo(values.github_url)
+    const githubDetails = extractUserAndRepo(values.githubUrl)
     return {
       owner: githubDetails.owner,
       repo: githubDetails.repo,
-      githubToken: values.githubToken,
+      github_token: values.githubToken,
       branch: values.branch,
     }
   }
@@ -22,7 +22,7 @@ export const getReaderKwargs = (values: any, assetTypeKey: string) => {
 
 export const getMetadata = (values: any, assetTypeKey: string) => {
   if (assetTypeKey === 'github') {
-    return { baseUrl: values.githubUrl }
+    return { base_url: values.githubUrl }
   }
 
   return {}

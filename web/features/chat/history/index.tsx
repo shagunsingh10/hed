@@ -96,7 +96,6 @@ const ChatHistory = () => {
     getChatsApi()
       .then((chats) => {
         setChats(chats)
-        setFilteredChats(chats)
       })
       .catch(() =>
         showNotification({
@@ -105,6 +104,8 @@ const ChatHistory = () => {
         })
       )
   }, [])
+
+  useEffect(() => setFilteredChats(chats), [...chats])
 
   return (
     <div className={styles.chatHistory}>

@@ -37,7 +37,6 @@ const GithubForm: FC<GithubFormProps> = ({ form }) => {
         withAsterisk
         label="Branch"
         placeholder="Enter branch name"
-        defaultValue={'main'}
         {...form.getInputProps('branch')}
       />
 

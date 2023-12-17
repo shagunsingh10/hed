@@ -1,0 +1,32 @@
+## utils ##
+retry
+python-dotenv
+requests
+loguru
+PyYAML
+
+## redis ##
+redis
+
+## celery ##
+celery
+celery[redis]
+
+## llama index ##
+llama-hub==0.0.45
+llama-index==0.8.66
+atlassian-python-api
+jira
+pymilvus==2.3.3
+pyarrow
+Jinja2
+pypdf
+Pillow
+wikipedia
+nbconvert
+psycopg2-binary
+
+
+fastapi
+uvicorn
+pydantic

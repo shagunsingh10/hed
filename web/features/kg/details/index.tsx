@@ -1,6 +1,7 @@
 import { getKgByIdApi } from '@/apis/kgs'
+import OverlayLoader from '@/components/Loader'
 import { Kg } from '@/types/kgs'
-import { Divider, Loader, NavLink, Title } from '@mantine/core'
+import { Divider, NavLink, Title } from '@mantine/core'
 import { showNotification } from '@mantine/notifications'
 import {
   IconCube,
@@ -35,7 +36,7 @@ const ProjectDetailsScreen = () => {
   }, [kgId])
 
   return !projectId || loading ? (
-    <Loader />
+    <OverlayLoader />
   ) : (
     <div className={styles.kgDetailsContainer}>
       <div className={styles.title}>

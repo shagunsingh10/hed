@@ -1,18 +1,11 @@
 import { getKgMemebersApi, removeUserFromKgApi } from '@/apis/kgs'
 import UserAvatar from '@/components/Avatar'
+import OverlayLoader from '@/components/Loader'
 import DeleteConfirmationModal from '@/components/Modals/DeleteWarn'
 import { useDebouncedCallback } from '@/hooks/useDebounceCallback'
 import { KgMember } from '@/types/kgs'
 import { User } from '@/types/users'
-import {
-  ActionIcon,
-  Badge,
-  Button,
-  Group,
-  Input,
-  Loader,
-  Text,
-} from '@mantine/core'
+import { ActionIcon, Badge, Button, Group, Input, Text } from '@mantine/core'
 import { showNotification } from '@mantine/notifications'
 import { IconSearch, IconTrash, IconUserPlus } from '@tabler/icons-react'
 import { DataTable } from 'mantine-datatable'
@@ -131,7 +124,7 @@ const KgUsers: FC<KgUsersProps> = ({ kgId }) => {
 
   useEffect(() => setFilteredKgMembers(kgMembers), [kgMembers])
 
-  if (loading) return <Loader />
+  if (loading) return <OverlayLoader />
 
   return (
     <div className={styles.kgMembersContainer}>

@@ -1,5 +1,6 @@
 import { addNewChatApi, loadMessagesApi } from '@/apis/chats'
 import { globalDateFormatParser } from '@/lib/utils/functions'
+import { Message } from '@/types/chats'
 import { ActionIcon, Avatar, Skeleton, Text, Textarea } from '@mantine/core'
 import { showNotification } from '@mantine/notifications'
 import { IconBulb, IconSend } from '@tabler/icons-react'
@@ -27,13 +28,13 @@ const ChatWindow: FC<ChatWindowProps> = () => {
 
   const chatWindowRef = useRef<HTMLDivElement>(null)
 
-  // const waitingForResponseMessage: Message = {
-  //   id: 'waiting-for-response',
-  //   chatId: activeChat?.id || '',
-  //   content: '',
-  //   timestamp: new Date(),
-  //   isResponse: true,
-  // }
+  const waitingForResponseMessage: Message = {
+    id: 'waiting-for-response',
+    chatId: activeChat?.id || '',
+    content: '',
+    timestamp: new Date(),
+    isResponse: true,
+  }
 
   // functions
   const handleInputChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
@@ -101,7 +102,10 @@ const ChatWindow: FC<ChatWindowProps> = () => {
     <div className={styles.chatWindow}>
       <div className={styles.messageContainer} ref={chatWindowRef}>
         {messages?.length ? (
-          messages?.map((m) => (
+          (waitingForResponse
+            ? [...messages, waitingForResponseMessage]
+            : messages
+          )?.map((m) => (
             <div className={styles.chatMessage}>
               <div className={styles.chatHeader}>
                 {m.isResponse ? (

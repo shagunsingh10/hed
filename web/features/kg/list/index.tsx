@@ -1,6 +1,7 @@
+import OverlayLoader from '@/components/Loader'
 import { globalDateFormatParser } from '@/lib/utils/functions'
 import { Kg } from '@/types/kgs'
-import { Badge, Loader } from '@mantine/core'
+import { Badge } from '@mantine/core'
 import { IconCalendar, IconHexagonalPrism, IconUser } from '@tabler/icons-react'
 import { DataTable } from 'mantine-datatable'
 import { useRouter } from 'next/navigation'
@@ -78,7 +79,7 @@ const KGList: FC<KgListProps> = ({ projectId, kgs, loading }) => {
     []
   )
 
-  if (loading) return <Loader />
+  if (loading) return <OverlayLoader />
 
   return (
     <div className={styles.kgListContainer}>

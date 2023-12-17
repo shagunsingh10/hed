@@ -4,8 +4,8 @@ export type CreateAssetData = {
   tags?: string
   assetTypeId: string
   knowledgeGroupId: string
-  readerKwargs?: Record<string, any> | null
-  extraMetadata?: Record<string, any> | null
+  readerKwargs: Record<string, any>
+  extraMetadata?: Record<string, any>
 }
 
 export type AssetType = {
@@ -35,17 +35,28 @@ export type AssetLog = {
   type: string
 }
 
+export type DocStatus = {
+  id: string
+  timestamp: Date
+  status: string
+  error: boolean
+  message: string | null
+}
+
 export type Doc = {
   name: string
   id: string
+  DocStatus: DocStatus[]
 }
 
 export interface AssetsSlice {
   assets: Asset[]
   assetTypes: AssetType[]
+  totalAssets: number
   setAssetTypes: (assetType: AssetType[]) => void
   setAssets: (assets: Asset[]) => void
-  addNewAsset: (asset: Asset) => void
+  setTotalAssets: (n: number) => void
+  addNewAsset: (asset: Asset, hideOne: boolean) => void
   updateAssetStatus: (assetId: string, status: string) => void
   deleteAsset: (assetId: string) => void
 }

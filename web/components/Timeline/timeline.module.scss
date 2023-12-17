@@ -1,0 +1,25 @@
+.timeline {
+  display: flex;
+  align-items: center;
+  gap: 1em;
+  width: 100%;
+  overflow-x: auto;
+
+  .timelineItem {
+    display: flex;
+    align-items: center;
+    gap: 0.5em;
+
+    .details {
+      display: flex;
+      flex-direction: column;
+      .timelineTimestamp {
+        font-size: 0.1rem !important;
+      }
+
+      .timelineStatus {
+        font-size: 0.1rem !important;
+      }
+    }
+  }
+}

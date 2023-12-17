@@ -1,6 +1,6 @@
 import { getAssetsToReviewCountApi } from '@/apis/assets'
 import useStore from '@/store'
-import { Indicator } from '@mantine/core'
+import { Indicator, Text } from '@mantine/core'
 import {
   IconBulbFilled,
   IconChecklist,
@@ -63,10 +63,17 @@ export default function Sider() {
           >
             <Link href={e.path} className={styles.navItemLink}>
               {e.icon}
-              <span className={styles.navItemTitle}>{e.title}</span>
+              <Text size="xs" className={styles.navItemTitle}>
+                {e.title}
+              </Text>
             </Link>
           </div>
         ))}
+      </div>
+      <div className={styles.footer}>
+        <Text size="sm" opacity={0.4}>
+          V 0.1
+        </Text>
       </div>
     </div>
   )

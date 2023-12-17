@@ -7,7 +7,7 @@ import {
   Textarea,
   TextInput,
 } from '@mantine/core'
-import { IconUserCircle } from '@tabler/icons-react'
+import { IconCube, IconUserCircle } from '@tabler/icons-react'
 import { FC } from 'react'
 
 type ISubFormProps = {
@@ -30,6 +30,7 @@ const MetadataForm: FC<ISubFormProps> = ({ form, assetTypes, users }) => {
   return (
     <>
       <Select
+        leftSection={<IconCube size={15} />}
         withAsterisk
         label="Asset Type"
         mb="md"

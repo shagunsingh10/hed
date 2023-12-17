@@ -1,4 +1,5 @@
 import { ASSET_APPROVAL_PENDING } from '@/constants'
+import { ASSET_CREATION_NOT_AUTHORIZED } from '@/constants/errors'
 import { getUserInfoFromSessionToken } from '@/lib/auth'
 import {
   hasContributorAccessToKg,
@@ -6,8 +7,7 @@ import {
   hasViewerAccessToKg,
 } from '@/lib/auth/access'
 import { prisma } from '@/lib/prisma'
-import { sendMessageToPythonService } from '@/lib/redis'
-import getIngestionPayload from '@/lib/utils/readerKwargsParser'
+import { enqueueIngestionJob } from '@/lib/queue'
 import type { ApiRes } from '@/types/api'
 import { Asset, CreateAssetData } from '@/types/assets'
 import { NextApiRequest, NextApiResponse } from 'next'
@@ -26,6 +26,11 @@ type PrismaAssetRecord = {
   createdAt: Date
 }
 
+type IAssetResponse = {
+  assets: Asset[]
+  totalAssets: number
+}
+
 const processTags = (asset: PrismaAssetRecord): Asset => {
   return {
     ...asset,
@@ -37,9 +42,8 @@ const processTags = (asset: PrismaAssetRecord): Asset => {
 
 const handler = async (
   req: NextApiRequest,
-  res: NextApiResponse<ApiRes<Asset | Asset[]>>
+  res: NextApiResponse<ApiRes<Asset | IAssetResponse>>
 ) => {
-  const projectId = req.query.projectId as string
   const kgId = req.query.kgId as string
   const sessionToken = req.headers.sessiontoken as string
   const user = await getUserInfoFromSessionToken(sessionToken)
@@ -52,7 +56,11 @@ const handler = async (
   }
 
   switch (req.method) {
+    // ***************** GET **************** //
     case 'GET': {
+      const start = Number(req.query.start)
+      const end = Number(req.query.end)
+
       const kgViewAllowed = await hasViewerAccessToKg(kgId, Number(user.id))
 
       if (!kgViewAllowed) {
@@ -62,22 +70,33 @@ const handler = async (
         })
       }
 
-      const kgs = await prisma.asset.findMany({
-        where: {
-          knowledgeGroupId: kgId,
-          isActive: true,
-        },
-        orderBy: {
-          createdAt: 'desc',
-        },
-      })
+      const [assets, count] = await prisma.$transaction([
+        prisma.asset.findMany({
+          where: {
+            knowledgeGroupId: kgId,
+            isActive: true,
+          },
+          orderBy: {
+            createdAt: 'desc',
+          },
+          skip: start,
+          take: end,
+        }),
+        prisma.asset.count({
+          where: {
+            knowledgeGroupId: kgId,
+            isActive: true,
+          },
+        }),
+      ])
 
-      res.status(200).json({
+      return res.status(200).json({
         success: true,
-        data: kgs.map((e) => processTags(e)),
+        data: { assets: assets.map((e) => processTags(e)), totalAssets: count },
       })
-      break
     }
+
+    // ***************** POST **************** //
     case 'POST': {
       const body: CreateAssetData = req.body
 
@@ -89,12 +108,12 @@ const handler = async (
       if (!kgContributorAccess) {
         return res.status(403).json({
           success: false,
-          error:
-            'User needs atleast contributor access in the knowledge group to be able to create an asset.',
+          error: ASSET_CREATION_NOT_AUTHORIZED,
         })
       }
 
       const newAsset = await prisma.$transaction(async (tx) => {
+        // Check valid asset type
         const assetType = await tx.assetType.findFirst({
           where: {
             id: body.assetTypeId,
@@ -111,7 +130,7 @@ const handler = async (
           throw new Error('Unknown Asset Type')
         }
 
-        // create asset
+        // Create a new asset record
         const newA = await tx.asset.create({
           data: {
             name: body.name,
@@ -134,38 +153,33 @@ const handler = async (
           },
         })
 
+        // If owner is uploading asset, enqueue ingestion job
         if (kgOwner) {
-          sendMessageToPythonService(
-            JSON.stringify({
-              job_type: 'ingestion',
-              payload: getIngestionPayload({
-                assetId: newA.id,
-                assetType: assetType.key,
-                knowledgeGroupId: kgId,
-                projectId: projectId,
-                user: user.email as string,
-                kwargs: body?.readerKwargs,
-                extra_metadata: body?.extraMetadata,
-              }),
-            })
-          )
+          await enqueueIngestionJob({
+            asset_id: newA.id,
+            asset_type: assetType.key,
+            collection_name: kgId,
+            user: user.email as string,
+            reader_kwargs: body.readerKwargs,
+            extra_metadata: body?.extraMetadata,
+          })
         }
+
         return newA
       })
 
-      res.status(201).json({
+      return res.status(201).json({
         success: true,
         data: processTags(newAsset),
       })
-      break
     }
 
+    // ***************** METHOD NOT FOUND **************** //
     default: {
-      res.status(405).json({
+      return res.status(405).json({
         success: true,
         error: 'Method not allowed',
       })
-      break
     }
   }
 }
