@@ -1,6 +1,7 @@
 import type { Server as HTTPServer } from 'http'
 import type { Socket as NetSocket } from 'net'
-import { saveSocketClientId } from '@/lib/utils/socket/handler'
+import { SOCKET_CONNECTION_MESSAGE } from '@/lib/socket/events'
+import { saveSocketClientId } from '@/lib/socket/utils'
 import type { NextApiRequest, NextApiResponse } from 'next'
 import { Server, type Server as IOServer } from 'socket.io'
 
@@ -30,12 +31,8 @@ const ioHandler = (req: NextApiRequest, res: NextApiResponseWithSocket) => {
     const io = new Server(res.socket.server)
 
     io.on('connection', (socket) => {
-      socket.on('connection-request', ({ userId }: { userId: string }) => {
+      socket.on(SOCKET_CONNECTION_MESSAGE, ({ userId }: { userId: string }) => {
         saveSocketClientId(userId, socket.id)
-      })
-
-      socket.on('disconnect', () => {
-        // remove user from redis
       })
     })
 

@@ -2,7 +2,7 @@ import fetcher from '@/lib/utils/fetcher'
 import { CreateKgData } from '@/types/kgs'
 
 export const getKgsApi = async (projectId: string) => {
-  const res = await fetcher.get(`/api/kgs?projectId=${projectId}`)
+  const res = await fetcher.get(`/api/projects/${projectId}/kgs`)
   const resData = await res.json()
   if (!resData.success) {
     throw Error(resData.error)
@@ -12,7 +12,7 @@ export const getKgsApi = async (projectId: string) => {
 
 export const createKgApi = async (projectId: string, data: CreateKgData) => {
   const res = await fetcher.post<CreateKgData>(
-    `/api/kgs?projectId=${projectId}`,
+    `/api/projects/${projectId}/kgs`,
     data,
     {
       headers: {
@@ -27,8 +27,8 @@ export const createKgApi = async (projectId: string, data: CreateKgData) => {
   return resData.data
 }
 
-export const getKgByIdApi = async (kgId: string) => {
-  const res = await fetcher.get(`/api/kgs/${kgId}`)
+export const getKgByIdApi = async (projectId: string, kgId: string) => {
+  const res = await fetcher.get(`/api/projects/${projectId}/kgs/${kgId}`)
   const resData = await res.json()
   if (!resData.success) {
     throw Error(resData.error)
@@ -37,12 +37,13 @@ export const getKgByIdApi = async (kgId: string) => {
 }
 
 export const addUserToKgApi = async (
+  projectId: string,
   kgId: string,
   userId: string,
   role: string
 ) => {
   const res = await fetcher.post(
-    `/api/kgs/${kgId}/users`,
+    `/api/projects/${projectId}/kgs/${kgId}/users`,
     {
       userId: userId,
       role: role,
@@ -60,9 +61,13 @@ export const addUserToKgApi = async (
   return resData.data
 }
 
-export const removeUserFromKgApi = async (kgId: string, userId: number) => {
+export const removeUserFromKgApi = async (
+  projectId: string,
+  kgId: string,
+  userId: number
+) => {
   const res = await fetcher.delete(
-    `/api/kgs/${kgId}/users`,
+    `/api/projects/${projectId}/kgs/${kgId}/users`,
     {
       userId: userId,
     },
@@ -79,8 +84,8 @@ export const removeUserFromKgApi = async (kgId: string, userId: number) => {
   return resData.data
 }
 
-export const getKgMemebersApi = async (kgId: string) => {
-  const res = await fetcher.get(`/api/kgs/${kgId}/users`)
+export const getKgMemebersApi = async (projectId: string, kgId: string) => {
+  const res = await fetcher.get(`/api/projects/${projectId}/kgs/${kgId}/users`)
   const resData = await res.json()
   if (!resData.success) {
     throw Error(resData.error)

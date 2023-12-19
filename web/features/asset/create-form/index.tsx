@@ -1,4 +1,5 @@
 import { createAssetApi, getAssetTypesApi } from '@/apis/assets'
+import { getAllUsersApi } from '@/apis/users'
 import OverlayLoader from '@/components/Loader'
 import useStore from '@/store'
 import { Button, Card, Grid, Group, Modal, Stack, Text } from '@mantine/core'
@@ -31,7 +32,7 @@ const CreateAssetForm: FC<CreateAssetFormProps> = ({
   const assetTypes = useStore((state) => state.assetTypes)
   const setAssetType = useStore((state) => state.setAssetTypes)
   const users = useStore((state) => state.users)
-  const loadUsers = useStore((state) => state.loadUsers)
+  const setUsers = useStore((state) => state.setUsers)
 
   const form = useForm({
     initialValues: {
@@ -135,11 +136,14 @@ const CreateAssetForm: FC<CreateAssetFormProps> = ({
       .catch((e: Error) => {
         showNotification({ message: e.message.toString(), color: 'red' })
       })
+    if (!users) {
+      getAllUsersApi()
+        .then((users) => setUsers(users))
+        .catch((e: Error) => {
+          showNotification({ message: e.message.toString(), color: 'red' })
+        })
+    }
   }, [])
-
-  useEffect(() => {
-    if (loadUsers) loadUsers()
-  }, [loadUsers])
 
   if (!assetTypes || !users) {
     return <OverlayLoader />

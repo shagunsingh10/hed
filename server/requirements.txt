@@ -1,32 +1,29 @@
-## utils ##
-retry
-python-dotenv
+# General Dependencies
 requests
+python-dotenv
+
+# Logging and Utilities
 loguru
-PyYAML
 
-## redis ##
-redis
-
-## celery ##
+# Task Queue and Message Broker
 celery
 celery[redis]
+redis
+psycopg2-binary
 
-## llama index ##
+# RAG
 llama-hub==0.0.45
 llama-index==0.8.66
-atlassian-python-api
-jira
-pymilvus==2.3.3
+qdrant_client
+nltk
+
+# Reader Handling
+pypdf
 pyarrow
 Jinja2
-pypdf
 Pillow
 wikipedia
 nbconvert
-psycopg2-binary
 
-
-fastapi
-uvicorn
+# Data Validation
 pydantic

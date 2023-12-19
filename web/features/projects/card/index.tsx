@@ -1,9 +1,7 @@
-import UserAvatar from '@/components/Avatar'
 import { globalDateFormatParser } from '@/lib/utils/functions'
 import { Project } from '@/types/projects'
 import {
   ActionIcon,
-  Avatar,
   Badge,
   Button,
   Card,
@@ -12,7 +10,6 @@ import {
   Space,
   Text,
   Title,
-  Tooltip,
 } from '@mantine/core'
 import { IconCalendar, IconHeart, IconUser } from '@tabler/icons-react'
 import { useRouter } from 'next/navigation'
@@ -43,7 +40,7 @@ const ProjectCard: FC<IProps> = ({ project }) => {
         <Image src="/images/no-bg.jpg" height={120} alt="Norway" />
       </Card.Section>
 
-      <Group justify="space-between" mt="xs">
+      <Group justify="space-between" mt="md">
         <Title order={4} fw={500} className={styles.projectName}>
           {project.name}
         </Title>
@@ -56,7 +53,7 @@ const ProjectCard: FC<IProps> = ({ project }) => {
         </Space>
       </Group>
 
-      <Text fw={500} size="xs" mt="xs" className={styles.label}>
+      <Text fw={500} size="xs" mt="md" className={styles.label}>
         <IconUser size={13} />
         {project.createdBy}
       </Text>
@@ -65,16 +62,7 @@ const ProjectCard: FC<IProps> = ({ project }) => {
         {globalDateFormatParser(project.createdAt)}
       </Text>
 
-      <Avatar.Group className={styles.projectMembers} mt="xs">
-        {project.members &&
-          project.members?.map((e) => (
-            <Tooltip label={`${e.name}`}>
-              <UserAvatar userId={e.id} />
-            </Tooltip>
-          ))}
-      </Avatar.Group>
-
-      <Group mt="xs" className={styles.btnGroup}>
+      <Group mt="xl" className={styles.btnGroup}>
         <Button radius="md" style={{ flex: 1 }} onClick={handleProjectClick}>
           Show details
         </Button>

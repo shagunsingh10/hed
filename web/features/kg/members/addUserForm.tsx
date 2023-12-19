@@ -1,4 +1,6 @@
 import { addUserToKgApi } from '@/apis/kgs'
+import { getAllUsersApi } from '@/apis/users'
+import { KG_CONTRIBUTOR, KG_OWNER, KG_VIEWER } from '@/constants'
 import useStore from '@/store'
 import {
   Button,
@@ -14,15 +16,21 @@ import { IconUserCircle } from '@tabler/icons-react'
 import { FC, useEffect, useState } from 'react'
 
 type createKgFormProps = {
+  projectId: string
   kgId: string
   open: boolean
   onClose: () => void
 }
 
-const AddUserForm: FC<createKgFormProps> = ({ kgId, open, onClose }) => {
+const AddUserForm: FC<createKgFormProps> = ({
+  projectId,
+  kgId,
+  open,
+  onClose,
+}) => {
   const [loading, setLoading] = useState(false)
   const users = useStore((state) => state.users)
-  const loadUsers = useStore((state) => state.loadUsers)
+  const setUsers = useStore((state) => state.setUsers)
 
   const form = useForm({
     initialValues: {
@@ -47,7 +55,7 @@ const AddUserForm: FC<createKgFormProps> = ({ kgId, open, onClose }) => {
 
   const handleSubmit = async (values: any) => {
     setLoading(true)
-    addUserToKgApi(kgId, values.user, values.role)
+    addUserToKgApi(projectId, kgId, values.user, values.role)
       .then(() => {
         showNotification({
           color: 'green',
@@ -72,8 +80,14 @@ const AddUserForm: FC<createKgFormProps> = ({ kgId, open, onClose }) => {
   }
 
   useEffect(() => {
-    if (loadUsers) loadUsers()
-  }, [loadUsers])
+    if (!users) {
+      getAllUsersApi()
+        .then((users) => setUsers(users))
+        .catch((e: Error) => {
+          showNotification({ message: e.message.toString(), color: 'red' })
+        })
+    }
+  }, [])
 
   return (
     <Modal
@@ -100,7 +114,7 @@ const AddUserForm: FC<createKgFormProps> = ({ kgId, open, onClose }) => {
           filter={optionsFilter}
           searchable
           {...form.getInputProps('role')}
-          data={['viewer', 'contributor', 'owner']}
+          data={[KG_VIEWER, KG_CONTRIBUTOR, KG_OWNER]}
         />
         <Group mt="lg" justify="flex-end">
           <Button type="submit" loading={loading} size="xs">

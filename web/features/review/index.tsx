@@ -1,10 +1,10 @@
 import { approveAssetApi, getAssetsToReviewApi } from '@/apis/assets'
 import OverlayLoader from '@/components/Loader'
-import { ASSET_INGESTION_PENDING, ASSET_REJECTED } from '@/constants'
+import { ASSET_APPROVED, ASSET_REJECTED } from '@/constants'
 import { useDebouncedCallback } from '@/hooks/useDebounceCallback'
 import { globalDateFormatParser } from '@/lib/utils/functions'
 import useStore from '@/store'
-import type { Asset } from '@/types/assets'
+import type { Asset, AssetWithProjectId } from '@/types/assets'
 import { ActionIcon, Group, Input, Space, Text, Title } from '@mantine/core'
 import { showNotification } from '@mantine/notifications'
 import {
@@ -25,10 +25,15 @@ const AssetReviewList = () => {
   const [loading, setLoading] = useState(false)
 
   const sendAssetStatus = useCallback(
-    async (id: string, status: string) => {
+    async (
+      projectId: string,
+      kgId: string,
+      assetId: string,
+      status: string
+    ) => {
       setLoading(true)
       try {
-        await approveAssetApi(id, status)
+        await approveAssetApi(projectId, kgId, assetId, status)
       } catch (e: any) {
         showNotification({ message: e?.message?.toString(), color: 'red' })
       } finally {
@@ -86,19 +91,31 @@ const AssetReviewList = () => {
         label: 'Action',
         accessor: 'action',
         textAlign: 'center',
-        render: (record: any) => (
+        render: (record: AssetWithProjectId) => (
           <Group justify="center">
             <ActionIcon
               variant="transparent"
               onClick={() =>
-                sendAssetStatus(record.id, ASSET_INGESTION_PENDING)
+                sendAssetStatus(
+                  record.projectId,
+                  record.knowledgeGroupId,
+                  record.id,
+                  ASSET_APPROVED
+                )
               }
             >
               <IconCircleCheck size={20} />
             </ActionIcon>
             <ActionIcon
               variant="transparent"
-              onClick={() => sendAssetStatus(record.id, ASSET_REJECTED)}
+              onClick={() =>
+                sendAssetStatus(
+                  record.projectId,
+                  record.knowledgeGroupId,
+                  record.id,
+                  ASSET_REJECTED
+                )
+              }
             >
               <IconCircleX size={20} color="red" />
             </ActionIcon>

@@ -9,7 +9,7 @@ export interface Message {
   timestamp: Date
   isResponse: boolean
   complete?: boolean
-  sources?: Record<string, any>[]
+  sources?: Record<string, any>[] | null
 }
 
 export interface ChatWithoutMessage {

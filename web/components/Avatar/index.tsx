@@ -16,10 +16,12 @@ const UserAvatar = ({
     let userAvatarSrcObj: any = localStorage.getItem(
       `${USER_IMAGES_LOCALSTORAGE_KEY}_${userId}`
     )
+    console.log({ userAvatarSrcObj }, Date.now())
     if (userAvatarSrcObj) userAvatarSrcObj = JSON.parse(userAvatarSrcObj)
-    if (!userAvatarSrcObj || userAvatarSrcObj?.expires > Date.now()) {
+    if (!userAvatarSrcObj || userAvatarSrcObj?.expires < Date.now()) {
       getUserAvatarApi(userId)
         .then((avatarSrc) => {
+          console.log({ avatarSrc })
           setSrc(avatarSrc)
           localStorage.setItem(
             `${USER_IMAGES_LOCALSTORAGE_KEY}_${userId}`,

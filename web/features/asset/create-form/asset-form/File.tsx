@@ -1,4 +1,4 @@
-import { uploadFileApi } from '@/apis/assets'
+import { uploadFileApi } from '@/apis/uploads'
 import { formatBytes } from '@/lib/utils/functions'
 import { Button, Card, Group, List, rem, Text, ThemeIcon } from '@mantine/core'
 import { Dropzone, FileWithPath } from '@mantine/dropzone'
@@ -48,7 +48,7 @@ const noDuplicateFilenames = (files: FileWithPath[]) => {
   return fileNames.length === new Set(fileNames).size
 }
 
-const FilesAssetUploader: FC<UploaderProps> = ({ projectId, kgId, form }) => {
+const FilesAssetUploader: FC<UploaderProps> = ({ kgId, form }) => {
   const [loading, setLoading] = useState<boolean>(false)
   const [files, setFiles] = useState<FileWithPath[]>()
   const [fileStatus, setFileStatus] = useState<Record<string, string>>({})
@@ -83,11 +83,7 @@ const FilesAssetUploader: FC<UploaderProps> = ({ projectId, kgId, form }) => {
       setFileStatus(fileObj)
 
       try {
-        const { bucketName, uploadStatus } = await uploadFileApi(
-          projectId,
-          kgId,
-          files
-        )
+        const { bucketName, uploadStatus } = await uploadFileApi(kgId, files)
         setFileStatus(uploadStatus)
         form.setFieldValue('bucketName', bucketName)
       } catch {

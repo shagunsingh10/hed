@@ -14,6 +14,7 @@ import AddUserForm from './addUserForm'
 import styles from './users.module.scss'
 
 type KgUsersProps = {
+  projectId: string
   kgId: string
 }
 
@@ -23,7 +24,7 @@ const colorMap: any = {
   viewer: 'blue',
 }
 
-const KgUsers: FC<KgUsersProps> = ({ kgId }) => {
+const KgUsers: FC<KgUsersProps> = ({ projectId, kgId }) => {
   const [kgMembers, setKgMembers] = useState<KgMember[]>([])
   const [filteredKgMembers, setFilteredKgMembers] = useState<KgMember[]>([])
   const [openAddUserForm, setOpenAddUserForm] = useState(false)
@@ -35,7 +36,7 @@ const KgUsers: FC<KgUsersProps> = ({ kgId }) => {
   const handleDelete = async () => {
     if (!deleteUserId) return
     setLoading(true)
-    removeUserFromKgApi(kgId, deleteUserId)
+    removeUserFromKgApi(projectId, kgId, deleteUserId)
       .then(() => {
         showNotification({
           message: 'User removed successfully',
@@ -115,7 +116,7 @@ const KgUsers: FC<KgUsersProps> = ({ kgId }) => {
 
   useEffect(() => {
     setLoading(true)
-    getKgMemebersApi(kgId)
+    getKgMemebersApi(projectId, kgId)
       .then((data) => {
         setKgMembers(data)
       })
@@ -164,6 +165,7 @@ const KgUsers: FC<KgUsersProps> = ({ kgId }) => {
         onDelete={handleDelete}
       />
       <AddUserForm
+        projectId={projectId}
         kgId={kgId}
         open={openAddUserForm}
         onClose={() => setOpenAddUserForm(false)}

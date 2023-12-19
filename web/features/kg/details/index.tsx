@@ -24,7 +24,7 @@ const ProjectDetailsScreen = () => {
 
   useEffect(() => {
     setLoading(true)
-    getKgByIdApi(kgId)
+    getKgByIdApi(projectId, kgId)
       .then((kg) => {
         setkg(kg)
         setLoading(false)
@@ -71,7 +71,7 @@ const ProjectDetailsScreen = () => {
         <Divider size="xs" orientation="vertical" />
         <div className={styles.tabContent}>
           {activeTab == 1 && <AssetScreen projectId={projectId} kgId={kgId} />}
-          {activeTab == 2 && <KgMembers kgId={kgId} />}
+          {activeTab == 2 && <KgMembers projectId={projectId} kgId={kgId} />}
           {activeTab == 3 && <KgSettings kg={kg} />}
         </div>
       </div>

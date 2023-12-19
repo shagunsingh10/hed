@@ -7,7 +7,7 @@ import {
   ASSET_DELETING,
   ASSET_INGESTING,
   ASSET_INGESTION_FAILED,
-  ASSET_INGESTION_PENDING,
+  ASSET_INGESTION_IN_QUEUE,
   ASSET_INGESTION_SUCCESS,
   ASSET_REJECTED,
   ERROR_COLOR,
@@ -33,12 +33,14 @@ import {
   IconUser,
 } from '@tabler/icons-react'
 import { DataTable } from 'mantine-datatable'
-import { useMemo, useState } from 'react'
+import { useCallback, useMemo, useState } from 'react'
 import AssetDocs from '../docs'
 import LogModal from '../logs'
 import styles from './assets.module.scss'
 
 type AssetListProps = {
+  projectId: string
+  kgId: string
   assets: Asset[]
   loading: boolean
   pageSize: number
@@ -49,6 +51,8 @@ type AssetListProps = {
 
 const AssetList: React.FC<AssetListProps> = ({
   assets,
+  projectId,
+  kgId,
   loading,
   page,
   onPageChange,
@@ -70,17 +74,20 @@ const AssetList: React.FC<AssetListProps> = ({
     setDeleteWarn(true)
   }
 
-  const deleteAsset = (kgId: string) => {
-    loading = true
-    deleteAssetApi(kgId)
-      .catch((e: Error) => {
-        showNotification({ message: e.message.toString(), color: 'red' })
-      })
-      .finally(() => {
-        loading = false
-        setDeleteWarn(false)
-      })
-  }
+  const deleteAsset = useCallback(
+    (assetId: string) => {
+      loading = true
+      deleteAssetApi(projectId, kgId, assetId)
+        .catch((e: Error) => {
+          showNotification({ message: e.message.toString(), color: 'red' })
+        })
+        .finally(() => {
+          loading = false
+          setDeleteWarn(false)
+        })
+    },
+    [kgId, projectId]
+  )
 
   const columns: any = useMemo(
     () => [
@@ -150,7 +157,7 @@ const AssetList: React.FC<AssetListProps> = ({
           if (status === ASSET_REJECTED) color = ERROR_COLOR
           return (
             <span style={{ background: color }} className={styles.status}>
-              {status === ASSET_INGESTION_PENDING && (
+              {status === ASSET_INGESTION_IN_QUEUE && (
                 <IconExclamationCircle size={12} />
               )}
               {status === ASSET_INGESTION_SUCCESS && (
@@ -196,7 +203,7 @@ const AssetList: React.FC<AssetListProps> = ({
         ),
       },
     ],
-    []
+    [deleteAsset]
   )
 
   if (loading) return <OverlayLoader />

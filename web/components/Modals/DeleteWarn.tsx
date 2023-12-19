@@ -1,4 +1,4 @@
-import { Button, Group, Modal } from '@mantine/core'
+import { Button, Group, Modal, Stack, Text } from '@mantine/core'
 import { IconAlertTriangle } from '@tabler/icons-react'
 import { FC } from 'react'
 
@@ -15,23 +15,13 @@ const DeleteConfirmationModal: FC<DeleteConfirmationModalProps> = ({
   onCancel,
 }) => {
   return (
-    <Modal opened={open} onClose={onCancel}>
-      <div
-        style={{
-          display: 'flex',
-          flexDirection: 'column',
-          alignItems: 'center',
-          gap: '1rem',
-          justifyContent: 'center',
-        }}
-      >
+    <Modal opened={open} onClose={onCancel} size="md">
+      <Stack justify="center" align="center">
         <IconAlertTriangle size={30} color="red" />
-        <span style={{ opacity: 0.7, fontSize: '1.2em', textAlign: 'center' }}>
-          {message}
-        </span>
-      </div>
+        <Text size="md">{message}</Text>
+      </Stack>
 
-      <Group mt="lg" justify="flex-end">
+      <Group mt="sm" justify="flex-end">
         <Button onClick={onDelete} size="xs">
           Delete
         </Button>

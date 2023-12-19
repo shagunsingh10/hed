@@ -1,6 +1,6 @@
 import { config as appConfig } from '@/config'
 import { prisma } from '@/lib/prisma'
-import { sendAssetStatusNotification } from '@/lib/utils/notification/assets'
+import { sendAssetStatusNotification } from '@/lib/socket/assets'
 import type { ApiRes } from '@/types/api'
 import { Doc } from '@/types/assets'
 import { NextApiRequest } from 'next'
@@ -43,7 +43,7 @@ const handler = async (
               createMany: {
                 data:
                   documents?.map((doc) => ({
-                    vector_db_doc_id: doc.id,
+                    doc_id: doc.id,
                     name: doc.name,
                   })) || [],
               },
@@ -54,7 +54,7 @@ const handler = async (
 
       // Notify user on the status
       const io = res.socket.server.io
-      await sendAssetStatusNotification(io, user, assetId, status)
+      if (io) await sendAssetStatusNotification(io, user, { assetId, status })
 
       res.status(201).json({
         success: true,

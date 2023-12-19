@@ -2,6 +2,7 @@ import json
 
 from qdrant_client import QdrantClient
 from qdrant_client.http import models
+from qdrant_client.http.exceptions import UnexpectedResponse
 
 from core.schema import CustomDoc
 
@@ -16,8 +17,6 @@ class VectorStore:
         self._create_collection_if_not_exists()
 
     def _create_collection_if_not_exists(self):
-        from qdrant_client.http.exceptions import UnexpectedResponse
-
         try:
             self._client.get_collection(self._collection_name)
         except (UnexpectedResponse, ValueError):

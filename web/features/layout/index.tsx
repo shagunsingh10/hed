@@ -1,4 +1,4 @@
-import { getUserByEmail } from '@/apis/users'
+import { getUserByEmailApi } from '@/apis/users'
 import OverlayLoader from '@/components/Loader'
 import SocketConnector from '@/components/Socket'
 import { User } from '@/types/users'
@@ -20,7 +20,7 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
 
   useEffect(() => {
     if (session?.user?.email) {
-      getUserByEmail(session?.user?.email)
+      getUserByEmailApi(session?.user?.email)
         .then((user: User) => {
           localStorage.setItem('userAvatarSrc', user?.image || '')
         })

@@ -1,8 +1,8 @@
-import { Asset } from './assets'
+import type { AssetWithProjectId } from './assets'
 
 export interface AssetReviewSlice {
-  assetsToReview: Asset[]
-  setAssetsToReview: (assets: Asset[]) => void
+  assetsToReview: AssetWithProjectId[]
+  setAssetsToReview: (assets: AssetWithProjectId[]) => void
   assetsToReviewCount: number
   setAssetsToReviewCount: (c: number) => void
 }

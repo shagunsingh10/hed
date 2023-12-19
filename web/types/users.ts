@@ -7,5 +7,5 @@ export interface User {
 
 export interface UsersSlice {
   users: User[]
-  loadUsers: () => Promise<void>
+  setUsers: (users: User[]) => void
 }

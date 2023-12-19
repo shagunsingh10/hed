@@ -1,6 +1,5 @@
 import fetcher from '@/lib/utils/fetcher'
 import { CreateAssetData } from '@/types/assets'
-import { FileWithPath } from '@mantine/dropzone'
 
 export const getAssetTypesApi = async () => {
   const res = await fetcher.get(`/api/asset-types`)
@@ -18,7 +17,7 @@ export const getAssetsApi = async (
   end: number = 10
 ) => {
   const res = await fetcher.get(
-    `/api/assets?projectId=${projectId}&kgId=${kgId}&start=${start}&end=${end}`
+    `/api/projects/${projectId}/kgs/${kgId}/assets?start=${start}&end=${end}`
   )
   const resData = await res.json()
   if (!resData.success) {
@@ -33,7 +32,7 @@ export const createAssetApi = async (
   data: CreateAssetData
 ) => {
   const res = await fetcher.post<CreateAssetData>(
-    `/api/assets?projectId=${projectId}&kgId=${kgId}`,
+    `/api/projects/${projectId}/kgs/${kgId}/assets`,
     data,
     {
       headers: {
@@ -48,29 +47,23 @@ export const createAssetApi = async (
   return resData.data
 }
 
-export const removeUploadApi = async (assetId: string) => {
-  await fetcher.delete(`/api/upload/${assetId}`)
-}
-
-export const deleteAssetApi = async (assetId: string) => {
-  await fetcher.delete(`/api/assets/${assetId}`)
-}
-
-export const uploadFileApi = async (
+export const deleteAssetApi = async (
   projectId: string,
   kgId: string,
-  files: FileWithPath[]
+  assetId: string
 ) => {
-  const formData = new FormData()
-  files.forEach((file, index) => {
-    formData.append(`file${index}`, file)
-  })
-  const res = await fetcher.post(
-    `/api/assets/upload?projectId=${projectId}&kgId=${kgId}`,
-    {},
-    {
-      body: formData,
-    }
+  await fetcher.delete(
+    `/api/projects/${projectId}/kgs/${kgId}/assets/${assetId}`
+  )
+}
+
+export const getAssetLogsApi = async (
+  projectId: string,
+  kgId: string,
+  assetId: string
+) => {
+  const res = await fetcher.get(
+    `/api/projects/${projectId}/kgs/${kgId}/assets/${assetId}/logs`
   )
   const resData = await res.json()
   if (!resData.success) {
@@ -79,17 +72,14 @@ export const uploadFileApi = async (
   return resData.data
 }
 
-export const getAssetLogsApi = async (assetId: string) => {
-  const res = await fetcher.get(`/api/assets/${assetId}/logs`)
-  const resData = await res.json()
-  if (!resData.success) {
-    throw Error(resData.error)
-  }
-  return resData.data
-}
-
-export const getAssetDocsApi = async (assetId: string) => {
-  const res = await fetcher.get(`/api/assets/${assetId}/docs`)
+export const getAssetDocsApi = async (
+  projectId: string,
+  kgId: string,
+  assetId: string
+) => {
+  const res = await fetcher.get(
+    `/api/projects/${projectId}/kgs/${kgId}/assets/${assetId}/docs`
+  )
   const resData = await res.json()
   if (!resData.success) {
     throw Error(resData.error)
@@ -98,7 +88,7 @@ export const getAssetDocsApi = async (assetId: string) => {
 }
 
 export const getAssetsToReviewApi = async () => {
-  const res = await fetcher.get(`/api/assets/review`)
+  const res = await fetcher.get(`/api/asset-review`)
   const resData = await res.json()
   if (!resData.success) {
     throw Error(resData.error)
@@ -107,7 +97,7 @@ export const getAssetsToReviewApi = async () => {
 }
 
 export const getAssetsToReviewCountApi = async () => {
-  const res = await fetcher.get(`/api/assets/review-count`)
+  const res = await fetcher.get(`/api/asset-review/count`)
   const resData = await res.json()
   if (!resData.success) {
     throw Error(resData.error)
@@ -115,9 +105,14 @@ export const getAssetsToReviewCountApi = async () => {
   return resData.data
 }
 
-export const approveAssetApi = async (assetId: string, status: string) => {
+export const approveAssetApi = async (
+  projectId: string,
+  kgId: string,
+  assetId: string,
+  status: string
+) => {
   const res = await fetcher.post(
-    `/api/assets/${assetId}/approve`,
+    `/api/projects/${projectId}/kgs/${kgId}/assets/${assetId}/approve`,
     {
       status: status,
     },

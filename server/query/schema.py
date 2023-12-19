@@ -21,3 +21,5 @@ class QueryWithContext(BaseModel):
     chat_id: str
     user: str
     context: list[ContextChunk]
+    response: Optional[str] = ""
+    sources: Optional[list[str]] = []

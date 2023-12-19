@@ -81,6 +81,8 @@ const KGScreen: React.FC<KGScreenProps> = ({ projectId, kgId }) => {
         </Button>
       </div>
       <AssetList
+        projectId={projectId}
+        kgId={kgId}
         assets={filteredAsset}
         loading={loading}
         page={page}

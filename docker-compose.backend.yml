@@ -8,3 +8,4 @@ services:
       LOGURU_COLORIZE: "true"
     volumes:
       - ./.etc/llama_index/:/tmp/llama_index/
+      - ./.etc/nltk/:/root/nltk_data/

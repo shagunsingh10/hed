@@ -21,9 +21,20 @@ export const EMBEDDING_FAILED = 'EMBEDDING_FAILED'
 // *************** Asset Status ****************** //
 export const ASSET_APPROVAL_PENDING = 'ASSET_APPROVAL_PENDING'
 export const ASSET_REJECTED = 'ASSET_REJECTED'
-export const ASSET_INGESTION_PENDING = 'ASSET_INGESTION_PENDING'
+export const ASSET_APPROVED = 'ASSET_REJECTED'
+export const ASSET_INGESTION_IN_QUEUE = 'ASSET_INGESTION_IN_QUEUE'
 export const ASSET_INGESTING = 'ASSET_INGESTING'
 export const ASSET_INGESTION_SUCCESS = 'ASSET_INGESTION_SUCCESS'
 export const ASSET_INGESTION_FAILED = 'ASSET_INGESTION_FAILED'
 export const ASSET_DELETING = 'ASSET_DELETING'
 export const ASSET_DELETE_FAILED = 'ASSET_DELETE_FAILED'
+
+/* KG */
+export const DEFAULT_KG_NAME = 'Default'
+export const DEFAULT_KG_DESCRIPTION =
+  "Default knowledge group for this project. Consider the default project as a shared space for all your open assets. Just a quick heads-up: since it's an open setup, anything you stash in there is accessible to everyone in the project."
+
+/* ROLES */
+export const KG_OWNER = 'Owner'
+export const KG_CONTRIBUTOR = 'Contributor'
+export const KG_VIEWER = 'Viewer'

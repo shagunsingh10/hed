@@ -1,10 +1,13 @@
 from concurrent.futures import ThreadPoolExecutor, as_completed
-
+from nltk.corpus import stopwords
 import requests
+import nltk
 
 from config import appconfig
 from core.schema import Chunk
 from utils.logger import logger
+
+nltk.download("stopwords")
 
 
 class EmbeddingFailed(Exception):
@@ -14,10 +17,15 @@ class EmbeddingFailed(Exception):
 class Embedder:
     def __init__(self, base_url=None) -> None:
         self.base_url = base_url or appconfig.get("EMBEDDER_SERVICE_ENDPOINT")
+        self.stop_words = stopwords.words("english")
+
+    def _remove_stopwords(self, text: str) -> str:
+        return " ".join([word for word in text.split() if word not in self.stop_words])
 
     def embed_chunk(self, chunk: Chunk):
         try:
-            data = {"inputs": chunk.text}
+            processed_text = self._remove_stopwords(chunk.text)
+            data = {"inputs": processed_text}
             response = requests.post(f"{self.base_url}/embed", json=data)
             res = response.json()
             chunk.embeddings = res[0]
@@ -25,9 +33,16 @@ class Embedder:
         except Exception as e:
             raise EmbeddingFailed(e)
 
-    def embed_query(self, text: str):
+    def _get_hyde_document_for_query(self, query: str) -> str:
+        # TODO: implement HyDE
+        # Reference: https://github.com/texttron/hyde/blob/main/hyde-demo.ipynb
+        return query
+
+    def embed_query(self, query: str):
         try:
-            data = {"inputs": text}
+            query_hyde_document = self._get_hyde_document_for_query(query)
+            processed_text = self._remove_stopwords(query_hyde_document)
+            data = {"inputs": processed_text}
             response = requests.post(f"{self.base_url}/embed", json=data)
             res = response.json()
             logger.debug(response.text)

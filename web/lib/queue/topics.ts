@@ -1,2 +1,0 @@
-export const ASSET_INGESTION = 'ASSET_INGESTION'
-export const QUERY_REQUEST = 'QUERY_REQUEST'

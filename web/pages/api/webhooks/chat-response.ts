@@ -1,6 +1,6 @@
 import { config as appConfig } from '@/config'
 import { prisma } from '@/lib/prisma'
-import { getSocketClientId } from '@/lib/utils/socket/handler'
+import { sendChatQueryResponse } from '@/lib/socket/chat'
 import type { ApiRes } from '@/types/api'
 import { NextApiRequest } from 'next'
 import type { NextApiResponseWithSocket } from '../socket'
@@ -26,13 +26,10 @@ const handler = async (
         // send response to user via socket
         const io = res.socket.server.io
         if (user && io) {
-          getSocketClientId(user).then((socketId) => {
-            if (socketId)
-              io.to(socketId).emit('chat-response', {
-                chatId: chatId,
-                response: chunk,
-                complete: false,
-              })
+          sendChatQueryResponse(io, user, {
+            chatId: chatId,
+            response: chunk,
+            complete: false,
           })
         }
       } else {
@@ -56,16 +53,13 @@ const handler = async (
         ])
         const io = res.socket.server.io
         if (user && io) {
-          getSocketClientId(user).then((socketId) => {
-            if (socketId)
-              io.to(socketId).emit('chat-response', {
-                chatId: chatId,
-                response: chunk,
-                messageId: message[0].id,
-                timestamp: message[0].timestamp,
-                complete: true,
-                sources: sources,
-              })
+          sendChatQueryResponse(io, user, {
+            chatId: chatId,
+            response: chunk,
+            messageId: message[0].id,
+            timestamp: message[0].timestamp,
+            complete: true,
+            sources: sources,
           })
         }
       }

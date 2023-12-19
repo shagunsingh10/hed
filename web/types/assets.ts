@@ -17,16 +17,20 @@ export type AssetType = {
 export type Asset = {
   id: string
   name: string
-  description?: string
+  description?: string | null
   tags?: string[]
   assetTypeId: string
   knowledgeGroupId: string
+  knowledgeGroupName?: string
   status: string
   ownerUserId: number
   createdAt: string
   createdBy?: string
-  knowledgeGroupName?: string
   AssetType?: AssetType
+}
+
+export type AssetWithProjectId = Asset & {
+  projectId: string
 }
 
 export type AssetLog = {

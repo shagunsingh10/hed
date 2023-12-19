@@ -5,6 +5,11 @@ import {
   ASSET_INGESTION_FAILED,
   ASSET_INGESTION_SUCCESS,
 } from '@/constants'
+import {
+  ASSET_STATUS_EVENT,
+  CHAT_QUERY_REPLY_EVENT,
+  SOCKET_CONNECTION_MESSAGE,
+} from '@/lib/socket/events'
 import useStore from '@/store'
 import { showNotification } from '@mantine/notifications'
 import { Session } from 'next-auth'
@@ -26,25 +31,23 @@ const SocketConnector = () => {
       const res = await fetch('/api/socket')
 
       if (!res.ok) {
-        console.error('WebSocket server not running...')
+        console.error('WebSocket server is not running...')
         return
       }
 
-      const socket = io({
+      const newSocket = io({
         retries: 10,
         ackTimeout: 10000,
       })
 
-      socket.on('connect', () => {
-        console.log('socket connected')
-        socket.emit('connection-request', { userId: session?.user?.email })
+      newSocket.on('connect', () => {
+        console.log('Websocket connected')
+        newSocket.emit(SOCKET_CONNECTION_MESSAGE, {
+          userId: session?.user?.email,
+        })
       })
 
-      socket.on('disconnect', () => {
-        console.log('disconnect')
-      })
-
-      socket.on('update-asset-status', ({ assetId, status }) => {
+      newSocket.on(ASSET_STATUS_EVENT, ({ assetId, status }) => {
         if (status) {
           if (status === ASSET_INGESTION_SUCCESS) {
             showNotification({
@@ -86,8 +89,8 @@ const SocketConnector = () => {
         }
       })
 
-      socket.on(
-        'chat-response',
+      newSocket.on(
+        CHAT_QUERY_REPLY_EVENT,
         ({ chatId, messageId, timestamp, response, complete, sources }) => {
           addMessage({
             chatId: chatId,
@@ -101,14 +104,26 @@ const SocketConnector = () => {
         }
       )
 
-      setSocket(socket)
+      setSocket(newSocket)
+
+      // Cleanup function
+      return () => {
+        console.log('Websocket disconnected')
+        newSocket.disconnect()
+      }
     },
-    [addMessage, updateAssetStatus, activeChat?.id]
+    [setSocket, addMessage, updateAssetStatus, activeChat?.id]
   )
 
   useEffect(() => {
-    if (!socket && session) connectSocket(session)
-  }, [session])
+    if (!socket && session) {
+      const cleanupPromise = connectSocket(session)
+      // cleanup function when component unmounts
+      return () => {
+        cleanupPromise.then((cleanup) => cleanup && cleanup())
+      }
+    }
+  }, [session, socket, connectSocket])
 
   return null
 }

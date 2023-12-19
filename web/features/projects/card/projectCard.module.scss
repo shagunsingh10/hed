@@ -1,6 +1,6 @@
 .cardContainer {
-  height: 18.5em;
-  width: 17.5em;
+  height: 18.5rem;
+  width: 17.5rem;
 
   .label {
     display: flex;
@@ -19,8 +19,8 @@
     display: flex;
     align-items: center;
     gap: 0.2rem;
-    white-space: nowrap; /* Prevent text from wrapping to the next line */
-    overflow: hidden; /* Hide the overflowing content */
+    white-space: nowrap;
+    overflow: hidden;
     text-overflow: ellipsis;
   }
 }

@@ -1,4 +1,5 @@
 import { addAdminToprojectApi } from '@/apis/projects'
+import { getAllUsersApi } from '@/apis/users'
 import useStore from '@/store'
 import {
   Button,
@@ -22,7 +23,7 @@ type createKgFormProps = {
 const AddUserForm: FC<createKgFormProps> = ({ projectId, open, onClose }) => {
   const [loading, setLoading] = useState(false)
   const users = useStore((state) => state.users)
-  const loadUsers = useStore((state) => state.loadUsers)
+  const setUsers = useStore((state) => state.setUsers)
 
   const form = useForm({
     initialValues: {
@@ -70,8 +71,14 @@ const AddUserForm: FC<createKgFormProps> = ({ projectId, open, onClose }) => {
   }
 
   useEffect(() => {
-    if (loadUsers) loadUsers()
-  }, [loadUsers])
+    if (!users) {
+      getAllUsersApi()
+        .then((users) => setUsers(users))
+        .catch((e: Error) => {
+          showNotification({ message: e.message.toString(), color: 'red' })
+        })
+    }
+  }, [])
 
   return (
     <Modal

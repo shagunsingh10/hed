@@ -1,6 +1,6 @@
 import fetcher from '@/lib/utils/fetcher'
 
-export const getAllUsers = async () => {
+export const getAllUsersApi = async () => {
   const res = await fetcher.get(`/api/users`)
   const resData = await res.json()
   if (!resData.success) {
@@ -9,7 +9,7 @@ export const getAllUsers = async () => {
   return resData.data
 }
 
-export const getUserByEmail = async (email: string) => {
+export const getUserByEmailApi = async (email: string) => {
   const res = await fetcher.get(`/api/users/${email}`)
   const resData = await res.json()
   if (!resData.success) {
