@@ -52,14 +52,16 @@ def process_query(self, payload: dict[str, any]):
                 )
             )
         prompt = (
-            "Please analyze the provided information and respond to the question. If the details are insufficient for an answer, reply with, 'I'm sorry, but I cannot answer that question based on the given context information.'"
-            "If the question involves code, include relevant code snippets for a more comprehensive response."
+            "Context information is below."
             "---------------------\n"
             f"{contexts}"
             "\n---------------------\n"
+            "Given the context information and not prior knowledge,answer the query. If the context is not relevant to the query, reply with, 'I'm sorry, but I cannot answer that question based on the given context information.'"
+            "If the question involves code, include relevant code snippets for a more comprehensive response."
             f"Question: {query.query}\n"
             "Answer: "
         )
+        logger.debug(prompt)
         response = OpenAI().complete(prompt)
         logger.debug(response.text)
         query.response = str(response)

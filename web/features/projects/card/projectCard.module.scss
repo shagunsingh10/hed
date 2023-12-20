@@ -1,5 +1,5 @@
 .cardContainer {
-  height: 18.5rem;
+  height: 20rem;
   width: 17.5rem;
 
   .label {
@@ -15,12 +15,21 @@
     height: 1rem;
   }
 
-  .projectName {
-    display: flex;
-    align-items: center;
-    gap: 0.2rem;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
+  .projectNameAndTags {
+    margin-top: 0.5rem;
+    .projectName {
+      padding-right: 0.4rem;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .projectTags {
+      margin-top: 0.2rem;
+      height: 1.5rem;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
   }
 }

@@ -7,9 +7,9 @@ import { IconFileFilled } from '@tabler/icons-react'
 import { FC, useEffect, useState } from 'react'
 import styles from './docs.module.scss'
 
-type IAssetDocsProps = { assetId: string }
+type IAssetDocsProps = { projectId: string; kgId: string; assetId: string }
 
-const AssetDocs: FC<IAssetDocsProps> = ({ assetId }) => {
+const AssetDocs: FC<IAssetDocsProps> = ({ projectId, kgId, assetId }) => {
   const [docs, setDocs] = useState<any>([])
   const [loading, setLoading] = useState(false)
 
@@ -22,7 +22,7 @@ const AssetDocs: FC<IAssetDocsProps> = ({ assetId }) => {
   const fetchDocs = async (assetId: string) => {
     try {
       setLoading(true)
-      const dcs = await getAssetDocsApi(assetId)
+      const dcs = await getAssetDocsApi(projectId, kgId, assetId)
       setDocs(dcs)
     } catch {
       showNotification({

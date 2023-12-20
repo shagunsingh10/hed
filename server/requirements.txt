@@ -16,6 +16,7 @@ llama-hub==0.0.45
 llama-index==0.8.66
 qdrant_client
 nltk
+sentence-transformers
 
 # Reader Handling
 pypdf

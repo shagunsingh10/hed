@@ -40,18 +40,18 @@ const ProjectCard: FC<IProps> = ({ project }) => {
         <Image src="/images/no-bg.jpg" height={120} alt="Norway" />
       </Card.Section>
 
-      <Group justify="space-between" mt="md">
+      <div className={styles.projectNameAndTags}>
         <Title order={4} fw={500} className={styles.projectName}>
           {project.name}
         </Title>
-        <Space>
+        <Space className={styles.projectTags}>
           {project.tags.slice(0, 2).map((tag) => (
             <Badge color="pink" mr="xs" size="xs" variant="light">
               {tag}
             </Badge>
           ))}
         </Space>
-      </Group>
+      </div>
 
       <Text fw={500} size="xs" mt="md" className={styles.label}>
         <IconUser size={13} />

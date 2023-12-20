@@ -13,7 +13,7 @@ import { useEffect, useMemo } from 'react'
 import styles from './sider.module.scss'
 
 const getParentPath = (path: string) =>
-  path === '/' ? path : `/${path.split('/')[1]}`
+  path === '/' ? path : `/${path?.split('/')[1]}`
 
 export default function Sider() {
   const pathname = usePathname()

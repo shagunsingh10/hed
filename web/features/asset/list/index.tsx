@@ -217,6 +217,8 @@ const AssetList: React.FC<AssetListProps> = ({
         message="Are you sure you want to delete the asset? It is non reversible."
       />
       <LogModal
+        projectId={projectId}
+        kgId={kgId}
         open={logModalOpen}
         onClose={() => setLogModalOpen(false)}
         assetId={assetIdLogModal}
@@ -237,7 +239,9 @@ const AssetList: React.FC<AssetListProps> = ({
         onPageChange={onPageChange}
         highlightOnHover
         rowExpansion={{
-          content: ({ record }) => <AssetDocs assetId={record.id} />,
+          content: ({ record }) => (
+            <AssetDocs projectId={projectId} kgId={kgId} assetId={record.id} />
+          ),
         }}
       />
     </div>

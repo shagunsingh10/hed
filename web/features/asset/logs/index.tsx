@@ -42,9 +42,21 @@ const iconMap: any = {
     </ThemeIcon>
   ),
 }
-type LogsModalProps = { open: boolean; onClose: () => void; assetId: string }
+type LogsModalProps = {
+  open: boolean
+  onClose: () => void
+  projectId: string
+  kgId: string
+  assetId: string
+}
 
-const LogModal: FC<LogsModalProps> = ({ open, onClose, assetId }) => {
+const LogModal: FC<LogsModalProps> = ({
+  open,
+  onClose,
+  projectId,
+  kgId,
+  assetId,
+}) => {
   const [logs, setLogs] = useState<any>([])
   const [loading, setLoading] = useState(false)
 
@@ -57,7 +69,7 @@ const LogModal: FC<LogsModalProps> = ({ open, onClose, assetId }) => {
   const fetchLogs = async () => {
     try {
       setLoading(true)
-      const logs = await getAssetLogsApi(assetId)
+      const logs = await getAssetLogsApi(projectId, kgId, assetId)
       setLogs(logs)
     } catch {
       showNotification({
