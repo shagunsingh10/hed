@@ -129,7 +129,7 @@ class VectorStoreRetriever:
         # Use TEI to host a reranker model
 
         all_chunks = []
-        for collection in query.collections:
+        for collection in query.asset_ids:
             retrieved_chunks = self._search_chunks_in_collection(
                 collection, query.query, query.embeddings
             )

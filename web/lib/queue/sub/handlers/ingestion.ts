@@ -7,7 +7,7 @@ export const handleDocStatus = async (message: any) => {
       doc_id: message.doc_id,
       name: message.filename,
       assetId: message.asset_id,
-      DocStatus: {
+      statusLog: {
         create: {
           status: message.status,
           error: message.error,
@@ -16,7 +16,7 @@ export const handleDocStatus = async (message: any) => {
       },
     },
     update: {
-      DocStatus: {
+      statusLog: {
         create: {
           status: message.status,
           error: message.error,

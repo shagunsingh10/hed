@@ -20,20 +20,21 @@ import styles from './review.module.scss'
 const AssetReviewList = () => {
   const assetsToReview = useStore((state) => state.assetsToReview)
   const setAssetsToReview = useStore((state) => state.setAssetsToReview)
+  const assetsToReviewCount = useStore((state) => state.assetsToReviewCount)
+  const setAssetsToReviewCount = useStore(
+    (state) => state.setAssetsToReviewCount
+  )
 
   const [dataSource, setDataSource] = useState<Asset[]>(assetsToReview)
   const [loading, setLoading] = useState(false)
 
   const sendAssetStatus = useCallback(
-    async (
-      projectId: string,
-      kgId: string,
-      assetId: string,
-      status: string
-    ) => {
+    async (projectId: string, assetId: string, status: string) => {
       setLoading(true)
       try {
-        await approveAssetApi(projectId, kgId, assetId, status)
+        await approveAssetApi(projectId, assetId, status)
+        setAssetsToReview(assetsToReview.filter((e) => e.id === assetId))
+        setAssetsToReviewCount(assetsToReviewCount - 1)
       } catch (e: any) {
         showNotification({ message: e?.message?.toString(), color: 'red' })
       } finally {
@@ -94,30 +95,20 @@ const AssetReviewList = () => {
         render: (record: AssetWithProjectId) => (
           <Group justify="center">
             <ActionIcon
-              variant="transparent"
+              variant="light"
               onClick={() =>
-                sendAssetStatus(
-                  record.projectId,
-                  record.knowledgeGroupId,
-                  record.id,
-                  ASSET_APPROVED
-                )
+                sendAssetStatus(record.projectId, record.id, ASSET_APPROVED)
               }
             >
               <IconCircleCheck size={20} />
             </ActionIcon>
             <ActionIcon
-              variant="transparent"
+              variant="light"
               onClick={() =>
-                sendAssetStatus(
-                  record.projectId,
-                  record.knowledgeGroupId,
-                  record.id,
-                  ASSET_REJECTED
-                )
+                sendAssetStatus(record.projectId, record.id, ASSET_REJECTED)
               }
             >
-              <IconCircleX size={20} color="red" />
+              <IconCircleX size={20} color="#F55656" />
             </ActionIcon>
           </Group>
         ),
@@ -146,6 +137,7 @@ const AssetReviewList = () => {
         <Title order={3}>Assets pending review</Title>
       </div>
       <Input
+        size="xs"
         rightSection={<IconSearch size={15} />}
         className={styles.search}
         placeholder="Search assets by name, tags, description or creator"

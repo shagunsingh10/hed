@@ -15,8 +15,6 @@ import { FC, useCallback, useState } from 'react'
 import styles from './assetsform.module.scss'
 
 type UploaderProps = {
-  projectId: string
-  kgId: string
   form: UseFormReturnType<any>
 }
 
@@ -48,7 +46,7 @@ const noDuplicateFilenames = (files: FileWithPath[]) => {
   return fileNames.length === new Set(fileNames).size
 }
 
-const FilesAssetUploader: FC<UploaderProps> = ({ kgId, form }) => {
+const FilesAssetUploader: FC<UploaderProps> = ({ form }) => {
   const [loading, setLoading] = useState<boolean>(false)
   const [files, setFiles] = useState<FileWithPath[]>()
   const [fileStatus, setFileStatus] = useState<Record<string, string>>({})
@@ -83,7 +81,7 @@ const FilesAssetUploader: FC<UploaderProps> = ({ kgId, form }) => {
       setFileStatus(fileObj)
 
       try {
-        const { bucketName, uploadStatus } = await uploadFileApi(kgId, files)
+        const { bucketName, uploadStatus } = await uploadFileApi(files)
         setFileStatus(uploadStatus)
         form.setFieldValue('bucketName', bucketName)
       } catch {

@@ -3,7 +3,6 @@ import { ASSET_DELETION, ASSET_INGESTION, QUERY_REQUEST } from './topics'
 
 type IAssetIngestionPayload = {
   asset_id: string
-  collection_name: string
   asset_type: string
   user: string
   reader_kwargs: Record<string, any>
@@ -13,7 +12,6 @@ type IAssetIngestionPayload = {
 type IAssetDeletionPayload = {
   doc_ids: string[]
   asset_id: string
-  collection_name: string
   user: string
 }
 
@@ -21,7 +19,7 @@ type IQueryPayload = {
   chat_id: string
   query: string
   user: string
-  collections: string[]
+  asset_ids: string[]
 }
 
 export const enqueueIngestionJob = async (payload: IAssetIngestionPayload) => {

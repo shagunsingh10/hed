@@ -1,4 +1,3 @@
-import { DEFAULT_KG_DESCRIPTION, DEFAULT_KG_NAME, KG_OWNER } from '@/constants'
 import { UNAUTHENTICATED } from '@/constants/errors'
 import { getUserInfoFromSessionToken } from '@/lib/middlewares/auth'
 import { prisma } from '@/lib/prisma'
@@ -23,15 +22,26 @@ export const getAllProjects = async (
 
   const projects = await prisma.project.findMany({
     where: {
-      knowledgeGroups: {
-        some: {
-          UserRole: {
+      OR: [
+        {
+          assets: {
+            some: {
+              members: {
+                some: {
+                  userId: user?.id,
+                },
+              },
+            },
+          },
+        },
+        {
+          admins: {
             some: {
               userId: user?.id,
             },
           },
         },
-      },
+      ],
       isActive: true,
     },
     orderBy: {
@@ -70,20 +80,6 @@ export const createNewProject = async (
           userId: user?.id,
         },
       },
-      knowledgeGroups: {
-        create: {
-          name: DEFAULT_KG_NAME,
-          description: DEFAULT_KG_DESCRIPTION,
-          tags: req.body.tags,
-          createdBy: user?.email as string,
-          UserRole: {
-            create: {
-              role: KG_OWNER,
-              userId: user?.id,
-            },
-          },
-        },
-      },
     },
   })
 
@@ -98,23 +94,10 @@ export const getProjectById = async (
   res: NextApiResponse<ApiRes<Project>>
 ) => {
   const id = req.query.projectId as string
-  const sessionToken = req.headers.sessiontoken as string
-
-  const user = await getUserInfoFromSessionToken(sessionToken)
-
   const project = await prisma.project.findFirst({
     where: {
       id: id,
       isActive: true,
-      knowledgeGroups: {
-        some: {
-          UserRole: {
-            some: {
-              userId: user?.id,
-            },
-          },
-        },
-      },
     },
   })
 
@@ -147,7 +130,7 @@ export const getProjectAdmins = async (
       projectId: projectId,
     },
     select: {
-      User: {
+      user: {
         select: {
           id: true,
           name: true,
@@ -159,11 +142,7 @@ export const getProjectAdmins = async (
 
   res.status(200).json({
     success: true,
-    data: projectAdmins.map((e) => ({
-      id: e.User.id,
-      name: e.User.name,
-      email: e.User.email,
-    })),
+    data: projectAdmins.map((e) => ({ ...e.user })),
   })
 }
 
@@ -196,7 +175,7 @@ export const removeProjectAdminByUserId = async (
 
   await prisma.projectAdmin.delete({
     where: {
-      UserProjectIndex: {
+      projectAdminIndex: {
         userId: userId,
         projectId: projectId,
       },

@@ -87,7 +87,7 @@ export const postQuery = async (
       },
       data: {
         lastMessageAt: new Date(),
-        Message: {
+        messages: {
           create: {
             content: content,
             isResponse: false,
@@ -95,16 +95,16 @@ export const postQuery = async (
         },
       },
       select: {
-        Project: {
+        project: {
           select: {
-            knowledgeGroups: {
+            assets: {
               select: {
                 id: true,
               },
             },
           },
         },
-        Message: {
+        messages: {
           orderBy: {
             timestamp: 'desc',
           },
@@ -114,28 +114,25 @@ export const postQuery = async (
     })
 
     // if project specific chat, just read project specific collections else, read all collections
-    let collections
-    if (nm.Project) {
-      collections = nm.Project.knowledgeGroups
+    let assetIds
+    if (nm.project) {
+      assetIds = nm.project.assets.map((e) => e.id)
     } else {
-      collections = await tx.knowledgeGroup.findMany({
+      assetIds = await tx.assetMemberRole.findMany({
         where: {
-          UserRole: {
-            some: {
-              userId: user?.id,
-            },
-          },
+          userId: user?.id,
         },
         select: {
-          id: true,
+          assetId: true,
         },
       })
+      assetIds = assetIds.map((e) => e.assetId)
     }
 
     // send query to query processing engine
     await enqueueQueryJob({
       query: content,
-      collections: collections.map((e) => e.id),
+      asset_ids: assetIds,
       chat_id: chatId,
       user: user?.email as string,
     })
@@ -145,7 +142,7 @@ export const postQuery = async (
   res.status(201).json({
     success: true,
     data: {
-      ...newMessage.Message[0],
+      ...newMessage.messages[0],
       sources: [],
     },
   })

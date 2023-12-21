@@ -15,6 +15,7 @@ from core.embedder.base import Embedder
 from core.reader.base import CustomDoc
 from core.reader.factory import get_reader
 from core.storage.base import VectorStore
+from core.storage.minio import MinioStorage
 from utils.logger import logger
 
 from .emitter import emit_doc_status
@@ -42,6 +43,15 @@ def read_from_source(self, payload: dict[str, any]):
         # Loading documents using the appropriate reader
         reader = get_reader(asset_type, **reader_kwargs)
         documents = reader.load(asset_id, collection_name, user, extra_metadata)
+
+        # Save to minio
+        minio_client = MinioStorage(
+            endpoint="172.17.0.1:9000",
+            access_key="minioadmin",
+            secret_key="minioadmin",
+        )
+        minio_client.upload_documents(documents)
+
         all_docs = []
         for doc in documents:
             all_docs.append(doc.model_dump())
@@ -100,7 +110,7 @@ def store_chunks(self, payload: dict[str, any]):
         doc = CustomDoc.model_validate(payload)
 
         # Chunk Document
-        vector_store = VectorStore(collection_name=doc.collection_name)
+        vector_store = VectorStore(collection_name=doc.asset_id)
         vector_store.save_doc(doc)
         doc.status = STORED_SUCCESSFULLY
         emit_doc_status(doc)

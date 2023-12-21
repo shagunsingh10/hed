@@ -1,13 +1,13 @@
 import fetcher from '@/lib/utils/fetcher'
 import { FileWithPath } from '@mantine/dropzone'
 
-export const uploadFileApi = async (kgId: string, files: FileWithPath[]) => {
+export const uploadFileApi = async (files: FileWithPath[]) => {
   const formData = new FormData()
   files.forEach((file, index) => {
     formData.append(`file${index}`, file)
   })
   const res = await fetcher.post(
-    `/api/uploads?kgId=${kgId}`,
+    `/api/uploads`,
     {},
     {
       body: formData,

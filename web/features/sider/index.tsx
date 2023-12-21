@@ -4,8 +4,8 @@ import { Indicator, Text } from '@mantine/core'
 import {
   IconBulbFilled,
   IconChecklist,
-  IconPackage,
   IconSettings,
+  IconWhirl,
 } from '@tabler/icons-react'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
@@ -25,7 +25,7 @@ export default function Sider() {
   const items = useMemo(
     () => [
       { title: 'Ask', path: '/', icon: <IconBulbFilled /> },
-      { title: 'Projects', path: '/projects', icon: <IconPackage /> },
+      { title: 'Projects', path: '/projects', icon: <IconWhirl /> },
       {
         title: 'Review',
         path: '/review',

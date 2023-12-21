@@ -2,7 +2,7 @@ import {
   ASSET_APPROVAL_PENDING,
   ASSET_APPROVED,
   ASSET_INGESTION_IN_QUEUE,
-  KG_OWNER,
+  ASSET_OWNER,
 } from '@/constants'
 import { prisma } from '@/lib/prisma'
 import type { ApiRes } from '@/types/api'
@@ -12,7 +12,6 @@ import type {
   AssetType,
   CreateAssetData,
 } from '@/types/assets'
-import type { Asset as PrismaAssetRecord } from '@prisma/client'
 import { NextApiRequest, NextApiResponse } from 'next'
 import { getUserInfoFromSessionToken } from '../middlewares/auth'
 import {
@@ -23,15 +22,6 @@ import {
 type IAssetResponse = {
   assets: Asset[]
   totalAssets: number
-}
-
-const processTags = (asset: PrismaAssetRecord): Asset => {
-  return {
-    ...asset,
-    description: asset.description || undefined,
-    createdAt: asset.createdAt.toISOString(),
-    tags: asset.tags?.split(',').map((tag) => tag?.trim()) || [],
-  }
 }
 
 export const getAllAssetTypes = async (
@@ -51,19 +41,35 @@ export const getAllAssetTypes = async (
   })
 }
 
-export const getPaginatedAssetsInKg = async (
+export const getPaginatedAssetsInProject = async (
   req: NextApiRequest,
   res: NextApiResponse<ApiRes<IAssetResponse>>
 ) => {
-  const kgId = req.query.kgId as string
+  const projectId = req.query.projectId as string
   const start = Number(req.query.start)
   const end = Number(req.query.end)
+  const sessionToken = req.headers.sessiontoken as string
+  const user = await getUserInfoFromSessionToken(sessionToken)
 
   const [assets, count] = await prisma.$transaction([
     prisma.asset.findMany({
       where: {
-        knowledgeGroupId: kgId,
+        projectId: projectId,
         isActive: true,
+        members: {
+          some: {
+            userId: user?.id,
+          },
+        },
+      },
+      select: {
+        id: true,
+        name: true,
+        tags: true,
+        createdAt: true,
+        createdBy: true,
+        status: true,
+        assetTypeId: true,
       },
       orderBy: {
         createdAt: 'desc',
@@ -73,15 +79,20 @@ export const getPaginatedAssetsInKg = async (
     }),
     prisma.asset.count({
       where: {
-        knowledgeGroupId: kgId,
+        projectId: projectId,
         isActive: true,
+        members: {
+          some: {
+            userId: user?.id,
+          },
+        },
       },
     }),
   ])
 
   return res.status(200).json({
     success: true,
-    data: { assets: assets.map((e) => processTags(e)), totalAssets: count },
+    data: { assets: assets, totalAssets: count },
   })
 }
 
@@ -89,15 +100,15 @@ export const raiseAssetCreationRequest = async (
   req: NextApiRequest,
   res: NextApiResponse<ApiRes<Asset>>
 ) => {
-  const kgId = req.query.kgId as string
-  const sessionToken = req.headers.sessiontoken as string
+  const projectId = req.query.projectId as string
   const body: CreateAssetData = req.body
+  const sessionToken = req.headers.sessiontoken as string
   const user = await getUserInfoFromSessionToken(sessionToken)
 
   const newAsset = await prisma.asset.create({
     data: {
       name: body.name,
-      knowledgeGroupId: kgId,
+      projectId: projectId,
       description: body.description,
       tags: body.tags,
       createdBy: user?.email as string,
@@ -106,13 +117,15 @@ export const raiseAssetCreationRequest = async (
       readerKwargs: JSON.stringify(body.readerKwargs),
       extraMetadata: body?.extraMetadata as any,
       status: ASSET_APPROVAL_PENDING,
-      Logs: {
+      logs: {
         createMany: {
-          data: [
-            {
-              content: `Asset creation request added by ${user?.email}`,
-            },
-          ],
+          data: [{ content: `Asset creation request added by ${user?.email}` }],
+        },
+      },
+      members: {
+        create: {
+          userId: Number(user?.id),
+          role: ASSET_OWNER,
         },
       },
     },
@@ -120,7 +133,7 @@ export const raiseAssetCreationRequest = async (
 
   return res.status(201).json({
     success: true,
-    data: processTags(newAsset),
+    data: newAsset,
   })
 }
 
@@ -138,12 +151,7 @@ export const approveAssetCreationRequest = async (
       id: assetId,
     },
     include: {
-      AssetType: true,
-      KnowledgeGroup: {
-        select: {
-          projectId: true,
-        },
-      },
+      assetType: true,
     },
   })
 
@@ -163,6 +171,7 @@ export const approveAssetCreationRequest = async (
           content: `Asset ${
             approved ? 'approved' : 'rejected'
           } by ${user?.email}`,
+          type: 'SUCCESS',
         },
       }),
       tx.asset.update({
@@ -177,8 +186,7 @@ export const approveAssetCreationRequest = async (
     if (approved) {
       enqueueIngestionJob({
         asset_id: asset.id,
-        asset_type: asset.AssetType.key,
-        collection_name: asset.knowledgeGroupId,
+        asset_type: asset.assetType.key,
         user: asset.createdBy as string,
         reader_kwargs: JSON.parse(asset.readerKwargs || '{}'),
         extra_metadata: asset?.extraMetadata as any,
@@ -198,7 +206,6 @@ export const deleteAssetById = async (
 ) => {
   const assetId = req.query.assetId as string
   const sessionToken = req.headers.sessiontoken as string
-
   const user = await getUserInfoFromSessionToken(sessionToken)
 
   const asset = await prisma.asset.findFirst({
@@ -207,18 +214,12 @@ export const deleteAssetById = async (
     },
     select: {
       docs: true,
-      KnowledgeGroup: {
-        select: {
-          id: true,
-        },
-      },
     },
   })
 
   enqueueAssetDeletionJob({
     doc_ids: asset?.docs.map((e) => e.doc_id) as string[],
     asset_id: assetId,
-    collection_name: asset?.KnowledgeGroup.id as string,
     user: user?.email as string,
   })
 
@@ -244,7 +245,7 @@ export const getAssetLogsById = async (
 
   res.status(200).json({
     success: true,
-    data: assetLogs.map((e) => ({ ...e, timestamp: e.timestamp.toString() })),
+    data: assetLogs.map((e) => ({ ...e, timestamp: e.timestamp })),
   })
 }
 
@@ -257,29 +258,16 @@ export const getAssetsPendingReview = async (
 
   const kgs = await prisma.asset.findMany({
     where: {
-      KnowledgeGroup: {
-        UserRole: {
-          some: {
-            AND: [
-              { userId: user?.id },
-              {
-                role: {
-                  equals: KG_OWNER,
-                },
-              },
-            ],
-          },
+      members: {
+        some: {
+          AND: [{ userId: user?.id }, { role: ASSET_OWNER }],
         },
       },
       isActive: true,
       status: ASSET_APPROVAL_PENDING,
     },
     include: {
-      AssetType: {
-        select: {
-          name: true,
-        },
-      },
+      assetType: true,
     },
     orderBy: {
       createdAt: 'desc',
@@ -301,18 +289,9 @@ export const getAssetsPendingReviewCount = async (
 
   const assetsToReviewCount = await prisma.asset.count({
     where: {
-      KnowledgeGroup: {
-        UserRole: {
-          some: {
-            AND: [
-              { userId: user?.id },
-              {
-                role: {
-                  equals: KG_OWNER,
-                },
-              },
-            ],
-          },
+      members: {
+        some: {
+          AND: [{ userId: user?.id }, { role: ASSET_OWNER }],
         },
       },
       isActive: true,
@@ -323,5 +302,70 @@ export const getAssetsPendingReviewCount = async (
   res.status(200).json({
     success: true,
     data: assetsToReviewCount,
+  })
+}
+
+export const getAssetMembers = async (
+  req: NextApiRequest,
+  res: NextApiResponse
+) => {
+  const assetId = req.query.assetId as string
+
+  const assetMembers = await prisma.assetMemberRole.findMany({
+    where: {
+      assetId: assetId,
+    },
+    include: {
+      member: true,
+    },
+  })
+
+  res.status(200).json({
+    success: true,
+    data: assetMembers.map((e) => ({ ...e.member, role: e.role })),
+  })
+}
+
+export const addMemberToAsset = async (
+  req: NextApiRequest,
+  res: NextApiResponse<ApiRes<boolean>>
+) => {
+  const userId = Number(req.body.userId)
+  const role = req.body.role as string
+  const assetId = req.query.assetId as string
+
+  await prisma.assetMemberRole.create({
+    data: {
+      assetId: assetId,
+      userId: userId,
+      role: role,
+    },
+  })
+
+  res.status(201).json({
+    success: true,
+    data: true,
+  })
+}
+
+export const removeMemberFromAsset = async (
+  req: NextApiRequest,
+  res: NextApiResponse<ApiRes<boolean>>
+) => {
+  const userId = Number(req.body.userId)
+  const assetId = req.query.assetId as string
+
+  await prisma.assetMemberRole.delete({
+    where: {
+      assetMemberIndex: {
+        userId: userId,
+        assetId: assetId,
+      },
+    },
+  })
+
+  res.status(201).json({
+    success: true,
+    data: true,
   })
 }

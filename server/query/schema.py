@@ -7,7 +7,7 @@ class QueryPayload(BaseModel):
     query: str
     chat_id: str
     user: str
-    collections: list[str]
+    asset_ids: list[str]
     embeddings: Optional[list[float]] = []
 
 

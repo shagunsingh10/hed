@@ -14,7 +14,6 @@ import MetadataForm from './Metadata'
 
 type CreateAssetFormProps = {
   projectId: string
-  kgId: string
   open: boolean
   onClose: () => void
   hideOneOnCreate: boolean
@@ -22,7 +21,6 @@ type CreateAssetFormProps = {
 
 const CreateAssetForm: FC<CreateAssetFormProps> = ({
   projectId,
-  kgId,
   open,
   onClose,
   hideOneOnCreate,
@@ -82,12 +80,11 @@ const CreateAssetForm: FC<CreateAssetFormProps> = ({
 
   const handleSubmit = async (values: any) => {
     const assetTypeKey = getAssetTypeFromId(values.assetType)
-    if (!kgId || !assetTypeKey) return
+    if (!assetTypeKey) return
 
     setLoading(true)
-    createAssetApi(projectId, kgId, {
+    createAssetApi(projectId, {
       assetTypeId: values.assetType,
-      knowledgeGroupId: kgId,
       name: values.name,
       description: values.description,
       tags: values.tags,
@@ -164,11 +161,7 @@ const CreateAssetForm: FC<CreateAssetFormProps> = ({
           </Grid.Col>
           <Grid.Col span={6}>
             {getAssetTypeFromId(form.values.assetType) === 'files' && (
-              <FilesAssetUploader
-                kgId={kgId}
-                projectId={projectId}
-                form={form}
-              />
+              <FilesAssetUploader form={form} />
             )}
             {getAssetTypeFromId(form.values.assetType) === 'github' && (
               <GithubForm form={form} />

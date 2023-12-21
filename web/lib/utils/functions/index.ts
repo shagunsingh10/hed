@@ -1,5 +1,5 @@
 export const globalDateFormatParser = (date: Date) => {
-  date = new Date(date)
+  date = new Date(date.toString())
   return new Intl.DateTimeFormat('en-US', {
     month: 'short',
     day: 'numeric',

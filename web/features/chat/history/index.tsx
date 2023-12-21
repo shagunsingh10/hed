@@ -1,6 +1,7 @@
 import { getChatsApi, loadMessagesApi } from '@/apis/chats'
+import OverlayLoader from '@/components/Loader'
 import { ChatWithoutMessage } from '@/types/chats'
-import { Input, NavLink, Text } from '@mantine/core'
+import { Group, Input, NavLink, Text } from '@mantine/core'
 import { showNotification } from '@mantine/notifications'
 import { IconMessage2, IconSearch } from '@tabler/icons-react'
 import { ChangeEvent, useEffect, useRef, useState } from 'react'
@@ -53,6 +54,7 @@ const getChatTimeline = (chats: ChatWithoutMessage[]): IChatGroups => {
 const ChatHistory = () => {
   // states
   const [filteredChats, setFilteredChats] = useState<ChatWithoutMessage[]>([])
+  const [loading, setLoading] = useState<boolean>(false)
   const setChats = useStore((state) => state.setChats)
   const setMessages = useStore((state) => state.setMessages)
   const setActiveChat = useStore((state) => state.setActiveChat)
@@ -93,6 +95,7 @@ const ChatHistory = () => {
   }, [activeChat?.id])
 
   useEffect(() => {
+    setLoading(true)
     getChatsApi()
       .then((chats) => {
         setChats(chats)
@@ -103,12 +106,14 @@ const ChatHistory = () => {
           color: 'red',
         })
       )
+      .finally(() => setLoading(false))
   }, [])
 
   useEffect(() => setFilteredChats(chats), [...chats])
 
   return (
     <div className={styles.chatHistory}>
+      {loading && <OverlayLoader />}
       <AddChatForm />
       <Input
         size="xs"
@@ -136,6 +141,13 @@ const ChatHistory = () => {
             ))}
           </>
         ))}
+        {chats.length === 0 && (
+          <Group justify="center">
+            <Text size="xs" fw={500} className={styles.timeline}>
+              No Chats
+            </Text>
+          </Group>
+        )}
       </div>
     </div>
   )

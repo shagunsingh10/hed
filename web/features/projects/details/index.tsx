@@ -1,29 +1,31 @@
 import { getProjectByIdApi } from '@/apis/projects'
 import OverlayLoader from '@/components/Loader'
+import Assets from '@/features/asset'
 import useStore from '@/store'
 import { Divider, NavLink, Title } from '@mantine/core'
 import { showNotification } from '@mantine/notifications'
 import {
-  IconHexagonalPrism,
-  IconPackage,
+  IconCube,
   IconSettings,
-  IconUser,
+  IconUsersGroup,
+  IconWhirl,
 } from '@tabler/icons-react'
 import { useParams } from 'next/navigation'
 import { useEffect, useState } from 'react'
-import KGScreen from '../../kg'
 import ProjectAdmins from '../admins'
 import ProjectSettings from '../settings'
 import styles from './details.module.scss'
 
 const ProjectDetailsScreen = () => {
-  const { projectId }: { projectId: string } = useParams()
+  const params: { projectId: string } = useParams()
+  const projectId = params?.projectId
   const project = useStore((state) => state.selectedprojectDetails)
   const setProject = useStore((state) => state.setSelectedProjectDetails)
   const [loading, setLoading] = useState<boolean>(false)
   const [activeTab, setActiveTab] = useState<number>(1)
 
   useEffect(() => {
+    if (!projectId) return
     setLoading(true)
     getProjectByIdApi(projectId)
       .then((project) => {
@@ -43,7 +45,7 @@ const ProjectDetailsScreen = () => {
   ) : (
     <div className={styles.projectDetailsContainer}>
       <div className={styles.title}>
-        <IconPackage size={23} />
+        <IconWhirl size={23} />
         <Title order={4}>{project?.name}</Title>
       </div>
       <Divider size="xs" />
@@ -51,14 +53,14 @@ const ProjectDetailsScreen = () => {
         <div className={styles.menuContent}>
           <NavLink
             className={styles.navItem}
-            leftSection={<IconHexagonalPrism size={15} />}
-            label="Knowledge Groups"
+            leftSection={<IconCube size={15} />}
+            label="Assets"
             active={activeTab == 1}
             onClick={() => setActiveTab(1)}
           />
           <NavLink
             className={styles.navItem}
-            leftSection={<IconUser size={15} />}
+            leftSection={<IconUsersGroup size={15} />}
             label="Admins"
             active={activeTab == 2}
             onClick={() => setActiveTab(2)}
@@ -73,7 +75,7 @@ const ProjectDetailsScreen = () => {
         </div>
         <Divider size="xs" orientation="vertical" />
         <div className={styles.tabContent}>
-          {activeTab == 1 && <KGScreen projectId={projectId} />}
+          {activeTab == 1 && <Assets projectId={projectId} />}
           {activeTab == 2 && <ProjectAdmins projectId={projectId} />}
           {activeTab == 3 && <ProjectSettings project={project} />}
         </div>

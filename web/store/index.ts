@@ -8,7 +8,6 @@ StateCreator<MyState, [["zustand/devtools", never]], [], MySlice>
 
 import { AssetsSlice } from '@/types/assets'
 import type { ChatsSlice, MessagesSlice } from '@/types/chats'
-import { KgsSlice } from '@/types/kgs'
 import type { ProjectsSlice } from '@/types/projects'
 import { AssetReviewSlice } from '@/types/review'
 import { SocketSlice } from '@/types/socket'
@@ -18,7 +17,6 @@ import {
   createAssetsReviewSlice,
   createAssetsSlice,
   createChatsSlice,
-  createKgsSlice,
   createMessagesSlice,
   createProjectsSlice,
   createSocketSlice,
@@ -29,7 +27,6 @@ const useStore = create<
   ProjectsSlice &
     ChatsSlice &
     MessagesSlice &
-    KgsSlice &
     AssetsSlice &
     SocketSlice &
     UsersSlice &
@@ -38,7 +35,6 @@ const useStore = create<
   ...createProjectsSlice(...a),
   ...createChatsSlice(...a),
   ...createMessagesSlice(...a),
-  ...createKgsSlice(...a),
   ...createAssetsSlice(...a),
   ...createSocketSlice(...a),
   ...createUsersSlice(...a),

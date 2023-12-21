@@ -1,4 +1,4 @@
-import { KG_CONTRIBUTOR, KG_OWNER } from '@/constants'
+import { ASSET_CONTRIBUTOR, ASSET_OWNER } from '@/constants'
 import { UNAUTHENTICATED, UNAUTHORIZED } from '@/constants/errors'
 import { ApiRes } from '@/types/api'
 import { NextApiHandler, NextApiRequest, NextApiResponse } from 'next'
@@ -89,14 +89,47 @@ const isPartOfProject = (handler: NextApiHandler) => {
       })
     }
 
-    const isAllowed = await prisma.knowledgeGroup.findFirst({
-      where: {
-        projectId: projectId,
-        UserRole: {
-          some: {
-            userId: Number(user.id),
+    const [isPartOfAsset, isProjectAdmin] = await prisma.$transaction([
+      prisma.asset.findFirst({
+        where: {
+          projectId: projectId,
+          members: {
+            some: {
+              userId: Number(user.id),
+            },
           },
         },
+      }),
+      prisma.projectAdmin.findFirst({
+        where: {
+          projectId: projectId,
+          userId: user?.id,
+        },
+      }),
+    ])
+
+    if (!isPartOfAsset && !isProjectAdmin) {
+      return res.status(403).json({
+        success: false,
+        error: UNAUTHORIZED,
+      })
+    }
+
+    await handler(req, res)
+  }
+}
+
+const hasOwnerAccessToAsset = (handler: NextApiHandler) => {
+  return async (req: NextApiRequest, res: NextApiResponse<ApiRes<string>>) => {
+    const assetId = req.query.assetId as string
+    const sessionToken = req.headers.sessiontoken as string
+    const user = await getUserInfoFromSessionToken(sessionToken)
+
+    const isAllowed = await prisma.assetMemberRole.findFirst({
+      where: {
+        assetId: assetId,
+        role: ASSET_OWNER,
+        userId: user?.id,
       },
     })
 
@@ -111,35 +144,17 @@ const isPartOfProject = (handler: NextApiHandler) => {
   }
 }
 
-const hasOwnerAccessToKg = (handler: NextApiHandler) => {
+const hasContributorAccessToAsset = (handler: NextApiHandler) => {
   return async (req: NextApiRequest, res: NextApiResponse<ApiRes<string>>) => {
-    const kgId = req.query.kgId as string
+    const assetId = req.query.assetId as string
     const sessionToken = req.headers.sessiontoken as string
-
     const user = await getUserInfoFromSessionToken(sessionToken)
 
-    if (!user) {
-      return res.status(401).json({
-        success: false,
-        error: UNAUTHENTICATED,
-      })
-    }
-
-    const isAllowed = await prisma.knowledgeGroup.findFirst({
+    const isAllowed = await prisma.assetMemberRole.findFirst({
       where: {
-        id: kgId,
-        UserRole: {
-          some: {
-            AND: [
-              { userId: Number(user.id) },
-              {
-                role: {
-                  equals: KG_OWNER,
-                },
-              },
-            ],
-          },
-        },
+        assetId: assetId,
+        userId: user?.id,
+        OR: [{ role: ASSET_OWNER }, { role: ASSET_CONTRIBUTOR }],
       },
     })
 
@@ -154,80 +169,16 @@ const hasOwnerAccessToKg = (handler: NextApiHandler) => {
   }
 }
 
-const hasContributorAccessToKg = (handler: NextApiHandler) => {
+const hasViewerAccessToAsset = (handler: NextApiHandler) => {
   return async (req: NextApiRequest, res: NextApiResponse<ApiRes<string>>) => {
-    const kgId = req.query.kgId as string
+    const assetId = req.query.assetId as string
     const sessionToken = req.headers.sessiontoken as string
-
     const user = await getUserInfoFromSessionToken(sessionToken)
 
-    if (!user) {
-      return res.status(401).json({
-        success: false,
-        error: UNAUTHENTICATED,
-      })
-    }
-
-    const isAllowed = await prisma.knowledgeGroup.findFirst({
+    const isAllowed = await prisma.assetMemberRole.findFirst({
       where: {
-        id: kgId,
-        UserRole: {
-          some: {
-            AND: [
-              { userId: Number(user.id) },
-              {
-                OR: [
-                  {
-                    role: {
-                      equals: KG_OWNER,
-                    },
-                  },
-                  {
-                    role: {
-                      equals: KG_CONTRIBUTOR,
-                    },
-                  },
-                ],
-              },
-            ],
-          },
-        },
-      },
-    })
-
-    if (!isAllowed) {
-      return res.status(403).json({
-        success: false,
-        error: UNAUTHORIZED,
-      })
-    }
-
-    await handler(req, res)
-  }
-}
-
-const hasViewerAccessToKg = (handler: NextApiHandler) => {
-  return async (req: NextApiRequest, res: NextApiResponse<ApiRes<string>>) => {
-    const kgId = req.query.kgId as string
-    const sessionToken = req.headers.sessiontoken as string
-
-    const user = await getUserInfoFromSessionToken(sessionToken)
-
-    if (!user) {
-      return res.status(401).json({
-        success: false,
-        error: UNAUTHENTICATED,
-      })
-    }
-
-    const isAllowed = await prisma.knowledgeGroup.findFirst({
-      where: {
-        id: kgId,
-        UserRole: {
-          some: {
-            userId: Number(user.id),
-          },
-        },
+        assetId: assetId,
+        userId: user?.id,
       },
     })
 
@@ -247,7 +198,7 @@ export {
   isAuthenticatedUser,
   isProjectAdmin,
   isPartOfProject,
-  hasOwnerAccessToKg,
-  hasViewerAccessToKg,
-  hasContributorAccessToKg,
+  hasOwnerAccessToAsset,
+  hasContributorAccessToAsset,
+  hasViewerAccessToAsset,
 }

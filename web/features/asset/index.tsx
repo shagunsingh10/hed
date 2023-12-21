@@ -1,4 +1,5 @@
 import { getAssetsApi } from '@/apis/assets'
+import OverlayLoader from '@/components/Loader'
 import { useDebouncedCallback } from '@/hooks/useDebounceCallback'
 import useStore from '@/store'
 import { Asset } from '@/types/assets'
@@ -10,14 +11,13 @@ import styles from './asset.module.scss'
 import CreateAssetForm from './create-form'
 import AssetList from './list'
 
-type KGScreenProps = {
+type IAssetsProps = {
   projectId: string
-  kgId: string
 }
 
 const PAGE_SIZE = 12
 
-const KGScreen: React.FC<KGScreenProps> = ({ projectId, kgId }) => {
+const Assets: React.FC<IAssetsProps> = ({ projectId }) => {
   const [loading, setLoading] = useState<boolean>(false)
   const [filteredAsset, setFilteredAsset] = useState<Asset[]>([])
   const [open, setOpen] = useState<boolean>(false)
@@ -47,7 +47,7 @@ const KGScreen: React.FC<KGScreenProps> = ({ projectId, kgId }) => {
     const start = PAGE_SIZE * (page - 1)
     const end = PAGE_SIZE * page
     setLoading(true)
-    getAssetsApi(projectId, kgId, start, end)
+    getAssetsApi(projectId, start, end)
       .then((assetsData) => {
         setAssets(assetsData.assets)
         setTotalAssets(assetsData.totalAssets)
@@ -61,6 +61,8 @@ const KGScreen: React.FC<KGScreenProps> = ({ projectId, kgId }) => {
       })
       .finally(() => setLoading(false))
   }, [page])
+
+  if (loading) return <OverlayLoader />
 
   return (
     <div className={styles.assetContainer}>
@@ -82,7 +84,6 @@ const KGScreen: React.FC<KGScreenProps> = ({ projectId, kgId }) => {
       </div>
       <AssetList
         projectId={projectId}
-        kgId={kgId}
         assets={filteredAsset}
         loading={loading}
         page={page}
@@ -92,7 +93,6 @@ const KGScreen: React.FC<KGScreenProps> = ({ projectId, kgId }) => {
       />
       <CreateAssetForm
         projectId={projectId}
-        kgId={kgId}
         open={open}
         onClose={() => setOpen(false)}
         hideOneOnCreate={totalAssets + 1 > PAGE_SIZE}
@@ -101,4 +101,4 @@ const KGScreen: React.FC<KGScreenProps> = ({ projectId, kgId }) => {
   )
 }
 
-export default KGScreen
+export default Assets

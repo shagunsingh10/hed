@@ -14,7 +14,7 @@ export const getAllDocsInAsset = async (
       assetId: assetId,
     },
     include: {
-      DocStatus: {
+      statusLog: {
         select: {
           id: true,
           status: true,

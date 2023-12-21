@@ -1,6 +1,6 @@
-import { addUserToKgApi } from '@/apis/kgs'
+import { addMemberToAssetApi } from '@/apis/assets'
 import { getAllUsersApi } from '@/apis/users'
-import { KG_CONTRIBUTOR, KG_OWNER, KG_VIEWER } from '@/constants'
+import { ASSET_CONTRIBUTOR, ASSET_OWNER, ASSET_VIEWER } from '@/constants'
 import useStore from '@/store'
 import {
   Button,
@@ -17,14 +17,14 @@ import { FC, useEffect, useState } from 'react'
 
 type createKgFormProps = {
   projectId: string
-  kgId: string
+  assetId: string
   open: boolean
   onClose: () => void
 }
 
 const AddUserForm: FC<createKgFormProps> = ({
   projectId,
-  kgId,
+  assetId,
   open,
   onClose,
 }) => {
@@ -55,7 +55,7 @@ const AddUserForm: FC<createKgFormProps> = ({
 
   const handleSubmit = async (values: any) => {
     setLoading(true)
-    addUserToKgApi(projectId, kgId, values.user, values.role)
+    addMemberToAssetApi(projectId, assetId, values.user, values.role)
       .then(() => {
         showNotification({
           color: 'green',
@@ -114,7 +114,7 @@ const AddUserForm: FC<createKgFormProps> = ({
           filter={optionsFilter}
           searchable
           {...form.getInputProps('role')}
-          data={[KG_VIEWER, KG_CONTRIBUTOR, KG_OWNER]}
+          data={[ASSET_VIEWER, ASSET_CONTRIBUTOR, ASSET_OWNER]}
         />
         <Group mt="lg" justify="flex-end">
           <Button type="submit" loading={loading} size="xs">

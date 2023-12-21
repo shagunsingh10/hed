@@ -48,80 +48,57 @@ model Session {
 }
 
 model User {
-  id            Int       @id @default(autoincrement())
-  name          String?
-  email         String?
-  emailVerified DateTime?
-  image         String?
-
+  id                  Int                   @id @default(autoincrement())
+  name                String?
+  email               String?
+  emailVerified       DateTime?
+  image               String?
   ownedAssets         Asset[]
   chats               Chat[]
-  UserRole            UserRole[]
-  projectAdmins       ProjectAdmin[]
-  AssetReviewComments AssetReviewComments[]
+  assets              AssetMemberRole[]
+  adminProjects       ProjectAdmin[]
+  assetReviewComments AssetReviewComments[]
 
   @@map("users")
 }
 
 model Project {
-  id          String    @id @default(cuid())
+  id          String         @id @default(cuid())
   name        String
   description String?
   tags        String?
-  isActive    Boolean   @default(true)
+  isActive    Boolean        @default(true)
   createdBy   String
-  createdAt   DateTime  @default(now())
+  createdAt   DateTime       @default(now())
   updatedBy   DateTime?
   updatedAt   String?
-
-  knowledgeGroups KnowledgeGroup[]
-  Chat            Chat[]
-  admins          ProjectAdmin[]
+  assets      Asset[]
+  chats       Chat[]
+  admins      ProjectAdmin[]
 
   @@map("projects")
 }
 
 model ProjectAdmin {
-  id        String @id @default(cuid())
+  id        String  @id @default(cuid())
   userId    Int
   projectId String
+  project   Project @relation(fields: [projectId], references: [id])
+  user      User    @relation(fields: [userId], references: [id])
 
-  Project Project @relation(fields: [projectId], references: [id])
-  User    User    @relation(fields: [userId], references: [id])
-
-  @@unique([projectId, userId], name: "UserProjectIndex")
+  @@unique([projectId, userId], name: "projectAdminIndex")
   @@map("project_admins")
 }
 
-model KnowledgeGroup {
-  id          String    @id @default(cuid())
-  name        String
-  description String?
-  tags        String?
-  projectId   String
-  isActive    Boolean   @default(true)
-  createdBy   String
-  createdAt   DateTime  @default(now())
-  updatedBy   DateTime?
-  updatedAt   String?
+model AssetMemberRole {
+  id      String @id @default(cuid())
+  assetId String
+  userId  Int
+  role    String
+  asset   Asset? @relation(fields: [assetId], references: [id])
+  member  User   @relation(fields: [userId], references: [id])
 
-  Project  Project?   @relation(fields: [projectId], references: [id])
-  assets   Asset[]
-  UserRole UserRole[]
-
-  @@map("knowledge_groups")
-}
-
-model UserRole {
-  id               String @id @default(cuid())
-  knowledgeGroupId String
-  userId           Int
-  role             String
-
-  KnowledgeGroup KnowledgeGroup? @relation(fields: [knowledgeGroupId], references: [id])
-  User           User            @relation(fields: [userId], references: [id])
-
-  @@unique([knowledgeGroupId, userId], name: "UserKnowledgeGroupIndex")
+  @@unique([assetId, userId], name: "assetMemberIndex")
   @@map("user_roles")
 }
 
@@ -130,33 +107,32 @@ model AssetType {
   key      String  @unique
   name     String
   isActive Boolean @default(true)
-
-  assets Asset[]
+  assets   Asset[]
 
   @@map("asset_types")
 }
 
 model Asset {
-  id               String   @id @default(cuid())
-  name             String
-  description      String?
-  assetTypeId      String
-  tags             String?
-  knowledgeGroupId String
-  readerKwargs     String?
-  extraMetadata    Json?
-  status           String   @default("pending")
-  ownerUserId      Int
-  isActive         Boolean  @default(true)
-  createdBy        String
-  createdAt        DateTime @default(now())
-
-  AssetType           AssetType             @relation(fields: [assetTypeId], references: [id])
-  KnowledgeGroup      KnowledgeGroup        @relation(fields: [knowledgeGroupId], references: [id])
-  docs                Doc[]
-  User                User                  @relation(fields: [ownerUserId], references: [id])
-  Logs                AssetLog[]
-  AssetReviewComments AssetReviewComments[]
+  id             String                @id @default(cuid())
+  name           String
+  description    String?
+  assetTypeId    String
+  tags           String?
+  projectId      String
+  readerKwargs   String?
+  extraMetadata  Json?
+  status         String
+  ownerUserId    Int
+  isActive       Boolean               @default(true)
+  createdBy      String
+  createdAt      DateTime              @default(now())
+  assetType      AssetType             @relation(fields: [assetTypeId], references: [id])
+  owner          User                  @relation(fields: [ownerUserId], references: [id])
+  project        Project?              @relation(fields: [projectId], references: [id])
+  members        AssetMemberRole[]
+  docs           Doc[]
+  logs           AssetLog[]
+  reviewComments AssetReviewComments[]
 
   @@map("assets")
 }
@@ -167,8 +143,7 @@ model AssetLog {
   content   String
   type      String   @default("INFO")
   assetId   String
-
-  Asset Asset @relation(fields: [assetId], references: [id])
+  asset     Asset    @relation(fields: [assetId], references: [id])
 
   @@map("asset_logs")
 }
@@ -179,22 +154,20 @@ model AssetReviewComments {
   comment   String
   userId    Int
   assetId   String
-
-  Asset Asset @relation(fields: [assetId], references: [id])
-  User  User  @relation(fields: [userId], references: [id])
+  asset     Asset    @relation(fields: [assetId], references: [id])
+  reviewer  User     @relation(fields: [userId], references: [id])
 
   @@map("asset_review_comments")
 }
 
 model Doc {
-  id       String  @id @default(cuid())
-  doc_id   String
-  name     String
-  assetId  String
-  metadata String?
-
+  id        String      @id @default(cuid())
+  doc_id    String
+  name      String
+  assetId   String
+  metadata  String?
   asset     Asset       @relation(fields: [assetId], references: [id], onDelete: Cascade)
-  DocStatus DocStatus[]
+  statusLog DocStatus[]
 
   @@unique([doc_id])
   @@map("docs")
@@ -207,24 +180,22 @@ model DocStatus {
   status    String
   timestamp DateTime @default(now())
   message   String?
-
-  doc Doc @relation(fields: [doc_id], references: [doc_id], onDelete: Cascade)
+  doc       Doc      @relation(fields: [doc_id], references: [doc_id], onDelete: Cascade)
 
   @@map("doc_status")
 }
 
 model Chat {
-  id            String   @id @default(cuid())
+  id            String    @id @default(cuid())
   title         String?
   userId        Int
   projectId     String?
-  isActive      Boolean  @default(true)
-  createdAt     DateTime @default(now())
-  lastMessageAt DateTime @default(now())
-
-  User    User      @relation(fields: [userId], references: [id])
-  Message Message[]
-  Project Project?  @relation(fields: [projectId], references: [id])
+  isActive      Boolean   @default(true)
+  createdAt     DateTime  @default(now())
+  lastMessageAt DateTime  @default(now())
+  project       Project?  @relation(fields: [projectId], references: [id])
+  user          User      @relation(fields: [userId], references: [id])
+  messages      Message[]
 
   @@map("chats")
 }
@@ -236,8 +207,7 @@ model Message {
   isResponse Boolean
   timestamp  DateTime @default(now())
   chatId     String
-
-  chat Chat @relation(fields: [chatId], references: [id])
+  chat       Chat     @relation(fields: [chatId], references: [id])
 
   @@map("messages")
 }

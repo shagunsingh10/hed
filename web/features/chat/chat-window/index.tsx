@@ -1,19 +1,22 @@
 import { addNewChatApi, loadMessagesApi } from '@/apis/chats'
 import { globalDateFormatParser } from '@/lib/utils/functions'
 import { Message } from '@/types/chats'
-import { ActionIcon, Avatar, Skeleton, Text, Textarea } from '@mantine/core'
+import {
+  ActionIcon,
+  Avatar,
+  Group,
+  Loader,
+  Text,
+  Textarea,
+} from '@mantine/core'
 import { showNotification } from '@mantine/notifications'
-import { IconBulb, IconSend } from '@tabler/icons-react'
-import { FC, useEffect, useRef, useState } from 'react'
+import { IconBulb, IconMessagePlus, IconSend } from '@tabler/icons-react'
+import { useEffect, useRef, useState } from 'react'
 import useStore from '../../../store'
 import MessageBody from '../message'
 import styles from './chat.module.scss'
 
-type ChatWindowProps = {
-  projectId?: string
-}
-
-const ChatWindow: FC<ChatWindowProps> = () => {
+const ChatWindow = () => {
   // states
   const [inputValue, setInputValue] = useState<string>('')
   const [loading, setLoading] = useState<boolean>(false)
@@ -78,8 +81,8 @@ const ChatWindow: FC<ChatWindowProps> = () => {
   }, [{ ...messages }])
 
   useEffect(() => {
-    setLoading(true)
     if (activeChat?.id) {
+      setLoading(true)
       loadMessagesApi(activeChat.id)
         .then((messages) => setMessages(messages))
         .catch(() =>
@@ -96,7 +99,16 @@ const ChatWindow: FC<ChatWindowProps> = () => {
     setuserAvatarSrc(localStorage.getItem('userAvatarSrc') || '')
   }, [])
 
-  if (loading) return <Skeleton />
+  if (loading) return <Loader />
+
+  if (!activeChat) {
+    return (
+      <Group justify="center" opacity={0.3} h="80vh" align="center">
+        <IconMessagePlus size={40} />
+        <Text>Create your first chat to start talking</Text>
+      </Group>
+    )
+  }
 
   return (
     <div className={styles.chatWindow}>

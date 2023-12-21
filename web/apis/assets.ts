@@ -12,12 +12,11 @@ export const getAssetTypesApi = async () => {
 
 export const getAssetsApi = async (
   projectId: string,
-  kgId: string,
   start: number = 0,
   end: number = 10
 ) => {
   const res = await fetcher.get(
-    `/api/projects/${projectId}/kgs/${kgId}/assets?start=${start}&end=${end}`
+    `/api/projects/${projectId}/assets?start=${start}&end=${end}`
   )
   const resData = await res.json()
   if (!resData.success) {
@@ -28,11 +27,10 @@ export const getAssetsApi = async (
 
 export const createAssetApi = async (
   projectId: string,
-  kgId: string,
   data: CreateAssetData
 ) => {
   const res = await fetcher.post<CreateAssetData>(
-    `/api/projects/${projectId}/kgs/${kgId}/assets`,
+    `/api/projects/${projectId}/assets`,
     data,
     {
       headers: {
@@ -47,23 +45,13 @@ export const createAssetApi = async (
   return resData.data
 }
 
-export const deleteAssetApi = async (
-  projectId: string,
-  kgId: string,
-  assetId: string
-) => {
-  await fetcher.delete(
-    `/api/projects/${projectId}/kgs/${kgId}/assets/${assetId}`
-  )
+export const deleteAssetApi = async (projectId: string, assetId: string) => {
+  await fetcher.delete(`/api/projects/${projectId}/assets/${assetId}`)
 }
 
-export const getAssetLogsApi = async (
-  projectId: string,
-  kgId: string,
-  assetId: string
-) => {
+export const getAssetLogsApi = async (projectId: string, assetId: string) => {
   const res = await fetcher.get(
-    `/api/projects/${projectId}/kgs/${kgId}/assets/${assetId}/logs`
+    `/api/projects/${projectId}/assets/${assetId}/logs`
   )
   const resData = await res.json()
   if (!resData.success) {
@@ -72,13 +60,9 @@ export const getAssetLogsApi = async (
   return resData.data
 }
 
-export const getAssetDocsApi = async (
-  projectId: string,
-  kgId: string,
-  assetId: string
-) => {
+export const getAssetDocsApi = async (projectId: string, assetId: string) => {
   const res = await fetcher.get(
-    `/api/projects/${projectId}/kgs/${kgId}/assets/${assetId}/docs`
+    `/api/projects/${projectId}/assets/${assetId}/docs`
   )
   const resData = await res.json()
   if (!resData.success) {
@@ -107,14 +91,75 @@ export const getAssetsToReviewCountApi = async () => {
 
 export const approveAssetApi = async (
   projectId: string,
-  kgId: string,
   assetId: string,
   status: string
 ) => {
   const res = await fetcher.post(
-    `/api/projects/${projectId}/kgs/${kgId}/assets/${assetId}/approve`,
+    `/api/projects/${projectId}/assets/${assetId}/approve`,
     {
       status: status,
+    },
+    {
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    }
+  )
+  const resData = await res.json()
+  if (!resData.success) {
+    throw Error(resData.error)
+  }
+  return resData.data
+}
+
+export const getAssetMemebersApi = async (
+  projectId: string,
+  assetId: string
+) => {
+  const res = await fetcher.get(
+    `/api/projects/${projectId}/assets/${assetId}/members`
+  )
+  const resData = await res.json()
+  if (!resData.success) {
+    throw Error(resData.error)
+  }
+  return resData.data
+}
+
+export const addMemberToAssetApi = async (
+  projectId: string,
+  assetId: string,
+  userId: string,
+  role: string
+) => {
+  const res = await fetcher.post(
+    `/api/projects/${projectId}/assets/${assetId}/members`,
+    {
+      userId: userId,
+      role: role,
+    },
+    {
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    }
+  )
+  const resData = await res.json()
+  if (!resData.success) {
+    throw Error(resData.error)
+  }
+  return resData.data
+}
+
+export const removeMemberFromAssetApi = async (
+  projectId: string,
+  assetId: string,
+  userId: number
+) => {
+  const res = await fetcher.delete(
+    `/api/projects/${projectId}/assets/${assetId}/members`,
+    {
+      userId: userId,
     },
     {
       headers: {
