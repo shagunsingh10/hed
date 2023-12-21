@@ -15,7 +15,7 @@ type IAssetsProps = {
   projectId: string
 }
 
-const PAGE_SIZE = 12
+const PAGE_SIZE = 13
 
 const Assets: React.FC<IAssetsProps> = ({ projectId }) => {
   const [loading, setLoading] = useState<boolean>(false)

@@ -21,12 +21,13 @@ ADD requirements.txt /app/requirements.txt
 # Install dependencies from requirements.txt
 RUN pip install -r requirements.txt
 RUN pip install minio
+RUN pip install ray
+RUN pip install 'ray[data]'
 
 # Copy the contents of the current directory (where Dockerfile is located) into the container at /app
 ADD . /app
 
 # Run the specified commands when the container launches
-CMD celery -A celeryapp worker -c 1 -Q ingestionqueue -n ingestionworker -l info &\
-    celery -A celeryapp worker -c 2 -Q queryqueue -n queryworker -l info &\
-    python main.py
+CMD python main.py
 
+# ray start --head --port=6379  --dashboard-host=0.0.0.0 --dashboard-port=8265 & 

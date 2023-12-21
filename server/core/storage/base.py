@@ -1,52 +1,54 @@
-import json
-
-from qdrant_client import QdrantClient
-from qdrant_client.http import models
-from qdrant_client.http.exceptions import UnexpectedResponse
-
+from minio import Minio
+from minio.error import S3Error
+from minio.versioningconfig import VersioningConfig, ENABLED
+import io
+from utils.logger import logger
 from core.schema import CustomDoc
 
-DEFAULT_VECTOR_DIM = 384
 
-
-class VectorStore:
-    def __init__(self, collection_name, dim=DEFAULT_VECTOR_DIM, base_url="172.17.0.1"):
-        self._client = QdrantClient(base_url, port=6333)
-        self._collection_name = collection_name
-        self._dim = dim
-        self._create_collection_if_not_exists()
-
-    def _create_collection_if_not_exists(self):
+class MinioStorage:
+    def __init__(self, endpoint, access_key, secret_key):
         try:
-            self._client.get_collection(self._collection_name)
-        except (UnexpectedResponse, ValueError):
-            self._client.create_collection(
-                collection_name=self._collection_name,
-                vectors_config=models.VectorParams(
-                    size=self._dim, distance=models.Distance.COSINE, on_disk=True
-                ),
-                on_disk_payload=True,
-                hnsw_config=models.HnswConfigDiff(on_disk=True),
+            self.client = Minio(
+                endpoint, access_key=access_key, secret_key=secret_key, secure=False
             )
+        except S3Error as exc:
+            logger.exception(f"Cannot connect to minio: {str(exc)}")
 
-    def _get_points_from_chunks(self, doc: CustomDoc):
-        points = []
-        for chunk in doc.chunks:
-            points.append(
-                models.PointStruct(
-                    id=chunk.chunk_id,
-                    payload={
-                        "doc_id": doc.doc_id,
-                        "metadata": json.dumps(doc.metadata),
-                        "text": chunk.text,
-                    },
-                    vector=chunk.embeddings,
-                )
-            )
-        return points
+    def create_bucket_if_not_exists(self, bucket_name):
+        found = self.client.bucket_exists(bucket_name)
+        if not found:
+            self.client.make_bucket(bucket_name)
+            self.client.set_bucket_versioning(bucket_name, VersioningConfig(ENABLED))
 
-    def save_doc(self, doc: CustomDoc, batch_size=100):
-        points = self._get_points_from_chunks(doc)
-        for i in range(0, len(points), batch_size):
-            batch = points[i : i + batch_size]
-            self._client.upsert(collection_name=self._collection_name, points=batch)
+    def upload_document(self, document: CustomDoc):
+        self.create_bucket_if_not_exists(document.asset_id)
+        bucket_name = document.asset_id
+        object_name = document.doc_id + ".txt"
+        content_binary = document.text.encode("utf-8")
+        length = len(content_binary)
+        content = io.BytesIO(content_binary)
+        self.client.put_object(
+            bucket_name=bucket_name,
+            object_name=object_name,
+            data=content,
+            length=length,
+            metadata=document.metadata,
+            num_parallel_uploads=1,
+        )
+
+    def upload_documents(self, documents: list[CustomDoc], batch_size=50):
+        for i in range(0, len(documents), min(batch_size, len(documents))):
+            batch = documents[i : i + batch_size]
+            self.upload_batch(batch)
+
+    def upload_batch(self, batch: list[CustomDoc]):
+        for doc in batch:
+            self.upload_document(doc)
+
+    def delete_documents(self, bucket_name, document_names):
+        for document_name in document_names:
+            try:
+                self.client.remove_object(bucket_name, document_name)
+            except S3Error as exc:
+                logger.error(f"Error deleting document {document_name}: {exc}")

@@ -61,12 +61,13 @@ supported_languages = {
 
 
 class Chunker:
-    def chunk_doc(
+    def __call__(
         self,
-        doc: CustomDoc,
+        doc: dict[str, CustomDoc],
         chunk_size=DEFAULT_CHUNK_SIZE,
         chunk_overlap=DEFAULT_CHUNK_OVERLAP,
     ) -> CustomDoc:
+        doc = doc.get("item")
         ext = doc.filename.split(".")[-1] if doc.filename else "generic"
         language = supported_languages.get(ext)
 
@@ -84,7 +85,6 @@ class Chunker:
             )
 
         text_splits = text_splitter.split_text(doc.text)
-        print("SPLITS", len(text_splits))
         chunks = [Chunk(chunk_id=str(uuid.uuid4()), text=text) for text in text_splits]
         doc.chunks = chunks
-        return doc
+        return {"doc": doc}

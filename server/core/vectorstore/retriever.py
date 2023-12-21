@@ -2,10 +2,8 @@ from qdrant_client import QdrantClient
 from qdrant_client.http import models
 from qdrant_client.http.exceptions import UnexpectedResponse
 from sentence_transformers import CrossEncoder
+from core.schema import ContextChunk, QueryPayload
 
-from query.schema import ContextChunk, QueryPayload, QueryWithContext
-
-model = CrossEncoder("cross-encoder/ms-marco-TinyBERT-L-2-v2", max_length=512)
 
 DEFAULT_VECTOR_DIM = 384
 MODEL_CONTEXT_LENGTH = 4097
@@ -13,29 +11,22 @@ MODEL_CONTEXT_LENGTH = 4097
 
 class VectorStoreRetriever:
     def __init__(self, base_url="172.17.0.1"):
+        self.model = CrossEncoder(
+            "cross-encoder/ms-marco-TinyBERT-L-2-v2", max_length=512
+        )
         self._client = QdrantClient(base_url, port=6333)
-
-    def _get_number_of_chunks(
-        self,
-        query: str,
-        model_context_length=MODEL_CONTEXT_LENGTH,
-        vector_dim=DEFAULT_VECTOR_DIM,
-    ):
-        # return one less for safety
-        return ((model_context_length - len(query)) // vector_dim) - 1
 
     def _search_chunks_by_vectors(
         self, collection: str, vector: list[float]
     ) -> list[models.ScoredPoint]:
         try:
-            chunks = self._client.search(
+            return self._client.search(
                 collection_name=collection,
                 query_vector=vector,
                 with_payload=True,
                 with_vectors=False,
                 limit=10,
             )
-            return self._remove_duplicate_chunks(chunks)
         except UnexpectedResponse:
             return []
 
@@ -43,7 +34,7 @@ class VectorStoreRetriever:
         self, collection: str, text: str, vector: list[float]
     ) -> list[models.ScoredPoint]:
         try:
-            chunks = self._client.search(
+            return self._client.search(
                 collection_name=collection,
                 query_vector=vector,
                 query_filter=models.Filter(
@@ -62,7 +53,6 @@ class VectorStoreRetriever:
                 with_vectors=False,
                 limit=10,
             )
-            return self._remove_duplicate_chunks(chunks)
         except UnexpectedResponse:
             return []
 
@@ -71,38 +61,17 @@ class VectorStoreRetriever:
     ):
         text_match_chunks = self._search_chunks_by_text_match(collection, text, vector)
         vector_search_chunks = self._search_chunks_by_vectors(collection, vector)
-        ranked_chunks = self._merge_and_rank_chunks(
-            text_match_chunks, vector_search_chunks
-        )
-        return self._remove_duplicate_chunks(ranked_chunks)
+        text_match_chunks.extend(vector_search_chunks)
+        return self._remove_duplicate_chunks(text_match_chunks)
 
-    def _merge_and_rank_chunks(
-        self, chunks1: list[models.ScoredPoint], chunks2: list[models.ScoredPoint]
-    ) -> list[models.ScoredPoint]:
-        merged_dict: dict[str, models.ScoredPoint] = {}
-        for item in chunks1:
-            merged_dict[item.id] = item
-
-        for item in chunks2:
-            if item.id in merged_dict:
-                stored_item = merged_dict[item.id]
-                item.score = (1 + item.score) * stored_item.score
-            merged_dict[item.id] = item
-
-        ranked_chunks = sorted(
-            merged_dict.values(), key=lambda x: x.score, reverse=True
-        )
-
-        return ranked_chunks
-
-    def _rerank_model(
+    def _rerank_chunks(
         self, chunks1: list[models.ScoredPoint], chunks2: list[models.ScoredPoint]
     ) -> list[models.ScoredPoint]:
         combined_chunks = chunks1 + chunks2
         query_paragraph_pairs = [
             ("Query", chunk.payload.get("text")) for chunk in combined_chunks
         ]
-        scores = model.predict(query_paragraph_pairs)
+        scores = self.model.predict(query_paragraph_pairs)
 
         # Update scores in the ranked_chunks
         for chunk, score in zip(combined_chunks, scores):
@@ -123,32 +92,24 @@ class VectorStoreRetriever:
                 unique_chunks.append(chunk)
         return unique_chunks
 
-    def get_contexts(self, query: QueryPayload):
+    def __call__(self, query: QueryPayload) -> list[ContextChunk]:
         # TODO: Current strategy is not correct implementation of hybrid search
         # Implement this: https://qdrant.tech/articles/hybrid-search/
         # Use TEI to host a reranker model
-
-        all_chunks = []
-        for collection in query.asset_ids:
+        all = []
+        for asset_id in query.asset_ids:
             retrieved_chunks = self._search_chunks_in_collection(
-                collection, query.query, query.embeddings
+                asset_id,
+                query.query,
+                query.embeddings,
             )
-            all_chunks.extend(retrieved_chunks)
-        unique_chunks = self._remove_duplicate_chunks(all_chunks)
-
-        contexts = [
-            ContextChunk(
-                text=chunk.payload.get("text"),
-                metadata=chunk.payload.get("metadata"),
-            )
-            for chunk in unique_chunks
-        ]
-        num_contexts = self._get_number_of_chunks(query.query)
-        relevant_contexts = contexts[0:num_contexts]
-
-        return QueryWithContext(
-            query=query.query,
-            chat_id=query.chat_id,
-            context=relevant_contexts,
-            user=query.user,
-        )
+            relevant_contexts = [
+                ContextChunk(
+                    text=chunk.payload.get("text"),
+                    metadata=chunk.payload.get("metadata"),
+                )
+                for chunk in retrieved_chunks
+            ]
+            all.extend(relevant_contexts)
+        print("RELCONcdjSV")
+        return all
