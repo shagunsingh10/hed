@@ -1,4 +1,4 @@
-import AssetReviewList from '@/features/review'
+import AssetReviewList from '@/features/asset/review'
 
 const ReviewScreen = () => {
   return <AssetReviewList />

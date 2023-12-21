@@ -2,7 +2,7 @@
 
 .assetListContainer {
   width: 100%;
-  max-height: 80vh;
+  height: 80vh;
   overflow-y: auto !important;
   transition: opacity 0.5s ease-in;
 
@@ -11,7 +11,7 @@
   }
 
   * {
-    font-size: 0.7rem;
+    font-size: 0.6rem !important;
   }
 
   .assetMembers {
@@ -49,10 +49,9 @@
 
   .status {
     display: flex;
-    padding: 0.1rem 0.4rem;
     align-items: center;
     gap: 0.2rem;
-    border-radius: 0.4rem;
+    border-radius: 0.1rem;
     justify-content: center;
   }
 }

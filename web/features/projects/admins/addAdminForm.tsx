@@ -71,7 +71,8 @@ const AddUserForm: FC<createKgFormProps> = ({ projectId, open, onClose }) => {
   }
 
   useEffect(() => {
-    if (!users) {
+    console.log({ users })
+    if (!users || users.length === 0) {
       getAllUsersApi()
         .then((users) => setUsers(users))
         .catch((e: Error) => {

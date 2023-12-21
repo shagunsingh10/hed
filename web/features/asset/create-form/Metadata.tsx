@@ -20,7 +20,7 @@ const MetadataForm: FC<ISubFormProps> = ({ form, assetTypes, users }) => {
   const optionsFilter: OptionsFilter = ({ options, search }) => {
     const splittedSearch = search.toLowerCase().trim().split(' ')
     return (options as ComboboxItem[]).filter((option) => {
-      const words = option.label.toLowerCase().trim().split(' ')
+      const words = option.value.toLowerCase().trim().split(' ')
       return splittedSearch.every((searchWord) =>
         words.some((word) => word.includes(searchWord))
       )
@@ -35,7 +35,7 @@ const MetadataForm: FC<ISubFormProps> = ({ form, assetTypes, users }) => {
         label="Asset Type"
         mb="md"
         size="xs"
-        placeholder="Select the user you want to add"
+        placeholder="Select the asset type"
         filter={optionsFilter}
         searchable
         {...form.getInputProps('assetType')}

@@ -1,15 +1,11 @@
 from qdrant_client import QdrantClient
 from qdrant_client.http import models
 from qdrant_client.http.exceptions import UnexpectedResponse
+from sentence_transformers import CrossEncoder
 
 from query.schema import ContextChunk, QueryPayload, QueryWithContext
-# from sentence_transformers import CrossEncoder
 
-# model = CrossEncoder("model_name", max_length=512)
-# scores = model.predict(
-#     [("Query", "Paragraph1"), ("Query", "Paragraph2"), ("Query", "Paragraph3")]
-# )
-
+model = CrossEncoder("cross-encoder/ms-marco-TinyBERT-L-2-v2", max_length=512)
 
 DEFAULT_VECTOR_DIM = 384
 MODEL_CONTEXT_LENGTH = 4097
@@ -99,6 +95,23 @@ class VectorStoreRetriever:
 
         return ranked_chunks
 
+    def _rerank_model(
+        self, chunks1: list[models.ScoredPoint], chunks2: list[models.ScoredPoint]
+    ) -> list[models.ScoredPoint]:
+        combined_chunks = chunks1 + chunks2
+        query_paragraph_pairs = [
+            ("Query", chunk.payload.get("text")) for chunk in combined_chunks
+        ]
+        scores = model.predict(query_paragraph_pairs)
+
+        # Update scores in the ranked_chunks
+        for chunk, score in zip(combined_chunks, scores):
+            chunk.score = score
+
+        ranked_chunks = sorted(combined_chunks, key=lambda x: x.score, reverse=True)
+
+        return ranked_chunks
+
     def _remove_duplicate_chunks(
         self, chunks: list[models.ScoredPoint]
     ) -> list[models.ScoredPoint]:
@@ -116,7 +129,7 @@ class VectorStoreRetriever:
         # Use TEI to host a reranker model
 
         all_chunks = []
-        for collection in query.collections:
+        for collection in query.asset_ids:
             retrieved_chunks = self._search_chunks_in_collection(
                 collection, query.query, query.embeddings
             )

@@ -8,6 +8,5 @@ const redis = new Redis({
 
 export const addMessageToQueue = async <T>(topic: string, message: T) => {
   const payload = JSON.stringify({ topic: topic, data: message })
-  console.log({ redis })
   await redis.rpush(config.nextToPythonQueue, payload)
 }

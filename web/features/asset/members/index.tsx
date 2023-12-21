@@ -1,21 +1,20 @@
-import { getKgMemebersApi, removeUserFromKgApi } from '@/apis/kgs'
+import { getAssetMemebersApi, removeMemberFromAssetApi } from '@/apis/assets'
 import UserAvatar from '@/components/Avatar'
 import OverlayLoader from '@/components/Loader'
 import DeleteConfirmationModal from '@/components/Modals/DeleteWarn'
 import { useDebouncedCallback } from '@/hooks/useDebounceCallback'
-import { KgMember } from '@/types/kgs'
 import { User } from '@/types/users'
 import { ActionIcon, Badge, Button, Group, Input, Text } from '@mantine/core'
 import { showNotification } from '@mantine/notifications'
 import { IconSearch, IconTrash, IconUserPlus } from '@tabler/icons-react'
 import { DataTable } from 'mantine-datatable'
 import React, { FC, useEffect, useMemo, useState } from 'react'
-import AddUserForm from './addUserForm'
+import AddMemberForm from './add-form'
 import styles from './users.module.scss'
 
 type KgUsersProps = {
   projectId: string
-  kgId: string
+  assetId: string
 }
 
 const colorMap: any = {
@@ -24,9 +23,9 @@ const colorMap: any = {
   viewer: 'blue',
 }
 
-const KgUsers: FC<KgUsersProps> = ({ projectId, kgId }) => {
-  const [kgMembers, setKgMembers] = useState<KgMember[]>([])
-  const [filteredKgMembers, setFilteredKgMembers] = useState<KgMember[]>([])
+const KgUsers: FC<KgUsersProps> = ({ projectId, assetId }) => {
+  const [kgMembers, setKgMembers] = useState<User[]>([])
+  const [filteredKgMembers, setFilteredKgMembers] = useState<User[]>([])
   const [openAddUserForm, setOpenAddUserForm] = useState(false)
   const [loading, setLoading] = useState<boolean>(false)
   const [refresh, setRefresh] = useState(false)
@@ -36,10 +35,10 @@ const KgUsers: FC<KgUsersProps> = ({ projectId, kgId }) => {
   const handleDelete = async () => {
     if (!deleteUserId) return
     setLoading(true)
-    removeUserFromKgApi(projectId, kgId, deleteUserId)
+    removeMemberFromAssetApi(projectId, assetId, deleteUserId)
       .then(() => {
         showNotification({
-          message: 'User removed successfully',
+          message: 'Member removed successfully',
           color: 'green',
         })
         setRefresh((prev) => !prev)
@@ -116,7 +115,7 @@ const KgUsers: FC<KgUsersProps> = ({ projectId, kgId }) => {
 
   useEffect(() => {
     setLoading(true)
-    getKgMemebersApi(projectId, kgId)
+    getAssetMemebersApi(projectId, assetId)
       .then((data) => {
         setKgMembers(data)
       })
@@ -164,9 +163,9 @@ const KgUsers: FC<KgUsersProps> = ({ projectId, kgId }) => {
         onCancel={() => setDeleteWarnOpen(false)}
         onDelete={handleDelete}
       />
-      <AddUserForm
+      <AddMemberForm
         projectId={projectId}
-        kgId={kgId}
+        assetId={assetId}
         open={openAddUserForm}
         onClose={() => setOpenAddUserForm(false)}
       />

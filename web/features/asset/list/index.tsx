@@ -40,7 +40,6 @@ import styles from './assets.module.scss'
 
 type AssetListProps = {
   projectId: string
-  kgId: string
   assets: Asset[]
   loading: boolean
   pageSize: number
@@ -52,7 +51,6 @@ type AssetListProps = {
 const AssetList: React.FC<AssetListProps> = ({
   assets,
   projectId,
-  kgId,
   loading,
   page,
   onPageChange,
@@ -77,7 +75,7 @@ const AssetList: React.FC<AssetListProps> = ({
   const deleteAsset = useCallback(
     (assetId: string) => {
       loading = true
-      deleteAssetApi(projectId, kgId, assetId)
+      deleteAssetApi(projectId, assetId)
         .catch((e: Error) => {
           showNotification({ message: e.message.toString(), color: 'red' })
         })
@@ -86,7 +84,7 @@ const AssetList: React.FC<AssetListProps> = ({
           setDeleteWarn(false)
         })
     },
-    [kgId, projectId]
+    [projectId]
   )
 
   const columns: any = useMemo(
@@ -109,15 +107,18 @@ const AssetList: React.FC<AssetListProps> = ({
         width: '20%',
         render: (record: Asset) => (
           <div className={styles.tags}>
-            {record?.tags?.slice(0, 2)?.map((tag: string) => {
-              return (
-                tag.trim() && (
-                  <Badge variant="light" size="xs">
-                    {tag}
-                  </Badge>
+            {record?.tags
+              ?.split(',')
+              ?.slice(0, 2)
+              ?.map((tag: string) => {
+                return (
+                  tag.trim() && (
+                    <Badge variant="light" size="xs">
+                      {tag}
+                    </Badge>
+                  )
                 )
-              )
-            })}
+              })}
           </div>
         ),
       },
@@ -171,7 +172,7 @@ const AssetList: React.FC<AssetListProps> = ({
                 <IconExclamationCircle size={12} />
               )}
               {status === ASSET_APPROVAL_PENDING && <IconChecklist size={12} />}
-              {status.toUpperCase()}
+              {status}
             </span>
           )
         },
@@ -209,7 +210,11 @@ const AssetList: React.FC<AssetListProps> = ({
   if (loading) return <OverlayLoader />
 
   return (
-    <div className={styles.assetListContainer}>
+    <div
+      className={`${styles.assetListContainer} ${
+        assets.length === 0 && styles.emptyTable
+      }`}
+    >
       <DeleteConfirmationModal
         open={deleteWarnOpen}
         onCancel={() => setDeleteWarn(false)}
@@ -217,6 +222,7 @@ const AssetList: React.FC<AssetListProps> = ({
         message="Are you sure you want to delete the asset? It is non reversible."
       />
       <LogModal
+        projectId={projectId}
         open={logModalOpen}
         onClose={() => setLogModalOpen(false)}
         assetId={assetIdLogModal}
@@ -237,7 +243,9 @@ const AssetList: React.FC<AssetListProps> = ({
         onPageChange={onPageChange}
         highlightOnHover
         rowExpansion={{
-          content: ({ record }) => <AssetDocs assetId={record.id} />,
+          content: ({ record }) => (
+            <AssetDocs projectId={projectId} assetId={record.id} />
+          ),
         }}
       />
     </div>

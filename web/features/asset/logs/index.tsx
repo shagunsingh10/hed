@@ -1,5 +1,6 @@
 import { getAssetLogsApi } from '@/apis/assets'
 import { globalDateFormatParser } from '@/lib/utils/functions'
+import { AssetLog } from '@/types/assets'
 import {
   ActionIcon,
   Group,
@@ -12,8 +13,8 @@ import {
 } from '@mantine/core'
 import { showNotification } from '@mantine/notifications'
 import {
+  IconBellFilled,
   IconCircleCheck,
-  IconCircleDashed,
   IconCircleX,
   IconExclamationCircle,
   IconReload,
@@ -23,7 +24,7 @@ import React, { FC, useEffect, useState } from 'react'
 const iconMap: any = {
   INFO: (
     <ThemeIcon color="blue" size={24} radius="xl">
-      <IconCircleDashed style={{ width: rem(16), height: rem(16) }} />
+      <IconBellFilled style={{ width: rem(16), height: rem(16) }} />
     </ThemeIcon>
   ),
   SUCCESS: (
@@ -42,9 +43,19 @@ const iconMap: any = {
     </ThemeIcon>
   ),
 }
-type LogsModalProps = { open: boolean; onClose: () => void; assetId: string }
+type LogsModalProps = {
+  open: boolean
+  onClose: () => void
+  projectId: string
+  assetId: string
+}
 
-const LogModal: FC<LogsModalProps> = ({ open, onClose, assetId }) => {
+const LogModal: FC<LogsModalProps> = ({
+  open,
+  onClose,
+  projectId,
+  assetId,
+}) => {
   const [logs, setLogs] = useState<any>([])
   const [loading, setLoading] = useState(false)
 
@@ -57,7 +68,7 @@ const LogModal: FC<LogsModalProps> = ({ open, onClose, assetId }) => {
   const fetchLogs = async () => {
     try {
       setLoading(true)
-      const logs = await getAssetLogsApi(assetId)
+      const logs = await getAssetLogsApi(projectId, assetId)
       setLogs(logs)
     } catch {
       showNotification({
@@ -87,7 +98,7 @@ const LogModal: FC<LogsModalProps> = ({ open, onClose, assetId }) => {
         <Loader />
       ) : (
         <List spacing="lg" size="sm" center>
-          {logs.map((log: any) => (
+          {logs.map((log: AssetLog) => (
             <List.Item icon={iconMap[log.type]}>
               <Group gap="xs">
                 <Text size="xs">({globalDateFormatParser(log.timestamp)})</Text>

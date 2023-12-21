@@ -11,7 +11,6 @@ class Chunk(BaseModel):
 
 class CustomDoc(BaseModel):
     asset_id: str
-    collection_name: str
     doc_id: str
     text: str
     metadata: Dict[str, Any]

@@ -4,8 +4,8 @@ import { Indicator, Text } from '@mantine/core'
 import {
   IconBulbFilled,
   IconChecklist,
-  IconPackage,
   IconSettings,
+  IconWhirl,
 } from '@tabler/icons-react'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
@@ -13,7 +13,7 @@ import { useEffect, useMemo } from 'react'
 import styles from './sider.module.scss'
 
 const getParentPath = (path: string) =>
-  path === '/' ? path : `/${path.split('/')[1]}`
+  path === '/' ? path : `/${path?.split('/')[1]}`
 
 export default function Sider() {
   const pathname = usePathname()
@@ -25,7 +25,7 @@ export default function Sider() {
   const items = useMemo(
     () => [
       { title: 'Ask', path: '/', icon: <IconBulbFilled /> },
-      { title: 'Projects', path: '/projects', icon: <IconPackage /> },
+      { title: 'Projects', path: '/projects', icon: <IconWhirl /> },
       {
         title: 'Review',
         path: '/review',

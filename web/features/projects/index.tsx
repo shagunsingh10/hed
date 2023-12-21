@@ -4,11 +4,7 @@ import useStore from '@/store'
 import { Project } from '@/types/projects'
 import { Button, Input, Title } from '@mantine/core'
 import { showNotification } from '@mantine/notifications'
-import {
-  IconPackageExport,
-  IconPackages,
-  IconSearch,
-} from '@tabler/icons-react'
+import { IconPackageExport, IconSearch } from '@tabler/icons-react'
 import { useEffect, useState } from 'react'
 import CreateProjectForm from './create-form'
 import ProjectsList from './grid'
@@ -60,7 +56,6 @@ const ProjectsScreen = () => {
       <div className={styles.mainContainer}>
         <div className={styles.screenHeader}>
           <Title order={3} size="md" className={styles.pageTitle}>
-            <IconPackages size={20} />
             My Projects
           </Title>
           <Button
@@ -74,7 +69,7 @@ const ProjectsScreen = () => {
         <div className={styles.projectsContainer}>
           <Input
             width={'100%'}
-            size="sm"
+            size="xs"
             rightSection={<IconSearch size={17} />}
             className={styles.search}
             placeholder="Search projects by name or tags or description"

@@ -3,7 +3,6 @@ export type CreateAssetData = {
   description?: string
   tags?: string
   assetTypeId: string
-  knowledgeGroupId: string
   readerKwargs: Record<string, any>
   extraMetadata?: Record<string, any>
 }
@@ -18,15 +17,13 @@ export type Asset = {
   id: string
   name: string
   description?: string | null
-  tags?: string[]
   assetTypeId: string
-  knowledgeGroupId: string
-  knowledgeGroupName?: string
   status: string
-  ownerUserId: number
-  createdAt: string
+  ownerUserId?: number
+  createdAt: Date
   createdBy?: string
-  AssetType?: AssetType
+  tags?: string | null
+  assetType?: AssetType
 }
 
 export type AssetWithProjectId = Asset & {
@@ -34,7 +31,7 @@ export type AssetWithProjectId = Asset & {
 }
 
 export type AssetLog = {
-  timestamp: string
+  timestamp: Date
   content: string
   type: string
 }
@@ -50,7 +47,7 @@ export type DocStatus = {
 export type Doc = {
   name: string
   id: string
-  DocStatus: DocStatus[]
+  statusLog: DocStatus[]
 }
 
 export interface AssetsSlice {
