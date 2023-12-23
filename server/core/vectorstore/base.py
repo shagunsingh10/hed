@@ -55,4 +55,4 @@ class VectorStore:
     def add_docs_batch(self, doc_batch: dict[str, list[CustomDoc]]):
         docs = doc_batch["doc"]
         points_batch = self._get_batch_points(docs)
-        self._client.upsert(collection_name="{collection_name}", points=points_batch)
+        self._client.upsert(collection_name=self._collection_name, points=points_batch)
