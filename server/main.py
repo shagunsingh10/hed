@@ -1,13 +1,10 @@
-from workflows import (
-    ingest_asset,
-    get_query_response,
-    ASSET_INGESTION,
-    QUERY_REQUEST,
-)
-from servicequeue import consume_from_topics
+import os
 
 import ray
-import os
+
+from servicequeue import consume_from_topics
+from workflows import (ASSET_INGESTION, QUERY_REQUEST, get_query_response,
+                       ingest_asset)
 
 # Connect to an existing Ray cluster
 ray.init(

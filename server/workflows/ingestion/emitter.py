@@ -1,7 +1,7 @@
 from core.reader.base import CustomDoc
 from servicequeue import publish_message
 
-from .topics import ASSET_INGESTION_STATUS, DOC_STATUS, ASSET_DOCS
+from .topics import ASSET_DOCS, ASSET_INGESTION_STATUS, DOC_STATUS
 
 
 def emit_doc_status(doc: CustomDoc):

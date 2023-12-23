@@ -36,10 +36,8 @@ class ContextChunk(BaseModel):
     metadata: str
 
 
-class QueryWithContext(BaseModel):
-    query: str
+class QueryResponse(BaseModel):
     chat_id: str
     user: str
-    context: list[ContextChunk]
     response: Optional[str] = ""
     sources: Optional[list[str]] = []

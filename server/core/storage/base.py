@@ -1,9 +1,11 @@
+import io
+
 from minio import Minio
 from minio.error import S3Error
-from minio.versioningconfig import VersioningConfig, ENABLED
-import io
-from utils.logger import logger
+from minio.versioningconfig import ENABLED, VersioningConfig
+
 from core.schema import CustomDoc
+from utils.logger import logger
 
 
 class MinioStorage:

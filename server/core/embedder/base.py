@@ -1,8 +1,9 @@
 from typing import Literal
 
+from sentence_transformers import SentenceTransformer
+
 from config import appconfig
 from core.schema import CustomDoc
-from sentence_transformers import SentenceTransformer
 
 
 class EmbeddingFailed(Exception):

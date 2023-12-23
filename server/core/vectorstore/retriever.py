@@ -2,8 +2,8 @@ from qdrant_client import QdrantClient
 from qdrant_client.http import models
 from qdrant_client.http.exceptions import UnexpectedResponse
 from sentence_transformers import CrossEncoder
-from core.schema import ContextChunk, QueryPayload
 
+from core.schema import ContextChunk
 
 DEFAULT_VECTOR_DIM = 384
 MODEL_CONTEXT_LENGTH = 4097
@@ -92,24 +92,22 @@ class VectorStoreRetriever:
                 unique_chunks.append(chunk)
         return unique_chunks
 
-    def __call__(self, query: QueryPayload) -> list[ContextChunk]:
+    def __call__(self, collection: dict[str, any]) -> list[ContextChunk]:
         # TODO: Current strategy is not correct implementation of hybrid search
         # Implement this: https://qdrant.tech/articles/hybrid-search/
         # Use TEI to host a reranker model
-        all = []
-        for asset_id in query.asset_ids:
-            retrieved_chunks = self._search_chunks_in_collection(
-                asset_id,
-                query.query,
-                query.embeddings,
-            )
-            relevant_contexts = [
-                ContextChunk(
+        retrieved_chunks = self._search_chunks_in_collection(
+            collection.get("name"),
+            collection.get("query"),
+            collection.get("embeddings"),
+        )
+        relevant_contexts = [
+            {
+                "chunk": ContextChunk(
                     text=chunk.payload.get("text"),
                     metadata=chunk.payload.get("metadata"),
                 )
-                for chunk in retrieved_chunks
-            ]
-            all.extend(relevant_contexts)
-        print("RELCONcdjSV")
-        return all
+            }
+            for chunk in retrieved_chunks
+        ]
+        return relevant_contexts

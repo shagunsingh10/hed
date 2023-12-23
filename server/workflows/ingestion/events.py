@@ -1,17 +1,14 @@
 import time
+
 from ray import workflow
 
-from constants import ASSET_INGESTING, ASSET_INGESTION_FAILED, ASSET_INGESTION_SUCCESS
+from constants import (ASSET_INGESTING, ASSET_INGESTION_FAILED,
+                       ASSET_INGESTION_SUCCESS)
 from utils.logger import logger
 
 from .emitter import emit_asset_status
-from .tasks import (
-    read_from_source,
-    chunk_documents,
-    embed_chunks,
-    store_chunks,
-    # save_docs,
-)
+from .tasks import (chunk_documents, embed_chunks,  # save_docs,
+                    read_from_source, store_chunks)
 
 
 def ingest_asset(message):

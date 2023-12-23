@@ -1,12 +1,14 @@
 import ray
+
 from core.chunker.base import Chunker
 from core.embedder.base import Embedder
 from core.reader.base import CustomDoc
 from core.reader.factory import get_reader
-from core.vectorstore.base import VectorStore
 from core.storage.base import MinioStorage
+from core.vectorstore.base import VectorStore
 from utils.logger import logger
-from .emitter import emit_docs_in_asset, emit_doc_status
+
+from .emitter import emit_doc_status, emit_docs_in_asset
 
 
 def handle_doc_error(doc: CustomDoc, status: str, error: Exception):

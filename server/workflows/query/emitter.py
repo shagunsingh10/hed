@@ -1,10 +1,10 @@
-from core.schema import QueryWithContext
+from core.schema import QueryResponse
 from servicequeue import publish_message
 
 from .topics import QUERY_RESPONSE
 
 
-def emit_chat_response(query: QueryWithContext):
+def emit_query_response(query: QueryResponse):
     publish_message(
         QUERY_RESPONSE,
         data={
