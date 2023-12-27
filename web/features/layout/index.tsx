@@ -8,7 +8,7 @@ import { useEffect } from 'react'
 import Header from '../header'
 import LoginScreen from '../login'
 import Sider from '../sider'
-import styles from './newlayout.module.scss'
+import styles from './layout.module.scss'
 
 export const metadata: Metadata = {
   title: 'Herald',
@@ -40,12 +40,12 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
     <div className={styles.layout}>
       <SocketConnector />
       <div className={styles.content}>
-        <div className={styles.sider}>
-          <Sider />
+        <div className={styles.header}>
+          <Header />
         </div>
         <div className={styles.contentBody}>
-          <div className={styles.header}>
-            <Header />
+          <div className={styles.sider}>
+            <Sider />
           </div>
           <div className={styles.mainBody}>{children}</div>
         </div>

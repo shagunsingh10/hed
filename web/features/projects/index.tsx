@@ -61,6 +61,7 @@ const ProjectsScreen = () => {
           <Button
             onClick={() => setCreateProjectTab(true)}
             size="xs"
+            variant="outline"
             leftSection={<IconPackageExport size={17} />}
           >
             Create New

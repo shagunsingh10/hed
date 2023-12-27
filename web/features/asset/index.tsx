@@ -15,7 +15,7 @@ type IAssetsProps = {
   projectId: string
 }
 
-const PAGE_SIZE = 13
+const PAGE_SIZE = 12
 
 const Assets: React.FC<IAssetsProps> = ({ projectId }) => {
   const [loading, setLoading] = useState<boolean>(false)
@@ -44,11 +44,14 @@ const Assets: React.FC<IAssetsProps> = ({ projectId }) => {
   useEffect(() => setFilteredAsset(assets), [assets])
 
   useEffect(() => {
+    console.log('PAGE', page)
     const start = PAGE_SIZE * (page - 1)
     const end = PAGE_SIZE * page
+    console.log(start, end, page, PAGE_SIZE)
     setLoading(true)
     getAssetsApi(projectId, start, end)
       .then((assetsData) => {
+        console.log(assetsData.assets.length, 'a')
         setAssets(assetsData.assets)
         setTotalAssets(assetsData.totalAssets)
       })
@@ -76,6 +79,7 @@ const Assets: React.FC<IAssetsProps> = ({ projectId }) => {
         />
         <Button
           size="xs"
+          variant="outline"
           leftSection={<IconCubePlus size={15} />}
           onClick={() => setOpen(true)}
         >

@@ -1,9 +1,9 @@
 from typing import Literal
 
 from sentence_transformers import SentenceTransformer
-
+from typing import Dict, List
 from config import appconfig
-from core.schema import CustomDoc
+from core.schema import Chunk
 
 
 class EmbeddingFailed(Exception):
@@ -31,7 +31,7 @@ class Embedder:
     # Overloaded function
     def __call__(
         self,
-        doc_dict: dict[str, CustomDoc] = None,
+        chunk_batch: Dict[str, List[Chunk]] = None,
         query: str = "",
         input_type: Literal["doc", "query"] = "doc",
     ):
@@ -39,19 +39,17 @@ class Embedder:
             embeddings = self.model.encode([query]).tolist()
             return embeddings[0]
         else:
-            doc = doc_dict.get("doc")
-            chunks = doc.chunks
-            chunk_texts = [self._remove_stopwords(chunk.text) for chunk in doc.chunks]
+            chunks = chunk_batch.get("chunk")
+            chunk_texts = [self._remove_stopwords(chunk.text) for chunk in chunks]
 
             embeddings = self.model.encode(
                 chunk_texts,
-                batch_size=100,
+                batch_size=50,
             ).tolist()
 
-            assert len(chunks) == len(embeddings)
+            assert len(chunk_texts) == len(embeddings)
 
             for chunk, embedding in zip(chunks, embeddings):
                 chunk.embeddings = embedding
 
-            doc.chunks = chunks
-            return {"doc": doc}
+            return {"embedded_chunks": chunks}

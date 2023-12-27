@@ -1,0 +1,25 @@
+.tooltipContainer {
+  position: relative;
+  width: 20vw;
+  display: inline-block;
+
+  .tooltip {
+    visibility: hidden;
+    background-color: #010101;
+    color: #ccc;
+    text-align: center;
+    padding: 5px;
+    position: absolute;
+    z-index: 100;
+    left: 0%;
+    bottom: 100%;
+    opacity: 0;
+    transition: opacity 0.5s;
+  }
+}
+
+.tooltipContainer:hover .tooltip {
+  visibility: visible;
+  opacity: 1;
+  max-width: 20vw;
+}

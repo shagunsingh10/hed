@@ -129,6 +129,7 @@ const ProjectAdmins: React.FC<ProjectAdminsProps> = ({ projectId }) => {
         />
         <Button
           size="xs"
+          variant="outline"
           leftSection={<IconUserPlus size={17} />}
           onClick={() => setOpenAddUserForm(true)}
         >

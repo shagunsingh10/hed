@@ -17,6 +17,7 @@ const getParentPath = (path: string) =>
 
 export default function Sider() {
   const pathname = usePathname()
+
   const assetsToReviewCount = useStore((state) => state.assetsToReviewCount)
   const setAssetsToReviewCount = useStore(
     (state) => state.setAssetsToReviewCount

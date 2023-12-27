@@ -4,16 +4,19 @@ from qdrant_client import QdrantClient
 from qdrant_client.http import models
 from qdrant_client.http.exceptions import UnexpectedResponse
 
-from core.schema import CustomDoc
+from core.schema import Chunk
+from typing import List
 
 DEFAULT_VECTOR_DIM = 384
 
 
 class VectorStore:
-    def __init__(self, collection_name, dim=DEFAULT_VECTOR_DIM, base_url="172.17.0.1"):
-        self._client = QdrantClient(base_url, port=6333)
-        self._collection_name = collection_name
+    def __init__(
+        self, collection_name: str, dim=DEFAULT_VECTOR_DIM, base_url="172.17.0.1"
+    ):
         self._dim = dim
+        self._collection_name = collection_name
+        self._client = QdrantClient(base_url, port=6333)
         self._create_collection_if_not_exists()
 
     def _create_collection_if_not_exists(self):
@@ -29,30 +32,32 @@ class VectorStore:
                 hnsw_config=models.HnswConfigDiff(on_disk=True),
             )
 
-    def _get_batch_points(self, docs: list[CustomDoc]):
+    def _get_batch_points(self, chunks: List[Chunk]):
         ids = []
         payloads = []
         vectors = []
 
-        for doc in docs:
-            for chunk in doc.chunks:
-                ids.append(chunk.chunk_id)
-                vectors.append(chunk.embeddings)
-                payloads.append(
-                    {
-                        "doc_id": doc.doc_id,
-                        "metadata": json.dumps(doc.metadata),
-                        "text": chunk.text,
-                    }
-                )
+        for chunk in chunks:
+            ids.append(chunk.chunk_id)
+            vectors.append(chunk.embeddings)
+            payloads.append(
+                {
+                    "doc_id": chunk.doc_id,
+                    "metadata": json.dumps(chunk.metadata),
+                    "text": chunk.text,
+                }
+            )
 
-        return models.Batch(
-            ids=ids,
-            payloads=payloads,
-            vectors=vectors,
-        )
+        return [ids, payloads, vectors]
 
-    def add_docs_batch(self, doc_batch: dict[str, list[CustomDoc]]):
-        docs = doc_batch["doc"]
+    def upload_chunks(self, docs: List[Chunk]):
         points_batch = self._get_batch_points(docs)
-        self._client.upsert(collection_name=self._collection_name, points=points_batch)
+        self._client.upload_collection(
+            collection_name=self._collection_name,
+            vectors=points_batch[2],
+            payload=points_batch[1],
+            ids=points_batch[0],
+            parallel=20,
+            wait=True,
+        )
+        return {"success": True}

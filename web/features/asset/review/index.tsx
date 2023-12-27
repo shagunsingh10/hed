@@ -4,7 +4,7 @@ import { ASSET_APPROVED, ASSET_REJECTED } from '@/constants'
 import { useDebouncedCallback } from '@/hooks/useDebounceCallback'
 import { globalDateFormatParser } from '@/lib/utils/functions'
 import useStore from '@/store'
-import type { Asset, AssetWithProjectId } from '@/types/assets'
+import type { AssetWithProjectId } from '@/types/assets'
 import { ActionIcon, Group, Input, Space, Text, Title } from '@mantine/core'
 import { showNotification } from '@mantine/notifications'
 import {
@@ -20,12 +20,9 @@ import styles from './review.module.scss'
 const AssetReviewList = () => {
   const assetsToReview = useStore((state) => state.assetsToReview)
   const setAssetsToReview = useStore((state) => state.setAssetsToReview)
-  const assetsToReviewCount = useStore((state) => state.assetsToReviewCount)
-  const setAssetsToReviewCount = useStore(
-    (state) => state.setAssetsToReviewCount
-  )
 
-  const [dataSource, setDataSource] = useState<Asset[]>(assetsToReview)
+  const [dataSource, setDataSource] =
+    useState<AssetWithProjectId[]>(assetsToReview)
   const [loading, setLoading] = useState(false)
 
   const sendAssetStatus = useCallback(
@@ -33,15 +30,19 @@ const AssetReviewList = () => {
       setLoading(true)
       try {
         await approveAssetApi(projectId, assetId, status)
-        setAssetsToReview(assetsToReview.filter((e) => e.id === assetId))
-        setAssetsToReviewCount(assetsToReviewCount - 1)
+        console.log({
+          assetsToReview,
+          assetId,
+          filtered: assetsToReview.filter((e) => e.id !== assetId),
+        })
+        setAssetsToReview(assetsToReview.filter((e) => e.id !== assetId))
       } catch (e: any) {
         showNotification({ message: e?.message?.toString(), color: 'red' })
       } finally {
         setLoading(false)
       }
     },
-    [approveAssetApi, setLoading]
+    [approveAssetApi, setLoading, assetsToReview, setAssetsToReview]
   )
 
   const onChange = useDebouncedCallback((text: string) => {
@@ -66,7 +67,7 @@ const AssetReviewList = () => {
       {
         label: 'Name',
         accessor: 'name',
-        render: (record: any) => (
+        render: (record: AssetWithProjectId) => (
           <Group align="center" gap="xs">
             <IconCube size={15} />
             <Text size="xs" fw="500">
@@ -84,7 +85,7 @@ const AssetReviewList = () => {
         label: 'Created At',
         accessor: 'createdAt',
         textAlign: 'center',
-        render: (record: any) => (
+        render: (record: AssetWithProjectId) => (
           <Space>{globalDateFormatParser(new Date(record.createdAt))}</Space>
         ),
       },
@@ -114,7 +115,7 @@ const AssetReviewList = () => {
         ),
       },
     ],
-    []
+    [sendAssetStatus]
   )
 
   useEffect(() => {

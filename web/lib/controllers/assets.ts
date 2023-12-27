@@ -70,12 +70,13 @@ export const getPaginatedAssetsInProject = async (
         createdBy: true,
         status: true,
         assetTypeId: true,
-      },
-      orderBy: {
-        createdAt: 'desc',
+        assetType: true,
       },
       skip: start,
       take: end,
+      orderBy: {
+        createdAt: 'desc',
+      },
     }),
     prisma.asset.count({
       where: {

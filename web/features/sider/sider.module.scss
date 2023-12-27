@@ -32,8 +32,8 @@
 
     .activeNavItem {
       font-weight: bold;
-      color: var(--mantine-color-blue-8);
-      border-right: 4px solid var(--mantine-color-blue-8);
+      color: var(--mantine-color-teal-8);
+      border-right: 4px solid var(--mantine-color-teal-8);
     }
 
     .navItem:hover {
@@ -48,5 +48,6 @@
     justify-content: flex-end;
     align-items: center;
     padding-bottom: 0.5rem;
+    gap: 0.5rem;
   }
 }

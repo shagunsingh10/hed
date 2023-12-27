@@ -1,12 +1,14 @@
-from typing import Any, Dict, Optional
+from typing import Any, Dict, Optional, List
 
 from pydantic import BaseModel
 
 
 class Chunk(BaseModel):
     chunk_id: str
+    doc_id: str
     text: str
-    embeddings: Optional[list[float]] = []
+    metadata: Dict[str, Any]
+    embeddings: Optional[List[float]] = []
 
 
 class CustomDoc(BaseModel):
@@ -20,24 +22,25 @@ class CustomDoc(BaseModel):
     status: str
     message: Optional[str] = ""
     error: bool = False
-    chunks: list[Chunk] = []
 
 
 class QueryPayload(BaseModel):
     query: str
     chat_id: str
     user: str
-    asset_ids: list[str]
-    embeddings: Optional[list[float]] = []
+    asset_ids: List[str]
+    embeddings: Optional[List[float]] = []
 
 
 class ContextChunk(BaseModel):
     text: str
     metadata: str
+    query: str
+    score: int = 0
 
 
 class QueryResponse(BaseModel):
     chat_id: str
     user: str
     response: Optional[str] = ""
-    sources: Optional[list[str]] = []
+    sources: Optional[List[str]] = []

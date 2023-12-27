@@ -16,18 +16,13 @@ class Config:
     def _load_config(self):
         load_dotenv()
         required_vars = [
-            "NEXT_ENDPOINT",
-            "NEXT_API_KEY",
             "REDIS_HOST",
             "REDIS_PORT",
-            "POSTGRES_HOST",
-            "POSTGRES_PORT",
-            "POSTGRES_USER",
-            "POSTGRES_PASSWORD",
-            "POSTGRES_DATABASE_NAME",
-            "PYTHON_TO_NEXT_QUEUE",
-            "NEXT_TO_PYTHON_QUEUE",
-            "EMBEDDER_SERVICE_ENDPOINT",
+            "QUERY_TASK_QUEUE",
+            "INGESTION_TASK_QUEUE",
+            "QUERY_RESULT_QUEUE",
+            "INGESTION_RESULT_QUEUE",
+            "NUM_CPU",
         ]
         optional_vars = [
             "OPENAI_API_KEY",

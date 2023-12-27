@@ -24,7 +24,10 @@ export default function App({ Component, pageProps }: AppProps) {
         <link rel="icon" href="/favicon.ico" />
         <ColorSchemeScript defaultColorScheme="auto" />
       </Head>
-      <MantineProvider defaultColorScheme="dark">
+      <MantineProvider
+        defaultColorScheme="dark"
+        theme={{ primaryColor: 'teal' }}
+      >
         <SessionProvider>
           <AppLayout>
             <Notifications />

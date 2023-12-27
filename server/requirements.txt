@@ -28,3 +28,7 @@ nbconvert
 
 # Data Validation
 pydantic
+
+# Http Server
+fastapi
+uvicorn

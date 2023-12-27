@@ -2,7 +2,7 @@ import { getProjectByIdApi } from '@/apis/projects'
 import OverlayLoader from '@/components/Loader'
 import Assets from '@/features/asset'
 import useStore from '@/store'
-import { Divider, NavLink, Title } from '@mantine/core'
+import { Tabs, Title } from '@mantine/core'
 import { showNotification } from '@mantine/notifications'
 import {
   IconCube,
@@ -22,7 +22,6 @@ const ProjectDetailsScreen = () => {
   const project = useStore((state) => state.selectedprojectDetails)
   const setProject = useStore((state) => state.setSelectedProjectDetails)
   const [loading, setLoading] = useState<boolean>(false)
-  const [activeTab, setActiveTab] = useState<number>(1)
 
   useEffect(() => {
     if (!projectId) return
@@ -48,38 +47,40 @@ const ProjectDetailsScreen = () => {
         <IconWhirl size={23} />
         <Title order={4}>{project?.name}</Title>
       </div>
-      <Divider size="xs" />
-      <div className={styles.content}>
-        <div className={styles.menuContent}>
-          <NavLink
+      <Tabs defaultValue="assets" className={styles.content}>
+        <Tabs.List>
+          <Tabs.Tab
+            value="assets"
             className={styles.navItem}
             leftSection={<IconCube size={15} />}
-            label="Assets"
-            active={activeTab == 1}
-            onClick={() => setActiveTab(1)}
-          />
-          <NavLink
+          >
+            Assets
+          </Tabs.Tab>
+          <Tabs.Tab
+            value="admins"
             className={styles.navItem}
             leftSection={<IconUsersGroup size={15} />}
-            label="Admins"
-            active={activeTab == 2}
-            onClick={() => setActiveTab(2)}
-          />
-          <NavLink
+          >
+            Admins
+          </Tabs.Tab>
+          <Tabs.Tab
+            value="settings"
             className={styles.navItem}
             leftSection={<IconSettings size={15} />}
-            label="Settings"
-            active={activeTab == 3}
-            onClick={() => setActiveTab(3)}
-          />
-        </div>
-        <Divider size="xs" orientation="vertical" />
-        <div className={styles.tabContent}>
-          {activeTab == 1 && <Assets projectId={projectId} />}
-          {activeTab == 2 && <ProjectAdmins projectId={projectId} />}
-          {activeTab == 3 && <ProjectSettings project={project} />}
-        </div>
-      </div>
+          >
+            Settings
+          </Tabs.Tab>
+        </Tabs.List>
+        <Tabs.Panel value="assets" className={styles.tabContent}>
+          <Assets projectId={projectId} />
+        </Tabs.Panel>
+        <Tabs.Panel value="admins" className={styles.tabContent}>
+          <ProjectAdmins projectId={projectId} />
+        </Tabs.Panel>
+        <Tabs.Panel value="settings" className={styles.tabContent}>
+          <ProjectSettings project={project} />
+        </Tabs.Panel>
+      </Tabs>
     </div>
   )
 }

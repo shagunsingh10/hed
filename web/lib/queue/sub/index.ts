@@ -15,12 +15,15 @@ const redis = new Redis({
   maxRetriesPerRequest: null,
 })
 
-export const processMessageFromQueue = async (topics: ITopicCallbacks) => {
+export const processMessageFromQueue = async (
+  queue: string,
+  topics: ITopicCallbacks
+) => {
   console.log(`Registered topics -> ${Object.keys(topics)}`)
 
   // eslint-disable-next-line no-constant-condition
   while (true) {
-    const result = await redis.blpop(config.pythonToNextQueue, 1)
+    const result = await redis.blpop(queue, 1)
 
     if (result) {
       const message = JSON.parse(result[1])
@@ -32,10 +35,18 @@ export const processMessageFromQueue = async (topics: ITopicCallbacks) => {
   }
 }
 
-const topicsHandlers = {
-  [DOC_STATUS]: handleDocStatus,
-  [ASSET_INGESTION_STATUS]: handleAssetStatus,
-  [QUERY_RESPONSE]: handleChatResponse,
+const startConsuming = () => {
+  const ingestionTopicsHandlers = {
+    [DOC_STATUS]: handleDocStatus,
+    [ASSET_INGESTION_STATUS]: handleAssetStatus,
+  }
+
+  const queryTopicsHandlers = {
+    [QUERY_RESPONSE]: handleChatResponse,
+  }
+
+  processMessageFromQueue(config.ingestionResultQueue, ingestionTopicsHandlers)
+  processMessageFromQueue(config.queryResultQueue, queryTopicsHandlers)
 }
 
-processMessageFromQueue(topicsHandlers)
+startConsuming()

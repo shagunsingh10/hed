@@ -3,10 +3,10 @@ export const PRIMARY_COLOR = '#0a6dc2'
 export const COLOR_BG_BASE = '#141414'
 
 // STATUS COLORS
-export const SUCCESS_COLOR = 'rgba(40, 167, 69, 0.4)'
-export const ERROR_COLOR = '#B000205F'
-export const WARNING_COLOR = '#ffa7005F'
-export const INFO_COLOR = '#0a6dc25F'
+export const SUCCESS_COLOR = '#008631'
+export const ERROR_COLOR = '#ff3333'
+export const WARNING_COLOR = '#ffa700'
+export const INFO_COLOR = '#0a6dc2'
 
 // OTHER
 export const USER_IMAGES_LOCALSTORAGE_KEY = 'userImages'

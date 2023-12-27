@@ -1,5 +1,5 @@
 import uuid
-
+from typing import Dict
 from llama_index.text_splitter import CodeSplitter, SentenceSplitter
 
 from core.schema import Chunk, CustomDoc
@@ -63,7 +63,7 @@ supported_languages = {
 class Chunker:
     def __call__(
         self,
-        doc: dict[str, CustomDoc],
+        doc: Dict[str, CustomDoc],
         chunk_size=DEFAULT_CHUNK_SIZE,
         chunk_overlap=DEFAULT_CHUNK_OVERLAP,
     ) -> CustomDoc:
@@ -85,6 +85,15 @@ class Chunker:
             )
 
         text_splits = text_splitter.split_text(doc.text)
-        chunks = [Chunk(chunk_id=str(uuid.uuid4()), text=text) for text in text_splits]
-        doc.chunks = chunks
-        return {"doc": doc}
+        chunks = [
+            {
+                "chunk": Chunk(
+                    chunk_id=str(uuid.uuid4()),
+                    doc_id=doc.doc_id,
+                    text=text,
+                    metadata=doc.metadata,
+                )
+            }
+            for text in text_splits
+        ]
+        return chunks

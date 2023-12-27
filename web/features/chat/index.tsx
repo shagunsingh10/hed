@@ -5,18 +5,15 @@ import ChatHistory from './history'
 
 const ProjectDetailsScreen = () => {
   return (
-    <>
-      <Divider size="xs" />
-      <div className={styles.content}>
-        <div className={styles.menuContent}>
-          <ChatHistory />
-        </div>
-        <Divider size="xs" orientation="vertical" />
-        <div className={styles.tabContent}>
-          <ChatWindow />
-        </div>
+    <div className={styles.content}>
+      <div className={styles.menuContent}>
+        <ChatHistory />
       </div>
-    </>
+      <Divider size="xs" orientation="vertical" />
+      <div className={styles.tabContent}>
+        <ChatWindow />
+      </div>
+    </div>
   )
 }
 

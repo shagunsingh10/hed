@@ -4,8 +4,12 @@ services:
   backend:
     build:
       context: ./server
+    ports:
+      - "8000:8000"
     environment:
       LOGURU_COLORIZE: "true"
     volumes:
       - ./.etc/llama_index/:/tmp/llama_index/
       - ./.etc/nltk/:/root/nltk_data/
+      - ./.etc/ray/:/tmp/ray/
+      - ./.env:/.env

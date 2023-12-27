@@ -6,7 +6,11 @@ const redis = new Redis({
   port: config.redisPort,
 })
 
-export const addMessageToQueue = async <T>(topic: string, message: T) => {
+export const addMessageToQueue = async <T>(
+  queue: string,
+  topic: string,
+  message: T
+) => {
   const payload = JSON.stringify({ topic: topic, data: message })
-  await redis.rpush(config.nextToPythonQueue, payload)
+  await redis.rpush(queue, payload)
 }

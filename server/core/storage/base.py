@@ -3,7 +3,7 @@ import io
 from minio import Minio
 from minio.error import S3Error
 from minio.versioningconfig import ENABLED, VersioningConfig
-
+from typing import List
 from core.schema import CustomDoc
 from utils.logger import logger
 
@@ -39,12 +39,12 @@ class MinioStorage:
             num_parallel_uploads=1,
         )
 
-    def upload_documents(self, documents: list[CustomDoc], batch_size=50):
+    def upload_documents(self, documents: List[CustomDoc], batch_size=50):
         for i in range(0, len(documents), min(batch_size, len(documents))):
             batch = documents[i : i + batch_size]
             self.upload_batch(batch)
 
-    def upload_batch(self, batch: list[CustomDoc]):
+    def upload_batch(self, batch: List[CustomDoc]):
         for doc in batch:
             self.upload_document(doc)
 

@@ -16,8 +16,10 @@ type configType = {
   dbUrl: string
   redisHost: string
   redisPort: number
-  nextToPythonQueue: string
-  pythonToNextQueue: string
+  ingestionTaskQueue: string
+  queryTaskQueue: string
+  ingestionResultQueue: string
+  queryResultQueue: string
   serviceApiKey: string
 }
 
@@ -25,7 +27,9 @@ export const config: configType = {
   dbUrl: getEnv('DATABASE_URL'),
   redisHost: getEnv('REDIS_HOST'),
   redisPort: Number(getEnv('REDIS_PORT')),
-  nextToPythonQueue: getEnv('NEXT_TO_PYTHON_QUEUE'),
-  pythonToNextQueue: getEnv('PYTHON_TO_NEXT_QUEUE'),
+  ingestionTaskQueue: getEnv('INGESTION_TASK_QUEUE'),
+  queryTaskQueue: getEnv('QUERY_TASK_QUEUE'),
+  ingestionResultQueue: getEnv('INGESTION_RESULT_QUEUE'),
+  queryResultQueue: getEnv('QUERY_RESULT_QUEUE'),
   serviceApiKey: getEnv('SERVICE_API_KEY'),
 }

@@ -1,5 +1,4 @@
-import BreadcrumbComponent from '@/components/Breadcrumb'
-import { ActionIcon, Avatar, Indicator, Menu } from '@mantine/core'
+import { ActionIcon, Avatar, Indicator, Menu, Title } from '@mantine/core'
 import { IconBell, IconLogout } from '@tabler/icons-react'
 import { signOut, useSession } from 'next-auth/react'
 import styles from './header.module.scss'
@@ -10,12 +9,19 @@ export default function Header() {
   return (
     <div className={styles.headerContainer}>
       <div>
-        <BreadcrumbComponent />
+        <Title order={3}>HERALD</Title>
       </div>
       {status == 'authenticated' && (
         <div className={styles.rightContainer}>
           <Menu position="bottom-end">
-            <Indicator inline color="red" label={10} size={14} disabled={false}>
+            <Indicator
+              inline
+              color="red"
+              label={10}
+              size={14}
+              disabled={false}
+              mt="sm"
+            >
               <Menu.Target>
                 <ActionIcon variant="transparent">
                   <IconBell size={20} className={styles.notifications} />
