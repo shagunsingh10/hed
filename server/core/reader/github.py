@@ -1,4 +1,3 @@
-from llama_index import Document
 from llama_index.readers import GithubRepositoryReader
 
 from core.reader.base import BaseReader
@@ -27,9 +26,9 @@ def filter_kwargs(full_kwargs: dict) -> dict:
 
 
 class GitHubReader(BaseReader):
-    def __init__(self, **kwargs) -> list[Document]:
+    def __init__(self, **kwargs):
         self.branch = kwargs.get("branch")
         self.reader = GithubRepositoryReader(**filter_kwargs(kwargs))
 
-    def _load(self) -> list[Document]:
+    def _load(self):
         return self.reader.load_data(branch=self.branch or "main")

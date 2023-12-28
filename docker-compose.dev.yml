@@ -1,0 +1,42 @@
+version: "3.5"
+
+services:
+  minio:
+    extends:
+      file: docker-compose.services.yml
+      service: minio
+
+  qdrant:
+    extends:
+      file: docker-compose.services.yml
+      service: qdrant
+
+  redis:
+    extends:
+      file: docker-compose.services.yml
+      service: redis
+
+  postgres:
+    extends:
+      file: docker-compose.services.yml
+      service: postgres
+
+  backend:
+    build:
+      context: ./server
+    ports:
+      - "8000:8000"
+    environment:
+      LOGURU_COLORIZE: "true"
+    volumes:
+      - ./.etc/llama_index/:/tmp/llama_index/
+      - ./.etc/nltk/:/root/nltk_data/
+      - ./.etc/ray/:/tmp/ray/
+      - ./.env:/.env
+    depends_on:
+      qdrant:
+        condition: service_healthy
+      minio:
+        condition: service_healthy
+      redis:
+        condition: service_healthy

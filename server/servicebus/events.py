@@ -2,10 +2,10 @@ import time
 
 from constants import ASSET_INGESTING, ASSET_INGESTION_FAILED, ASSET_INGESTION_SUCCESS
 from utils.logger import logger
+from jobs.ingestion import trigger_workflow as trigger_ingestion_workflow
+from jobs.query import trigger_workflow as trigger_query_workflow
 
 from .publisher import emit_asset_status
-from workflows.ingestion import trigger_workflow as trigger_ingestion_workflow
-from workflows.query import trigger_workflow as trigger_query_workflow
 
 
 def handle_ingestion_event(message):

@@ -1,11 +1,13 @@
 import uuid
 from typing import Dict
+
 from llama_index.text_splitter import CodeSplitter, SentenceSplitter
 
-from core.schema import Chunk, CustomDoc
+from config import appconfig
+from schema.base import Chunk, Document
 
-DEFAULT_CHUNK_SIZE = 300
-DEFAULT_CHUNK_OVERLAP = 100
+DEFAULT_CHUNK_SIZE = appconfig.get("CHUNK_SIZE")
+DEFAULT_CHUNK_OVERLAP = appconfig.get("CHUNK_OVERLAP")
 
 supported_languages = {
     ".bash": "bash",
@@ -63,10 +65,10 @@ supported_languages = {
 class Chunker:
     def __call__(
         self,
-        doc: Dict[str, CustomDoc],
+        doc: Dict[str, Document],
         chunk_size=DEFAULT_CHUNK_SIZE,
         chunk_overlap=DEFAULT_CHUNK_OVERLAP,
-    ) -> CustomDoc:
+    ) -> Document:
         doc = doc.get("item")
         ext = doc.filename.split(".")[-1] if doc.filename else "generic"
         language = supported_languages.get(ext)

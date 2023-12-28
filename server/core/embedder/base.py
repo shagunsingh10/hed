@@ -1,9 +1,9 @@
-from typing import Literal
+from typing import Dict, List, Literal
 
 from sentence_transformers import SentenceTransformer
-from typing import Dict, List
+
 from config import appconfig
-from core.schema import Chunk
+from schema.base import Chunk
 
 
 class EmbeddingFailed(Exception):
@@ -16,9 +16,8 @@ class Embedder:
         from nltk.corpus import stopwords
 
         nltk.download("stopwords")
-        self.base_url = base_url or appconfig.get("EMBEDDER_SERVICE_ENDPOINT")
         self.stop_words = stopwords.words("english")
-        self.model = SentenceTransformer("BAAI/bge-small-en-v1.5")
+        self.model = SentenceTransformer(appconfig.get("EMBEDDING_MODEL"))
 
     def _remove_stopwords(self, text: str) -> str:
         return " ".join([word for word in text.split() if word not in self.stop_words])

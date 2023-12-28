@@ -1,22 +1,26 @@
 import json
+from typing import List
 
 from qdrant_client import QdrantClient
 from qdrant_client.http import models
 from qdrant_client.http.exceptions import UnexpectedResponse
 
-from core.schema import Chunk
-from typing import List
+from config import appconfig
+from schema.base import Chunk
 
-DEFAULT_VECTOR_DIM = 384
+DEFAULT_VECTOR_DIM = appconfig.get("EMBEDDING_DIMENSION")
+BASE_URI = appconfig.get("QDRANT_BASE_URI")
+QDRANT_PORT = int(appconfig.get("QDRANT_PORT"))
+QDRANT_GRPC_PORT = int(appconfig.get("QDRANT_GRPC_PORT"))
+QDRANT_PREFER_GRPC = bool(appconfig.get("QDRANT_PREFER_GRPC"))
+QDRANT_API_KEY = appconfig.get("QDRANT_API_KEY")
 
 
 class VectorStore:
-    def __init__(
-        self, collection_name: str, dim=DEFAULT_VECTOR_DIM, base_url="172.17.0.1"
-    ):
-        self._dim = dim
+    def __init__(self, collection_name: str):
+        self._client = QdrantClient(base_url=BASE_URI)
+        self._dim = DEFAULT_VECTOR_DIM
         self._collection_name = collection_name
-        self._client = QdrantClient(base_url, port=6333)
         self._create_collection_if_not_exists()
 
     def _create_collection_if_not_exists(self):

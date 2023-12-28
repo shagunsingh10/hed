@@ -1,11 +1,13 @@
-from core.schema import QueryResponse, CustomDoc
-from .utils import publish_message
 from typing import List
+
 from config import appconfig
+from schema.base import Document, QueryResponse
+
 from .topics import ASSET_DOCS, ASSET_INGESTION_STATUS, DOC_STATUS, QUERY_RESPONSE
+from .utils import publish_message
 
 
-def emit_doc_status(doc: CustomDoc):
+def emit_doc_status(doc: Document):
     publish_message(
         appconfig.get("INGESTION_RESULT_QUEUE"),
         DOC_STATUS,
@@ -21,7 +23,7 @@ def emit_doc_status(doc: CustomDoc):
     )
 
 
-def emit_docs_in_asset(docs: List[CustomDoc]):
+def emit_docs_in_asset(docs: List[Document]):
     publish_message(
         appconfig.get("INGESTION_RESULT_QUEUE"),
         ASSET_DOCS,

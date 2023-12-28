@@ -1,11 +1,11 @@
+from typing import Dict
+
 from core.reader.base import BaseReader
-from core.reader.files import FilesReader
 from core.reader.github import GitHubReader
 from utils.exceptions import UnsupportedReaderError
 
 # Supported reader types mapping to their respective classes
-supported_types: dict[str, BaseReader] = {
-    "files": FilesReader,
+supported_types: Dict[str, BaseReader] = {
     "github": GitHubReader,
 }
 
@@ -16,7 +16,7 @@ def get_reader(asset_type, **kwargs) -> BaseReader:
 
     Parameters:
     - asset_type (str): Type of the asset to be read (e.g., "file", "directory", "github").
-    - reader_kwargs (dict): Additional keyword arguments to be passed to the reader constructor.
+    - reader_kwargs (Dict): Additional keyword arguments to be passed to the reader constructor.
 
     Returns:
     - BaseReader: An instance of the specified reader for the given asset type.

@@ -1,20 +1,26 @@
-from fastapi import FastAPI
-from ray import workflow
+from fastapi import FastAPI, HTTPException, Request
+from fastapi.responses import JSONResponse
+from api.base import router
 
 app = FastAPI()
 
 
-@app.get("/health")
-def healthcheck():
-    return True
+# Define an exception handler for HTTPException
+@app.exception_handler(HTTPException)
+async def http_exception_handler(request: Request, exc: HTTPException):
+    return JSONResponse(
+        status_code=exc.status_code,
+        content={"detail": exc.detail},
+    )
 
 
-@app.get("/workflow/{id}/status")
-def read_item(id: str):
-    status = workflow.get_status(id)
-    return {"workflow_id": id, "status": status}
+# Define a generic exception handler for unexpected errors
+@app.exception_handler(Exception)
+async def generic_exception_handler(request: Request, exc: Exception):
+    return JSONResponse(
+        status_code=500,
+        content={"detail": "Internal Server Error"},
+    )
 
 
-@app.post("/query")
-def get_response():
-    pass
+app.include_router(router)

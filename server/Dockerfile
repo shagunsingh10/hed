@@ -20,9 +20,6 @@ ADD requirements.txt /app/requirements.txt
 
 # Install dependencies from requirements.txt
 RUN pip install -r requirements.txt
-RUN pip install minio==7.1.17
-RUN pip install ray
-RUN pip install 'ray[data]'
 
 # Copy the contents of the current directory (where Dockerfile is located) into the container at /app
 ADD . /app
@@ -30,6 +27,7 @@ ADD . /app
 EXPOSE 8000
 
 # Run the specified commands when the container launches
-CMD python main.py & uvicorn run main:app --host 0.0.0.0 --port 8000
+CMD python main.py
 
 # ray start --head --port=6379  --dashboard-host=0.0.0.0 --dashboard-port=8265 & 
+# ray start --head --port=6380  --storage=file://"$(pwd)"/ray_storage

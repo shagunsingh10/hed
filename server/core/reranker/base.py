@@ -1,24 +1,21 @@
-from qdrant_client.http import models
-from sentence_transformers import CrossEncoder
-from typing import List, Dict
-from core.schema import ContextChunk
+from typing import Dict, List
 
-DEFAULT_VECTOR_DIM = 384
-MODEL_CONTEXT_LENGTH = 4097
+from sentence_transformers import CrossEncoder
+
+from config import appconfig
+from schema.base import Context
+
+DEFAULT_VECTOR_DIM = appconfig.get("EMBEDDING_DIMENSION")
 
 
 class Reranker:
-    def __init__(self, base_url="172.17.0.1"):
+    def __init__(self):
         self.model = CrossEncoder(
-            "cross-encoder/ms-marco-TinyBERT-L-2-v2", max_length=512
+            appconfig.get("RERANKER_MODEL"),
+            max_length=int(appconfig.get("MAX_SQUENCE_LENGTH")),
         )
 
-    def __call__(
-        self, chunk_batch: Dict[str, List[ContextChunk]]
-    ) -> List[ContextChunk]:
-        # TODO: Current strategy is not correct implementation of hybrid search
-        # Implement this: https://qdrant.tech/articles/hybrid-search/
-        # Use TEI to host a reranker model
+    def __call__(self, chunk_batch: Dict[str, List[Context]]) -> List[Context]:
         chunks = chunk_batch.get("chunk")
         query_paragraph_pairs = [(chunk.query, chunk.text) for chunk in chunks]
 
