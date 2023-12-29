@@ -1,0 +1,24 @@
+version: "3"
+
+services:
+  app1:
+    image: your_app1_image
+    command: serve run api.retrieval:serveapp --port 8001
+    expose:
+      - 8001
+
+  app2:
+    image: your_app2_image
+    command: uvicorn api.ingestion:app --port 8002
+    expose:
+      - 8002
+
+  nginx:
+    image: nginx:latest
+    volumes:
+      - ./nginx.conf:/etc/nginx/conf.d/default.conf
+    ports:
+      - "8002:8002"
+    depends_on:
+      - app1
+      - app2

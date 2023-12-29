@@ -14,13 +14,14 @@ QDRANT_PORT = int(appconfig.get("QDRANT_PORT"))
 QDRANT_GRPC_PORT = int(appconfig.get("QDRANT_GRPC_PORT"))
 QDRANT_PREFER_GRPC = bool(appconfig.get("QDRANT_PREFER_GRPC"))
 QDRANT_API_KEY = appconfig.get("QDRANT_API_KEY")
+COLLECTION_NAME = appconfig.get("VECTOR_DB_COLLECTION_NAME")
 
 
 class VectorStore:
-    def __init__(self, collection_name: str):
+    def __init__(self):
         self._client = QdrantClient(base_url=BASE_URI)
         self._dim = DEFAULT_VECTOR_DIM
-        self._collection_name = collection_name
+        self._collection_name = COLLECTION_NAME
         self._create_collection_if_not_exists()
 
     def _create_collection_if_not_exists(self):
@@ -33,8 +34,15 @@ class VectorStore:
                     size=self._dim, distance=models.Distance.COSINE, on_disk=True
                 ),
                 on_disk_payload=True,
-                hnsw_config=models.HnswConfigDiff(on_disk=True),
+                hnsw_config=models.HnswConfigDiff(payload_m=16, m=0, on_disk=True),
             )
+
+    def _create_asset_id_index(self, asset_id):
+        self._client.create_payload_index(
+            collection_name=self._collection_name,
+            field_name=asset_id,
+            field_schema=models.PayloadSchemaType.KEYWORD,
+        )
 
     def _get_batch_points(self, chunks: List[Chunk]):
         ids = []
@@ -47,6 +55,7 @@ class VectorStore:
             payloads.append(
                 {
                     "doc_id": chunk.doc_id,
+                    "asset_id": chunk.asset_id,
                     "metadata": json.dumps(chunk.metadata),
                     "text": chunk.text,
                 }

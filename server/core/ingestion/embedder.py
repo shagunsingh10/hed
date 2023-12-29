@@ -1,6 +1,7 @@
 from typing import Dict, List, Literal
 
-from sentence_transformers import SentenceTransformer
+from transformers import AutoModel
+from stop_words import get_stop_words
 
 from config import appconfig
 from schema.base import Chunk
@@ -11,13 +12,11 @@ class EmbeddingFailed(Exception):
 
 
 class Embedder:
-    def __init__(self, base_url=None) -> None:
-        import nltk
-        from nltk.corpus import stopwords
-
-        nltk.download("stopwords")
-        self.stop_words = stopwords.words("english")
-        self.model = SentenceTransformer(appconfig.get("EMBEDDING_MODEL"))
+    def __init__(self) -> None:
+        self.stop_words = get_stop_words("en")
+        self.model = AutoModel.from_pretrained(
+            appconfig.get("EMBEDDING_MODEL"), trust_remote_code=True
+        )
 
     def _remove_stopwords(self, text: str) -> str:
         return " ".join([word for word in text.split() if word not in self.stop_words])

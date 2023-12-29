@@ -1,26 +1,18 @@
 from typing import List
 
 import ray
-from ray import workflow
-
+from ray import data
 from config import appconfig
-from core.chunker.base import Chunker
-from core.embedder.base import Embedder
-from core.reader.factory import get_reader
-from core.storage.base import MinioStorage
-from core.vectorstore.base import VectorStore
+from core.ingestion.chunker import Chunker
+from core.ingestion.embedder import Embedder
+from core.ingestion.reader.factory import get_reader
+from core.ingestion.storage import MinioStorage
+from core.ingestion.vectorstore import VectorStore
 from schema.base import IngestionPayload, Document
 
-min_workers = int(appconfig.get("MIN_RAY_WORKERS"))
-max_workers = int(appconfig.get("MAX_RAY_WORKERS"))
+workers = int(appconfig.get("RAY_INGESTION_WORKERS"))
 num_parallel_ingestion_jobs = int(appconfig.get("NUM_PARALLEL_INGESTION_JOBS"))
-
-actual_min_workers_per_task = min(
-    min_workers, max_workers // num_parallel_ingestion_jobs
-)
-actual_max_workers_per_task = min(
-    max_workers, max_workers // num_parallel_ingestion_jobs
-)
+actual_workers = workers // num_parallel_ingestion_jobs
 
 
 def save_docs(documents: List[Document]):
@@ -35,23 +27,23 @@ def read_docs(payload: IngestionPayload):
         payload.asset_id, payload.collection_name, payload.owner, payload.extra_metadata
     )
     save_docs(documents)
-    return [documents, payload.asset_id]
+    return documents
 
 
-@ray.remote(max_retries=0)
-def chunk_and_embed_docs(payload: List[any]):
+@ray.remote(max_retries=0, num_cpus=actual_workers)
+def chunk_and_embed_docs(documents: List[Document]):
     # Create a data pipeline
-    docs_dataset = ray.data.from_items(payload[0])
+    docs_dataset = data.from_items(documents)
     chunked_docs = docs_dataset.flat_map(
         Chunker,
         num_cpus=1,
-        concurrency=(actual_min_workers_per_task, actual_max_workers_per_task),
+        concurrency=actual_workers,
     )
     embedded_docs = chunked_docs.map_batches(
         Embedder,
         batch_size=50,
         num_cpus=1,
-        concurrency=(actual_min_workers_per_task, actual_max_workers_per_task),
+        concurrency=actual_workers,
     )
 
     # Trigger the data pipeline
@@ -59,19 +51,17 @@ def chunk_and_embed_docs(payload: List[any]):
     for row in embedded_docs.iter_rows():
         chunk = row["embedded_chunks"]
         processed_chunks.append(chunk)
-    return [processed_chunks, payload[1]]
+    return processed_chunks
 
 
 @ray.remote(max_retries=0)
-def store_chunks_in_vector_db(payload: List[any]):
-    embedded_chunks = payload[0]
-    collection_name = payload[1]
-    vector_store = VectorStore(collection_name)
+def store_chunks_in_vector_db(embedded_chunks):
+    vector_store = VectorStore()
     vector_store.upload_chunks(embedded_chunks)
     return True
 
 
-def enqueue_ingestion_job(job_id: str, payload: IngestionPayload):
+def enqueue_ingestion_job(job_id: str, payload: IngestionPayload, workflow):
     # Build the DAG: Read -> Ingest
     docs = read_docs.bind(payload)
     embedded_docs = chunk_and_embed_docs.bind(docs)

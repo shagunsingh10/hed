@@ -30,4 +30,4 @@ EXPOSE 8000
 CMD python main.py
 
 # ray start --head --port=6379  --dashboard-host=0.0.0.0 --dashboard-port=8265 & 
-# ray start --head --port=6380  --storage=file://"$(pwd)"/ray_storage
+# ray start --head --port=6380 --dashboard-host=0.0.0.0 --dashboard-port=8265 --storage=file:///home/azureuser

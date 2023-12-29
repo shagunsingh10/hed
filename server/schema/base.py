@@ -17,6 +17,7 @@ class Document(BaseModel):
 
 
 class Chunk(BaseModel):
+    asset_id: str
     chunk_id: str
     doc_id: str
     text: str
@@ -25,10 +26,9 @@ class Chunk(BaseModel):
 
 
 class Context(BaseModel):
-    query: str
     text: str
     metadata: str
-    score: int = 0
+    score: float = 0
 
 
 class IngestionPayload(BaseModel):
@@ -44,4 +44,4 @@ class RetrievalPayload(BaseModel):
     query: str
     asset_ids: List[str]
     num_contexts: int = 10
-    score_threshold: int = 1
+    score_threshold: float = 1

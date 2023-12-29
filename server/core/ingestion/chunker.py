@@ -91,6 +91,7 @@ class Chunker:
             {
                 "chunk": Chunk(
                     chunk_id=str(uuid.uuid4()),
+                    asset_id=doc.asset_id,
                     doc_id=doc.doc_id,
                     text=text,
                     metadata=doc.metadata,

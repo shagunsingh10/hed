@@ -15,26 +15,19 @@ class Config:
 
     def _load_config(self):
         load_dotenv()
-        required_vars = [
-            "REDIS_HOST",
-            "REDIS_PORT",
-            # "QUERY_TASK_QUEUE",
-            # "INGESTION_TASK_QUEUE",
-            # "QUERY_RESULT_QUEUE",
-            # "INGESTION_RESULT_QUEUE",
-        ]
+        required_vars = ["REDIS_HOST", "REDIS_PORT", "RAY_CLUSTER_URI"]
         optional_vars = {
+            "VECTOR_DB_COLLECTION_NAME": "default",
             "OPENAI_API_KEY": "",
             "EMBEDDING_MODEL": "BAAI/bge-small-en-v1.5",
             "EMBEDDING_DIMENSION": 384,
-            "MAX_SQUENCE_LENGTH": None,
             "CHUNK_SIZE": 300,
             "CHUNK_OVERLAP": 100,
             "RERANKER_MODEL": "cross-encoder/ms-marco-TinyBERT-L-2-v2",
-            "MIN_RAY_WORKERS": 2,
-            "MAX_RAY_WORKERS": 3,
-            "NUM_PARALLEL_INGESTION_JOBS": 1,
-            "HTTP_PORT": 8000,
+            "RAY_INGESTION_WORKERS": 2,
+            "NUM_PARALLEL_INGESTION_JOBS": 2,
+            "RAY_RETRIEVAL_WORKERS": 2,
+            "NUM_PARALLEL_RETRIEVAL_REQUESTS": 2,
             "ENV": "development",
             "QDRANT_BASE_URI": "127.0.0.1",
             "QDRANT_API_KEY": "qdrantkey",
