@@ -1,7 +1,7 @@
 import ray
-from config import appconfig
 
-from api.retrieval import serve_router
+from api.base import ServeDeployment
+from settings import settings
 
-
-app = serve_router
+ray.init(address=settings.RAY_ADDRESS, ignore_reinit_error=True)
+app = ServeDeployment.bind()

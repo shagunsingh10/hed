@@ -5,28 +5,19 @@ from minio import Minio
 from minio.error import S3Error
 from minio.versioningconfig import ENABLED, VersioningConfig
 
-from config import appconfig
 from schema.base import Document
+from settings import settings
 from utils.logger import logger
-
-DEFAULT_MINIO_ENDPOINT = appconfig.get("S3_ENDPOINT")
-DEFAULT_MINIO_ACCESS_KEY = appconfig.get("S3_ACCESS_KEY")
-DEFAULT_MINIO_SECRET_KEY = appconfig.get("S3_SECRET_KEY")
 
 
 class MinioStorage:
     def __init__(
         self,
-        endpoint=DEFAULT_MINIO_ENDPOINT,
-        access_key=DEFAULT_MINIO_ACCESS_KEY,
-        secret_key=DEFAULT_MINIO_SECRET_KEY,
+        endpoint=settings.S3_ENDPOINT,
+        access_key=settings.S3_ACCESS_KEY,
+        secret_key=settings.S3_SECRET_KEY,
     ):
         try:
-            print(
-                DEFAULT_MINIO_ENDPOINT,
-                DEFAULT_MINIO_ACCESS_KEY,
-                DEFAULT_MINIO_SECRET_KEY,
-            )
             self.client = Minio(
                 endpoint, access_key=access_key, secret_key=secret_key, secure=False
             )

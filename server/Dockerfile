@@ -26,8 +26,12 @@ ADD . /app
 
 EXPOSE 8000
 
-# Run the specified commands when the container launches
-CMD python main.py
+# Deploy serve app
+ENTRYPOINT [ "serve", "run", "main:app" ]
+
+
+# # Build serve app
+# RUN serve build api.base:app -o serve_config.yaml
 
 # ray start --head --port=6379  --dashboard-host=0.0.0.0 --dashboard-port=8265 & 
 # ray start --head --port=6380 --dashboard-host=0.0.0.0 --dashboard-port=8265 --storage=file:///home/azureuser

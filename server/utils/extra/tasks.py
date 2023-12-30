@@ -1,19 +1,18 @@
-from typing import List
+from typing import List, Tuple
 
 import ray
 from ray import data
-from config import appconfig
+
 from core.chunker import Chunker
 from core.embedder import Embedder
 from core.reader.factory import get_reader
 from core.storage import MinioStorage
 from core.vectorstore import VectorStore
-from schema.base import IngestionPayload, Document
+from schema.base import Document, IngestionPayload
+from settings import settings
 from utils.logger import logger
 
-workers = int(appconfig.get("RAY_INGESTION_WORKERS"))
-num_parallel_ingestion_jobs = int(appconfig.get("NUM_PARALLEL_INGESTION_JOBS"))
-actual_workers = workers // num_parallel_ingestion_jobs
+actual_workers = settings.RAY_INGESTION_WORKERS // settings.NUM_PARALLEL_INGESTION_JOBS
 
 
 def save_docs(documents: List[Document]):
@@ -62,11 +61,22 @@ def store_chunks_in_vector_db(embedded_chunks):
     return True
 
 
-def enqueue_ingestion_job(job_id: str, payload):
+@ray.remote
+def handle_errors(result: Tuple[str, Exception]):
+    # The exception field will be None on success.
+    err = result[1]
+    if err:
+        return "There was an error: {}".format(err)
+    else:
+        return "Workflow Successfull"
+
+
+def enqueue_ingestion_job(job_id: str, payload, workflow):
     try:
         docs = read_docs.bind(payload)
         embedded_docs = chunk_and_embed_docs.bind(docs)
-        final_dag = store_chunks_in_vector_db.bind(embedded_docs)
+        store_docs = store_chunks_in_vector_db.bind(embedded_docs)
+        final_dag = handle_errors.bind(store_docs)
         workflow.run_async(dag=final_dag, workflow_id=job_id)
     except Exception as e:
         logger.exception(e)

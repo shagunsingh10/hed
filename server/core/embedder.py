@@ -1,10 +1,10 @@
 from typing import Dict, List, Literal
 
-from transformers import AutoModel
 from stop_words import get_stop_words
+from transformers import AutoModel
 
-from config import appconfig
 from schema.base import Chunk
+from settings import settings
 
 
 class EmbeddingFailed(Exception):
@@ -15,7 +15,7 @@ class Embedder:
     def __init__(self) -> None:
         self.stop_words = get_stop_words("en")
         self.model = AutoModel.from_pretrained(
-            appconfig.get("EMBEDDING_MODEL"), trust_remote_code=True
+            settings.EMBEDDING_MODEL, trust_remote_code=True
         )
 
     def _remove_stopwords(self, text: str) -> str:

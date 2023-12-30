@@ -1,4 +1,4 @@
-from .tasks import read_docs, chunk_and_embed_docs, store_chunks_in_vector_db
+from .tasks import chunk_and_embed_docs, read_docs, store_chunks_in_vector_db
 
 
 def enqueue_ingestion_job(job_id: str, payload, workflow):
