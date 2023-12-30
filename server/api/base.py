@@ -28,6 +28,10 @@ app = FastAPI()
         "min_replicas": settings.MIN_REPLICAS,
         "initial_replicas": settings.MIN_REPLICAS,
         "max_replicas": settings.MAX_REPLICAS,
+        "upscale_delay_s": 3,
+        "downscale_delay_s": 30,
+        "upscale_smoothing_factor": 0.3,
+        "downscale_smoothing_factor": 0.3,
     },
 )
 @serve.ingress(app)
@@ -65,13 +69,21 @@ class ServeDeployment:
                             ),
                         )
                         for asset_id in asset_ids
-                    ],
+                    ]
+                    if len(asset_ids) > 0
+                    else None,
                 ),
                 with_payload=True,
                 with_vectors=False,
-                limit=limit,
+                limit=limit * 10,  # get more elements to remove duplicates
             )
-            return collections
+            unique = []
+            seen_scores = set()
+            for c in collections:
+                if c.score not in seen_scores:
+                    seen_scores.add(c.score)
+                    unique.append(c)
+            return unique[:limit]
         except UnexpectedResponse as e:
             logger.error(e)
             return []

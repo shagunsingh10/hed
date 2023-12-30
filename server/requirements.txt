@@ -5,19 +5,15 @@ python-dotenv
 # Logging and Utilities
 loguru
 
-
 # RAG
 llama-index==0.8.66
 qdrant_client
-stop-words
+transformers
 sentence-transformers
+stop-words
 
 # Storage
 minio==7.1.17
-
-# Ray
-ray
-ray[data]
 
 # Reader Handling
 pypdf
@@ -34,4 +30,3 @@ pydantic-settings
 # Ray serve
 fastapi
 uvicorn
-watchfiles

@@ -15,9 +15,9 @@ class Settings(BaseSettings):
 
     # Ray config
     RAY_ADDRESS: str = Field("Ray cluster url")
-    RAY_TOTAL_WORKERS: int
+    RAY_TOTAL_WORKERS: int = 4
     MIN_REPLICAS: int = 0
-    MAX_REPLICAS: int = 2
+    MAX_REPLICAS: int = 1
     MAX_CONCURRENT_QUERIES: int = 20
     MAX_INGESTION_JOB_WORKERS: int = 2
     PARALLEL_INGESTION_JOBS: int = 1
@@ -30,7 +30,7 @@ class Settings(BaseSettings):
     # Model configs
     EMBEDDING_MODEL: str = "BAAI/bge-small-en-v1.5"
     EMBEDDING_DIMENSION: int = 384
-    CHUNK_SIZE: int = 2000
+    CHUNK_SIZE: int = 1000
     CHUNK_OVERLAP: int = 100
     RERANKER_MODEL: str = "cross-encoder/ms-marco-TinyBERT-L-2-v2"
 

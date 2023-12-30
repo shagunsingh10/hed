@@ -13,4 +13,4 @@ services:
       - ./.etc/llama_index/:/tmp/llama_index/
       - ./.etc/nltk/:/root/nltk_data/
       - ./.etc/ray/:/tmp/ray/
-      - ./.env:/.env
+      - ./.env:/app/.env
