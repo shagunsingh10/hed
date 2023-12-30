@@ -1,45 +1,44 @@
-from ray import serve
-from fastapi import FastAPI
-from sentence_transformers import CrossEncoder
-from transformers import AutoModel
-from stop_words import get_stop_words
-from schema.base import RetrievalPayload, Context
 from typing import List
-from config import appconfig
-from utils.logger import logger
+
+from fastapi import Depends, FastAPI
+from fastapi.responses import JSONResponse
 from qdrant_client import QdrantClient
 from qdrant_client.http import models
 from qdrant_client.http.exceptions import UnexpectedResponse
+from ray import serve
+from sentence_transformers import CrossEncoder
+from stop_words import get_stop_words
+from transformers import AutoModel
 
-DEFAULT_VECTOR_DIM = appconfig.get("EMBEDDING_DIMENSION")
-QDRANT_BASE_URI = appconfig.get("QDRANT_BASE_URI")
-COLLECTION_NAME = appconfig.get("VECTOR_DB_COLLECTION_NAME")
+from jobs.ingestion import enqueue_ingestion_job
+from schema.base import Context, IngestionPayload, RetrievalPayload
+from settings import settings
+from utils.logger import logger
 
-MAX_RETRIEVAL_REPLICAS = int(appconfig.get("RAY_RETRIEVAL_WORKERS"))
-CONCURRENT_QUERIES = int(appconfig.get("NUM_PARALLEL_RETRIEVAL_REQUESTS"))
+from .deps import get_workflow_manager
 
 app = FastAPI()
 
 
 @serve.deployment(
     ray_actor_options={"num_cpus": 1},
-    max_concurrent_queries=CONCURRENT_QUERIES,
+    max_concurrent_queries=settings.MAX_CONCURRENT_QUERIES,
     autoscaling_config={
         "target_num_ongoing_requests_per_replica": 1,
-        "min_replicas": 0,
-        "initial_replicas": 0,
-        "max_replicas": MAX_RETRIEVAL_REPLICAS,
+        "min_replicas": settings.MIN_REPLICAS,
+        "initial_replicas": settings.MIN_REPLICAS,
+        "max_replicas": settings.MAX_REPLICAS,
     },
 )
 @serve.ingress(app)
 class ServeDeployment:
     def __init__(self):
         self.stop_words = get_stop_words("en")
-        self.reranker_model = CrossEncoder(appconfig.get("RERANKER_MODEL"))
+        self.reranker_model = CrossEncoder(settings.RERANKER_MODEL)
         self.embedding_model = AutoModel.from_pretrained(
-            appconfig.get("EMBEDDING_MODEL"), trust_remote_code=True
+            settings.EMBEDDING_MODEL, trust_remote_code=True
         )
-        self.vector_store_client = QdrantClient(base_url=QDRANT_BASE_URI)
+        self.vector_store_client = QdrantClient(base_url=settings.QDRANT_BASE_URI)
 
     def _remove_stopwords(self, text: str) -> str:
         return " ".join([word for word in text.split() if word not in self.stop_words])
@@ -50,12 +49,12 @@ class ServeDeployment:
         return embeddings[0]
 
     def _search_chunks_by_vector(
-        self, asset_ids: str, vector: List[float], limit
+        self, asset_ids: List[str], vector: List[float], limit
     ) -> List[models.ScoredPoint]:
         # Implement this: https://qdrant.tech/articles/hybrid-search/
         try:
             collections = self.vector_store_client.search(
-                collection_name=COLLECTION_NAME,
+                collection_name=settings.VECTOR_DB_COLLECTION_NAME,
                 query_vector=vector,
                 query_filter=models.Filter(
                     should=[
@@ -77,21 +76,6 @@ class ServeDeployment:
             logger.error(e)
             return []
 
-    def _retrieve_unique_contexts(
-        self,
-        asset_ids: List[str],
-        embeddings: List[float],
-        num_contexts: int = 10,
-    ) -> List[models.ScoredPoint]:
-        contexts = self._search_chunks_by_vector(asset_ids, embeddings, num_contexts)
-        seen_scores = set()
-        unique_contexts = []
-        for context in contexts:
-            if context.score not in seen_scores:
-                seen_scores.add(context.score)
-                unique_contexts.append(context)
-        return unique_contexts
-
     def _rerank_contexts(
         self,
         query: str,
@@ -110,8 +94,10 @@ class ServeDeployment:
 
         # Update scores in the ranked_chunks
         relevant_contexts = []
+        seen_scores = set()
         for context, score in zip(contexts, scores):
-            if score >= score_threshold:
+            if score >= score_threshold and score not in seen_scores:
+                seen_scores.add(score)
                 relevant_contexts.append(
                     Context(
                         text=context.payload.get("text"),
@@ -122,14 +108,43 @@ class ServeDeployment:
         relevant_contexts.sort(key=lambda x: x.score, reverse=True)
         return relevant_contexts
 
+    @app.get("/health")
+    def healthcheck(self):
+        return True
+
     @app.post("/retrieve")
     def get_contexts(self, request: RetrievalPayload) -> List[Context]:
         vector = self._get_query_embedding(request.query)
-        contexts = self._retrieve_unique_contexts(request.asset_ids, vector)
+        contexts = self._search_chunks_by_vector(
+            request.asset_ids, vector, request.num_contexts
+        )
         reranked_contexts = self._rerank_contexts(
             request.query, contexts, request.score_threshold
         )
         return reranked_contexts
 
+    @app.post("/ingest")
+    async def submit_ingestion_task(
+        self, payload: IngestionPayload, workflow=Depends(get_workflow_manager)
+    ):
+        enqueue_ingestion_job(payload.asset_id, payload, workflow)
+        return JSONResponse(status_code=200, content={"job_id": payload.asset_id})
 
-serveapp = ServeDeployment.bind()
+    @app.get("/ingest/{job_id}/status")
+    async def get_task_status(
+        self, job_id: str, workflow=Depends(get_workflow_manager)
+    ):
+        status = workflow.get_status(job_id)
+        return JSONResponse(status_code=200, content={"status": status})
+
+    @app.get("/ingest/{job_id}/metadata")
+    async def get_workflow_metadata(
+        self, job_id: str, workflow=Depends(get_workflow_manager)
+    ):
+        metadata = workflow.get_metadata(job_id)
+        return JSONResponse(status_code=200, content={"metadata": metadata})
+
+    @app.get("/ingest/{job_id}/output")
+    async def get_output(self, job_id: str, workflow=Depends(get_workflow_manager)):
+        metadata = workflow.get_output(job_id)
+        return JSONResponse(status_code=200, content={"output": metadata})
