@@ -26,6 +26,7 @@ class Config:
             "RERANKER_MODEL": "cross-encoder/ms-marco-TinyBERT-L-2-v2",
             "RAY_INGESTION_WORKERS": 2,
             "NUM_PARALLEL_INGESTION_JOBS": 2,
+            "INGESTION_QUEUE_KEY": "ingestion_queue",
             "RAY_RETRIEVAL_WORKERS": 2,
             "NUM_PARALLEL_RETRIEVAL_REQUESTS": 2,
             "ENV": "development",

@@ -3,12 +3,13 @@ from typing import List
 import ray
 from ray import data
 from config import appconfig
-from core.ingestion.chunker import Chunker
-from core.ingestion.embedder import Embedder
-from core.ingestion.reader.factory import get_reader
-from core.ingestion.storage import MinioStorage
-from core.ingestion.vectorstore import VectorStore
+from core.chunker import Chunker
+from core.embedder import Embedder
+from core.reader.factory import get_reader
+from core.storage import MinioStorage
+from core.vectorstore import VectorStore
 from schema.base import IngestionPayload, Document
+from utils.logger import logger
 
 workers = int(appconfig.get("RAY_INGESTION_WORKERS"))
 num_parallel_ingestion_jobs = int(appconfig.get("NUM_PARALLEL_INGESTION_JOBS"))
@@ -61,9 +62,11 @@ def store_chunks_in_vector_db(embedded_chunks):
     return True
 
 
-def enqueue_ingestion_job(job_id: str, payload: IngestionPayload, workflow):
-    # Build the DAG: Read -> Ingest
-    docs = read_docs.bind(payload)
-    embedded_docs = chunk_and_embed_docs.bind(docs)
-    final_dag = store_chunks_in_vector_db.bind(embedded_docs)
-    workflow.run_async(dag=final_dag, workflow_id=job_id)
+def enqueue_ingestion_job(job_id: str, payload):
+    try:
+        docs = read_docs.bind(payload)
+        embedded_docs = chunk_and_embed_docs.bind(docs)
+        final_dag = store_chunks_in_vector_db.bind(embedded_docs)
+        workflow.run_async(dag=final_dag, workflow_id=job_id)
+    except Exception as e:
+        logger.exception(e)

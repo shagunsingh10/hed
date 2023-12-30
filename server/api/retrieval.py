@@ -1,5 +1,5 @@
 from ray import serve
-from fastapi import FastAPI
+from .base import app
 from sentence_transformers import CrossEncoder
 from transformers import AutoModel
 from stop_words import get_stop_words
@@ -17,8 +17,6 @@ COLLECTION_NAME = appconfig.get("VECTOR_DB_COLLECTION_NAME")
 
 MAX_RETRIEVAL_REPLICAS = int(appconfig.get("RAY_RETRIEVAL_WORKERS"))
 CONCURRENT_QUERIES = int(appconfig.get("NUM_PARALLEL_RETRIEVAL_REQUESTS"))
-
-app = FastAPI()
 
 
 @serve.deployment(
@@ -122,7 +120,7 @@ class ServeDeployment:
         relevant_contexts.sort(key=lambda x: x.score, reverse=True)
         return relevant_contexts
 
-    @app.post("/retrieve")
+    @app.post("/")
     def get_contexts(self, request: RetrievalPayload) -> List[Context]:
         vector = self._get_query_embedding(request.query)
         contexts = self._retrieve_unique_contexts(request.asset_ids, vector)
@@ -132,4 +130,4 @@ class ServeDeployment:
         return reranked_contexts
 
 
-serveapp = ServeDeployment.bind()
+serve_router = ServeDeployment.options(route_prefix="/retrieve").bind()
