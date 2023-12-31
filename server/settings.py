@@ -1,6 +1,6 @@
 from typing import Literal
 
-from pydantic import Field, computed_field, model_validator
+from pydantic import computed_field
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
@@ -42,15 +42,6 @@ class Settings(BaseSettings):
     S3_ENDPOINT: str = "172.17.0.1:9000" if ENV == "docker" else "127.0.0.1:9000"
     S3_ACCESS_KEY: str = "minioadmin"
     S3_SECRET_KEY: str = "minioadmin"
-
-    @model_validator(mode="after")
-    def validate_settings(self):
-        # validate total workers
-        if self.RAY_TOTAL_WORKERS < self.MAX_REPLICAS + self.MAX_INGESTION_JOB_WORKERS:
-            raise ValueError(
-                "Sum of max replicas and max ingestion workers should not be less than total workers"
-            )
-        return self
 
 
 settings = Settings()
