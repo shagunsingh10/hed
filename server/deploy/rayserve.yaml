@@ -40,7 +40,7 @@ spec:
             - uvicorn
         
         deployments:
-          - name: Herald
+          - name: ServeDeployment
             autoscaling_config:
               metrics_interval_s: 0.2
               min_replicas: 1
