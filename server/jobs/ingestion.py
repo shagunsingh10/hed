@@ -24,7 +24,7 @@ def read_docs(payload: IngestionPayload):
     documents = reader.load(
         payload.asset_id, payload.collection_name, payload.owner, payload.extra_metadata
     )
-    save_docs(documents)
+    # save_docs(documents)
     return documents
 
 
