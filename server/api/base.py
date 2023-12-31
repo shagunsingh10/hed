@@ -29,7 +29,9 @@ class ServeDeployment:
         self.embedding_model = AutoModel.from_pretrained(
             settings.EMBEDDING_MODEL, trust_remote_code=True
         )
-        self.vector_store_client = QdrantClient(base_url=settings.QDRANT_BASE_URI)
+        self.vector_store_client = QdrantClient(
+            base_url=settings.QDRANT_BASE_URI, api_key=settings.QDRANT_API_KEY
+        )
 
     def _remove_stopwords(self, text: str) -> str:
         return " ".join([word for word in text.split() if word not in self.stop_words])
