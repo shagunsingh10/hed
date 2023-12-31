@@ -40,7 +40,7 @@ kubectl apply -f ray-cluster.autoscaler.large.yaml
 
 # Forward ports -> Dashboard and ray serve
 kubectl port-forward --address 0.0.0.0 service/rayservice-sample-raycluster-xh45n-head-svc 8265:8265
-kubectl port-forward --address 0.0.0.0 service/rayservice-sample-raycluster-xh45n-head-svc 8000:8000
+kubectl port-forward --address 0.0.0.0 service/rayservice-sample-serve-svc 8000:8000
 
 # logs
 kubectl cp rayservice-sample-raycluster-dm255-head-xddz4:/tmp/ray/session_latest/logs/ ./logs/

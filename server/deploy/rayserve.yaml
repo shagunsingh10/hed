@@ -18,7 +18,27 @@ spec:
         import_path: main:app
         route_prefix: /
         runtime_env:
-          working_dir: "https://github.com/ray-project/test_dag/archive/59c994656f55ff8e0e642efe63f380debc831931.zip"
+          working_dir: "your zip file"
+          pip:
+            - requests
+            - python-dotenv
+            - loguru
+            - llama-index==0.8.66
+            - qdrant_client
+            - transformers
+            - sentence-transformers
+            - stop-words
+            - minio==7.1.17
+            - pypdf
+            - pyarrow
+            - Jinja2
+            - Pillow
+            - wikipedia
+            - nbconvert
+            - pydantic==2.5.3
+            - pydantic-settings==2.1.0
+            - fastapi
+            - uvicorn
         deployments:
           - name: HeraldServeApp
             autoscaling_config:
