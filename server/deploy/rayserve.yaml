@@ -5,20 +5,19 @@
 apiVersion: ray.io/v1
 kind: RayService
 metadata:
-  name: rayservice-sample
+  name: rayservice-herald
 spec:
-  # The workload consists of two applications. The first application checks on an event in the second application.
-  # If the event isn't set, the first application will block on requests until the event is set. So, to test upscaling
-  # we can first send a bunch of requests to the first application, which will trigger Serve autoscaling to bring up
-  # more replicas since the existing replicas are blocked on requests. Worker pods should scale up. To test downscaling,
-  # set the event in the second application, releasing all blocked requests, and worker pods should scale down.
+  serviceUnhealthySecondThreshold: 900 # Config for the health check threshold for Ray Serve applications. Default value is 900.
+  deploymentUnhealthySecondThreshold: 300 # Config for the health check threshold for Ray dashboard agent. Default value is 300.
+  # serveConfigV2 takes a yaml multi-line scalar, which should be a Ray Serve multi-application config. See https://docs.ray.io/en/latest/serve/multi-app.html.
+  # Only one of serveConfig and serveConfigV2 should be used.
   serveConfigV2: |
     applications:
       - name: herald
         import_path: main:app
         route_prefix: /
         runtime_env:
-          working_dir: "your zip file"
+          working_dir: "your zip"
           pip:
             - requests
             - python-dotenv
@@ -39,8 +38,9 @@ spec:
             - pydantic-settings==2.1.0
             - fastapi
             - uvicorn
+        
         deployments:
-          - name: HeraldServeApp
+          - name: Herald
             autoscaling_config:
               metrics_interval_s: 0.2
               min_replicas: 1
@@ -62,10 +62,10 @@ spec:
       resources:
         limits:
           cpu: "1"
-          memory: "1000Mi"
+          memory: "2Gi"
         requests:
           cpu: "1"
-          memory: "1000Mi"
+          memory: "2Gi"
     ######################headGroupSpecs#################################
     headGroupSpec:
       # The `rayStartParams` are used to configure the `ray start` command.
@@ -82,10 +82,10 @@ spec:
               resources:
                 limits:
                   cpu: "1"
-                  memory: "1Gi"
+                  memory: "4Gi"
                 requests:
                   cpu: "1"
-                  memory: "1Gi"
+                  memory: "4Gi"
               ports:
                 - containerPort: 6379
                   name: gcs-server
@@ -101,7 +101,7 @@ spec:
         minReplicas: 0
         maxReplicas: 5
         # logical group name, for this called small-group, also can be functional
-        groupName: small-group
+        groupName: worker-group
         # The `rayStartParams` are used to configure the `ray start` command.
         # See https://github.com/ray-project/kuberay/blob/master/docs/guidance/rayStartParams.md for the default settings of `rayStartParams` in KubeRay.
         # See https://docs.ray.io/en/latest/cluster/cli.html#ray-start for all available options in `rayStartParams`.

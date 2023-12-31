@@ -33,14 +33,22 @@ kubectl get pods
 # kuberay-operator-7fbdbf8c89-pt8bk   1/1     Running   0          27s
 
 # Download your ray cluster config yaml
-# curl -LO https://raw.githubusercontent.com/ray-project/kuberay/v1.0.0/ray-operator/config/samples/ray-cluster.autoscaler.large.yaml
+# curl -LO https://raw.githubusercontent.com/ray-project/kuberay/v1.0.0/ray-operator/config/samples/ray-service.autoscaler.yaml
 
 # Apply config
-kubectl apply -f ray-cluster.autoscaler.large.yaml
+kubectl apply -f ray-service.autoscaler.yaml
+
+
+# Check pods -> 2 head pods should start ray head and ray autoscaler
+kubectl get pods
+
+# Check services -> A ray serve service will start if serve application launches successfully
+kubectl get services
+
+# If not check logs 
+kubectl cp "head_pod_name":/tmp/ray/session_latest/logs/ ./logs/
+
 
 # Forward ports -> Dashboard and ray serve
-kubectl port-forward --address 0.0.0.0 service/rayservice-sample-raycluster-xh45n-head-svc 8265:8265
-kubectl port-forward --address 0.0.0.0 service/rayservice-sample-serve-svc 8000:8000
-
-# logs
-kubectl cp rayservice-sample-raycluster-dm255-head-xddz4:/tmp/ray/session_latest/logs/ ./logs/
+kubectl port-forward --address 0.0.0.0 service/"head_service_name" 8265:8265
+kubectl port-forward --address 0.0.0.0 service/"ray_serve_service" 8000:8000

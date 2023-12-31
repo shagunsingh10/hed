@@ -4,7 +4,6 @@ from fastapi import Depends, FastAPI
 from fastapi.responses import JSONResponse
 from qdrant_client import QdrantClient
 from qdrant_client.http import models
-from qdrant_client.http.exceptions import UnexpectedResponse
 from ray import serve
 from sentence_transformers import CrossEncoder
 from stop_words import get_stop_words
@@ -13,7 +12,6 @@ from transformers import AutoModel
 from jobs.ingestion import enqueue_ingestion_job
 from schema.base import Context, IngestionPayload, RetrievalPayload
 from settings import settings
-from utils.logger import logger
 
 from .deps import get_workflow_manager
 
@@ -45,37 +43,33 @@ class ServeDeployment:
         self, asset_ids: List[str], vector: List[float], limit
     ) -> List[models.ScoredPoint]:
         # Implement this: https://qdrant.tech/articles/hybrid-search/
-        try:
-            collections = self.vector_store_client.search(
-                collection_name=settings.VECTOR_DB_COLLECTION_NAME,
-                query_vector=vector,
-                query_filter=models.Filter(
-                    should=[
-                        models.FieldCondition(
-                            key="asset_id",
-                            match=models.MatchValue(
-                                value=asset_id,
-                            ),
-                        )
-                        for asset_id in asset_ids
-                    ]
-                    if len(asset_ids) > 0
-                    else None,
-                ),
-                with_payload=True,
-                with_vectors=False,
-                limit=limit * 10,  # get more elements to remove duplicates
-            )
-            unique = []
-            seen_scores = set()
-            for c in collections:
-                if c.score not in seen_scores:
-                    seen_scores.add(c.score)
-                    unique.append(c)
-            return unique[:limit]
-        except UnexpectedResponse as e:
-            logger.error(e)
-            return []
+        collections = self.vector_store_client.search(
+            collection_name=settings.VECTOR_DB_COLLECTION_NAME,
+            query_vector=vector,
+            query_filter=models.Filter(
+                should=[
+                    models.FieldCondition(
+                        key="asset_id",
+                        match=models.MatchValue(
+                            value=asset_id,
+                        ),
+                    )
+                    for asset_id in asset_ids
+                ]
+                if len(asset_ids) > 0
+                else None,
+            ),
+            with_payload=True,
+            with_vectors=False,
+            limit=limit * 10,  # get more elements to remove duplicates
+        )
+        unique = []
+        seen_scores = set()
+        for c in collections:
+            if c.score not in seen_scores:
+                seen_scores.add(c.score)
+                unique.append(c)
+        return unique[:limit]
 
     def _rerank_contexts(
         self,
