@@ -14,11 +14,7 @@ class Settings(BaseSettings):
     ENV: Literal["development", "production", "testing", "docker"] = "development"
 
     # Ray config
-    RAY_ADDRESS: str = Field("Ray cluster url")
-    RAY_TOTAL_WORKERS: int = 4
-    MIN_REPLICAS: int = 0
-    MAX_REPLICAS: int = 1
-    MAX_CONCURRENT_QUERIES: int = 20
+    RAY_ADDRESS: str = "auto"
     MAX_INGESTION_JOB_WORKERS: int = 2
     PARALLEL_INGESTION_JOBS: int = 1
 

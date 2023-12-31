@@ -20,20 +20,7 @@ from .deps import get_workflow_manager
 app = FastAPI()
 
 
-@serve.deployment(
-    ray_actor_options={"num_cpus": 1},
-    max_concurrent_queries=settings.MAX_CONCURRENT_QUERIES,
-    autoscaling_config={
-        "target_num_ongoing_requests_per_replica": 1,
-        "min_replicas": settings.MIN_REPLICAS,
-        "initial_replicas": settings.MIN_REPLICAS,
-        "max_replicas": settings.MAX_REPLICAS,
-        "upscale_delay_s": 3,
-        "downscale_delay_s": 30,
-        "upscale_smoothing_factor": 0.3,
-        "downscale_smoothing_factor": 0.3,
-    },
-)
+@serve.deployment()
 @serve.ingress(app)
 class ServeDeployment:
     def __init__(self):
