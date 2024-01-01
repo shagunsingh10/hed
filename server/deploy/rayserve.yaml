@@ -13,11 +13,11 @@ spec:
   # Only one of serveConfig and serveConfigV2 should be used.
   serveConfigV2: |
     applications:
-      - name: herald
+      - name: harald
         import_path: main:app
         route_prefix: /
         runtime_env:
-          working_dir: "your zip"
+          working_dir: "https://dl.cloudsmith.io/public/workspace-for-shivam-4ky/herahs/raw/names/server/files/server.zip"
           pip:
             - requests
             - python-dotenv
@@ -62,10 +62,10 @@ spec:
       resources:
         limits:
           cpu: "1"
-          memory: "2Gi"
+          memory: "1Gi"
         requests:
           cpu: "1"
-          memory: "2Gi"
+          memory: "1Gi"
     ######################headGroupSpecs#################################
     headGroupSpec:
       # The `rayStartParams` are used to configure the `ray start` command.
@@ -73,6 +73,7 @@ spec:
       # See https://docs.ray.io/en/latest/cluster/cli.html#ray-start for all available options in `rayStartParams`.
       rayStartParams:
         dashboard-host: '0.0.0.0'
+        storage: "file:///tmp/ray_storage/"
       #pod template
       template:
         spec:
@@ -82,10 +83,10 @@ spec:
               resources:
                 limits:
                   cpu: "1"
-                  memory: "4Gi"
+                  memory: "10Gi"
                 requests:
                   cpu: "1"
-                  memory: "4Gi"
+                  memory: "10Gi"
               ports:
                 - containerPort: 6379
                   name: gcs-server
@@ -99,13 +100,14 @@ spec:
       # the pod replicas in this group typed worker
       - replicas: 0
         minReplicas: 0
-        maxReplicas: 5
+        maxReplicas: 4
         # logical group name, for this called small-group, also can be functional
         groupName: worker-group
         # The `rayStartParams` are used to configure the `ray start` command.
         # See https://github.com/ray-project/kuberay/blob/master/docs/guidance/rayStartParams.md for the default settings of `rayStartParams` in KubeRay.
         # See https://docs.ray.io/en/latest/cluster/cli.html#ray-start for all available options in `rayStartParams`.
-        rayStartParams: {}
+        rayStartParams:
+          storage: "file:///tmp/ray_storage/"
         #pod template
         template:
           spec:

@@ -1,0 +1,57 @@
+name: CI/CD Pipeline
+
+on:
+  push:
+    branches:
+      - notselected
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout Repository
+      uses: actions/checkout@v2
+
+    - name: Set up Docker
+      run: |
+        curl -fsSL https://get.docker.com | sh
+        sudo usermod -aG docker $USER
+        newgrp docker
+
+    - name: Build Docker Image
+      run: |
+        docker build -t gcr.io/your-project/your-app:$GITHUB_SHA .
+        docker push gcr.io/your-project/your-app:$GITHUB_SHA
+
+    - name: Configure Kubernetes
+      run: |
+        echo $GCLOUD_SERVICE_KEY | base64 --decode > ${HOME}/gcloud-service-key.json
+        gcloud auth activate-service-account --key-file=${HOME}/gcloud-service-key.json
+        gcloud container clusters get-credentials your-gke-cluster-name --zone=your-gke-cluster-zone
+
+    - name: Install Helm
+      run: |
+        curl -fsSL -o get_helm.sh https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3
+        chmod 700 get_helm.sh
+        ./get_helm.sh
+
+    - name: Check if Helm release exists
+      id: check_helm_release
+      run: |
+        if helm list -a | grep -q "kuberay-operator"; then
+          echo "::set-output name=release_exists::true"
+        else
+          echo "::set-output name=release_exists::false"
+        fi
+
+    - name: Install Helm Chart if not exists
+      if: steps.check_helm_release.outputs.release_exists == 'false'
+      run: |
+        helm repo add kuberay https://ray-project.github.io/kuberay-helm/
+        helm repo update
+        helm install kuberay-operator kuberay/kuberay-operator
+
+    - name: Deploy to GKE
+      run: |
+        kubectl apply -f path/to/your/kubernetes/yaml/files/

@@ -1,145 +1,127 @@
-# For most use-cases, it makes sense to schedule one Ray pod per Kubernetes node.
-# This is a configuration for an autoscaling RayCluster with 1 Ray head pod and 1 Ray worker pod,
-# with capacity to scale up to 10 worker pods.
-# Each pod requests 54 Gi memory and 14 CPU.
-# Each pod can be scheduled on a virtual machine with roughly 64 Gi memory and 16 CPU.
-# (AWS: m5.4xlarge, GCP: e2-standard-16, Azure: Standard_D5_v2)
-# Optimal resource allocation will depend on your Kubernetes infrastructure and might
-# require some experimentation.
-
-# The Ray autoscaler and KubeRay operator scale Ray pod quantities.
-# To achieve Kubernetes node autoscaling with this example, we recommend setting up an autoscaling node group/pool with
-# - 2 nodes minimum for the Ray head pod and Ray worker pod
-# - 11 nodes maximum to accommodate up to 10 Ray worker pods.
+# Make sure to increase resource requests and limits before using this example in production.
+# For examples with more realistic resource configuration, see
+# ray-cluster.complete.large.yaml and
+# ray-cluster.autoscaler.large.yaml.
 apiVersion: ray.io/v1
-kind: RayCluster
+kind: RayService
 metadata:
-  labels:
-    controller-tools.k8s.io: "1.0"
-    # A unique identifier for the head node and workers of this cluster.
-  name: raycluster-autoscaler
+  name: rayservice-herald
 spec:
-  # The version of Ray you are using. Make sure all Ray containers are running this version of Ray.
-  rayVersion: '2.9.0'
-  # If enableInTreeAutoscaling is true, the autoscaler sidecar will be added to the Ray head pod.
-  # Ray autoscaler integration is supported only for Ray versions >= 1.11.0
-  # Ray autoscaler integration is Beta with KubeRay >= 0.3.0 and Ray >= 2.0.0.
-  enableInTreeAutoscaling: true
-  # autoscalerOptions is an OPTIONAL field specifying configuration overrides for the Ray autoscaler.
-  # The example configuration shown below below represents the DEFAULT values.
-  # (You may delete autoscalerOptions if the defaults are suitable.)
-  autoscalerOptions:
-    # upscalingMode is "Default" or "Aggressive."
-    # Conservative: Upscaling is rate-limited; the number of pending worker pods is at most the size of the Ray cluster.
-    # Default: Upscaling is not rate-limited.
-    # Aggressive: An alias for Default; upscaling is not rate-limited.
-    upscalingMode: Default
-    # idleTimeoutSeconds is the number of seconds to wait before scaling down a worker pod which is not using Ray resources.
-    idleTimeoutSeconds: 60
-    # image optionally overrides the autoscaler's container image.
-    # If instance.spec.rayVersion is at least "2.0.0", the autoscaler will default to the same image as
-    # the ray container by. For older Ray versions, the autoscaler will default to using the Ray 2.0.0 image.
-    ## image: "my-repo/my-custom-autoscaler-image:tag"
-    # imagePullPolicy optionally overrides the autoscaler container's default image pull policy (IfNotPresent).
-    imagePullPolicy: IfNotPresent
-    # Optionally specify the autoscaler container's securityContext.
-    securityContext: {}
-    env: []
-    envFrom: []
-    # resources specifies optional resource request and limit overrides for the autoscaler container.
-    # For large Ray clusters, we recommend monitoring container resource usage to determine if overriding the defaults is required.
-    resources:
-      limits:
-        cpu: "500m"
-        memory: "512Mi"
-      requests:
-        cpu: "500m"
-        memory: "512Mi"
-  # Ray head pod template
-  headGroupSpec:
-    # The `rayStartParams` are used to configure the `ray start` command.
-    # See https://github.com/ray-project/kuberay/blob/master/docs/guidance/rayStartParams.md for the default settings of `rayStartParams` in KubeRay.
-    # See https://docs.ray.io/en/latest/cluster/cli.html#ray-start for all available options in `rayStartParams`.
-    rayStartParams:
-      dashboard-host: '0.0.0.0'
-      # Use `resources` to optionally specify custom resource annotations for the Ray node.
-      # The value of `resources` is a string-integer mapping.
-      # Currently, `resources` must be provided in the specific format demonstrated below:
-      # resources: '"{\"Custom1\": 1, \"Custom2\": 5}"'
-    #pod template
-    template:
-      spec:
-        containers:
-        # The Ray head container
-        - name: ray-head
-          image: rayproject/ray:2.9.0
-          # Optimal resource allocation will depend on your Kubernetes infrastructure and might
-          # require some experimentation.
-          # Setting requests=limits is recommended with Ray. K8s limits are used for Ray-internal
-          # resource accounting. K8s requests are not used by Ray.
-          resources:
-            limits:
-              cpu: 14
-              memory: 54Gi
-            requests:
-              cpu: 14
-              memory: 54Gi
-          ports:
-          - containerPort: 6379
-            name: gcs
-          - containerPort: 8265
-            name: dashboard
-          - containerPort: 10001
-            name: client
-          lifecycle:
-            preStop:
-              exec:
-                command: ["/bin/sh","-c","ray stop"]
-  workerGroupSpecs:
-  # the pod replicas in this group typed worker
-  - replicas: 1
-    minReplicas: 1
-    maxReplicas: 10
-    # logical group name, for this called large-group, also can be functional
-    groupName: large-group
-    # If worker pods need to be added, we can increment the replicas.
-    # If worker pods need to be removed, we decrement the replicas, and populate the workersToDelete list.
-    # The operator will remove pods from the list until the desired number of replicas is satisfied.
-    # If the difference between the current replica count and the desired replicas is greater than the
-    # number of entries in workersToDelete, random worker pods will be deleted.
-    #scaleStrategy:
-    #  workersToDelete:
-    #  - raycluster-complete-worker-large-group-bdtwh
-    #  - raycluster-complete-worker-large-group-hv457
-    #  - raycluster-complete-worker-large-group-k8tj7
-    # The `rayStartParams` are used to configure the `ray start` command.
-    # See https://github.com/ray-project/kuberay/blob/master/docs/guidance/rayStartParams.md for the default settings of `rayStartParams` in KubeRay.
-    # See https://docs.ray.io/en/latest/cluster/cli.html#ray-start for all available options in `rayStartParams`.
-    rayStartParams: {}
-    #pod template
-    template:
-      metadata:
-        labels:
-          key: value
-        # annotations for pod
-        annotations:
-          key: value
-      spec:
-        containers:
-        - name: ray-worker
-          image: rayproject/ray:2.9.0
-          # Optimal resource allocation will depend on your Kubernetes infrastructure and might
-          # require some experimentation.
-          # Setting requests=limits is recommended with Ray. K8s limits are used for Ray-internal
-          # resource accounting. K8s requests are not used by Ray.
-          resources:
-            limits:
-              cpu: 14
-              memory: 54Gi
-            requests:
-              cpu: 14
-              memory: 54Gi
-          lifecycle:
-            preStop:
-              exec:
-                command: ["/bin/sh","-c","ray stop"]
+  serviceUnhealthySecondThreshold: 900 # Config for the health check threshold for Ray Serve applications. Default value is 900.
+  deploymentUnhealthySecondThreshold: 300 # Config for the health check threshold for Ray dashboard agent. Default value is 300.
+  # serveConfigV2 takes a yaml multi-line scalar, which should be a Ray Serve multi-application config. See https://docs.ray.io/en/latest/serve/multi-app.html.
+  # Only one of serveConfig and serveConfigV2 should be used.
+  serveConfigV2: |
+    applications:
+      - name: harald
+        import_path: main:app
+        route_prefix: /
+        runtime_env:
+          working_dir: "https://dl.cloudsmith.io/public/workspace-for-shivam-4ky/herahs/raw/names/server/files/server.zip"
+          pip:
+            - requests
+            - python-dotenv
+            - loguru
+            - llama-index==0.8.66
+            - qdrant_client
+            - transformers
+            - sentence-transformers
+            - stop-words
+            - minio==7.1.17
+            - pypdf
+            - pyarrow
+            - Jinja2
+            - Pillow
+            - wikipedia
+            - nbconvert
+            - pydantic==2.5.3
+            - pydantic-settings==2.1.0
+            - fastapi
+            - uvicorn
+        
+        deployments:
+          - name: ServeDeployment
+            autoscaling_config:
+              metrics_interval_s: 0.2
+              min_replicas: 1
+              max_replicas: 2
+              look_back_period_s: 2
+              downscale_delay_s: 5
+              upscale_delay_s: 2
+            graceful_shutdown_timeout_s: 5
+            max_concurrent_queries: 20
+            ray_actor_options:
+              num_cpus: 1
+  
+  rayClusterConfig:
+    rayVersion: '2.9.0' # should match the Ray version in the image of the containers
+    ## raycluster autoscaling config
+    enableInTreeAutoscaling: true
+    autoscalerOptions:
+      upscalingMode: Default
+      resources:
+        limits:
+          cpu: "1"
+          memory: "1Gi"
+        requests:
+          cpu: "1"
+          memory: "1Gi"
+    ######################headGroupSpecs#################################
+    headGroupSpec:
+      # The `rayStartParams` are used to configure the `ray start` command.
+      # See https://github.com/ray-project/kuberay/blob/master/docs/guidance/rayStartParams.md for the default settings of `rayStartParams` in KubeRay.
+      # See https://docs.ray.io/en/latest/cluster/cli.html#ray-start for all available options in `rayStartParams`.
+      rayStartParams:
+        dashboard-host: '0.0.0.0'
+        storage: "file:///tmp/ray_storage/"
+      #pod template
+      template:
+        spec:
+          containers:
+            - name: ray-head
+              image: rayproject/ray:2.9.0
+              resources:
+                limits:
+                  cpu: "1"
+                  memory: "10Gi"
+                requests:
+                  cpu: "1"
+                  memory: "10Gi"
+              ports:
+                - containerPort: 6379
+                  name: gcs-server
+                - containerPort: 8265 # Ray dashboard
+                  name: dashboard
+                - containerPort: 10001
+                  name: client
+                - containerPort: 8000
+                  name: serve
+    workerGroupSpecs:
+      # the pod replicas in this group typed worker
+      - replicas: 0
+        minReplicas: 0
+        maxReplicas: 4
+        # logical group name, for this called small-group, also can be functional
+        groupName: worker-group
+        # The `rayStartParams` are used to configure the `ray start` command.
+        # See https://github.com/ray-project/kuberay/blob/master/docs/guidance/rayStartParams.md for the default settings of `rayStartParams` in KubeRay.
+        # See https://docs.ray.io/en/latest/cluster/cli.html#ray-start for all available options in `rayStartParams`.
+        rayStartParams:
+          storage: "file:///tmp/ray_storage/"
+        #pod template
+        template:
+          spec:
+            containers:
+              - name: ray-worker # must consist of lower case alphanumeric characters or '-', and must start and end with an alphanumeric character (e.g. 'my-name',  or '123-abc'
+                image: rayproject/ray:2.9.0
+                lifecycle:
+                  preStop:
+                    exec:
+                      command: ["/bin/sh","-c","ray stop"]
+                resources:
+                  limits:
+                    cpu: "1"
+                    memory: "2Gi"
+                  requests:
+                    cpu: "1"
+                    memory: "2Gi"
