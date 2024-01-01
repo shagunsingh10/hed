@@ -52,27 +52,29 @@ spec:
             max_concurrent_queries: 20
             ray_actor_options:
               num_cpus: 1
-  
+
   rayClusterConfig:
-    rayVersion: '2.9.0' # should match the Ray version in the image of the containers
+    rayVersion: "2.9.0" # should match the Ray version in the image of the containers
     ## raycluster autoscaling config
     enableInTreeAutoscaling: true
     autoscalerOptions:
       upscalingMode: Default
       resources:
         limits:
-          cpu: "1"
+          cpu: "500m"
           memory: "1Gi"
+          ephemeral-storage: "1Gi"
         requests:
-          cpu: "1"
-          memory: "1Gi"
+          cpu: "500m"
+          memory: "512Mi"
+          ephemeral-storage: "1Gi"
     ######################headGroupSpecs#################################
     headGroupSpec:
       # The `rayStartParams` are used to configure the `ray start` command.
       # See https://github.com/ray-project/kuberay/blob/master/docs/guidance/rayStartParams.md for the default settings of `rayStartParams` in KubeRay.
       # See https://docs.ray.io/en/latest/cluster/cli.html#ray-start for all available options in `rayStartParams`.
       rayStartParams:
-        dashboard-host: '0.0.0.0'
+        dashboard-host: "0.0.0.0"
         storage: "file:///tmp/ray_storage/"
       #pod template
       template:
@@ -84,9 +86,11 @@ spec:
                 limits:
                   cpu: "1"
                   memory: "10Gi"
+                  ephemeral-storage: "30Gi"
                 requests:
                   cpu: "1"
                   memory: "10Gi"
+                  ephemeral-storage: "30Gi"
               ports:
                 - containerPort: 6379
                   name: gcs-server
@@ -100,7 +104,7 @@ spec:
       # the pod replicas in this group typed worker
       - replicas: 0
         minReplicas: 0
-        maxReplicas: 4
+        maxReplicas: 3
         # logical group name, for this called small-group, also can be functional
         groupName: worker-group
         # The `rayStartParams` are used to configure the `ray start` command.
@@ -117,11 +121,13 @@ spec:
                 lifecycle:
                   preStop:
                     exec:
-                      command: ["/bin/sh","-c","ray stop"]
+                      command: ["/bin/sh", "-c", "ray stop"]
                 resources:
                   limits:
-                    cpu: "1"
-                    memory: "2Gi"
+                    cpu: "2"
+                    memory: "6Gi"
+                    ephemeral-storage: "15Gi"
                   requests:
-                    cpu: "1"
-                    memory: "2Gi"
+                    cpu: "2"
+                    memory: "6Gi"
+                    ephemeral-storage: "15Gi"
