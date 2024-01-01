@@ -11,8 +11,11 @@ from settings import settings
 
 class VectorStore:
     def __init__(self):
+        print(settings.QDRANT_BASE_URI, settings.QDRANT_API_KEY)
         self._client = QdrantClient(
-            base_url=settings.QDRANT_BASE_URI, api_key=settings.QDRANT_API_KEY
+            base_url=settings.QDRANT_BASE_URI,
+            api_key=settings.QDRANT_API_KEY,
+            https=False,
         )
         self._dim = settings.EMBEDDING_DIMENSION
         self._collection_name = settings.VECTOR_DB_COLLECTION_NAME

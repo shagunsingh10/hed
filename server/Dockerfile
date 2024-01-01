@@ -26,5 +26,5 @@ ENTRYPOINT [ "serve", "run", "main:app" ]
 # RUN serve build api.base:app -o serve_config.yaml
 
 # ray start --head --port=6379  --dashboard-host=0.0.0.0 --dashboard-port=8265 & 
-# ray start --head --port=6380 --dashboard-host=0.0.0.0 --dashboard-port=8265 --storage=file:///home/azureuser
+# ray start --head --port=6380 --dashboard-host=0.0.0.0 --dashboard-port=8265 --storage=s3://GOOG1ETTLEIHZB3RPBLUMPEHSU5GLGW6KWK4T22L64P7OT36LJNQBPFXAMJQV:xWIgoQQuhLr%2B%2FJAgXNLljggFcW1NTD6y%2BwRpxE0S@ray-storage-bucket/sub-path?endpoint_override=https://storage.googleapis.com
 # chmod 777 -R /tmp/ray/*

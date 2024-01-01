@@ -1,8 +1,8 @@
 from typing import List, Tuple
-
+import time
 import ray
 from ray import data
-
+import uuid
 from core.chunker import Chunker
 from core.embedder import Embedder
 from core.reader.factory import get_reader
@@ -11,6 +11,7 @@ from core.vectorstore import VectorStore
 from schema.base import Document, IngestionPayload
 from settings import settings
 from utils.logger import logger
+from ray import workflow
 
 
 def save_docs(documents: List[Document]):
@@ -28,20 +29,20 @@ def read_docs(payload: IngestionPayload):
     return documents
 
 
-@ray.remote(max_retries=0, num_cpus=settings.INGESTION_WORKERS_PER_JOB)
+@ray.remote(max_retries=0, num_cpus=4)
 def chunk_and_embed_docs(documents: List[Document]):
     # Create a data pipeline
     docs_dataset = data.from_items(documents)
     chunked_docs = docs_dataset.flat_map(
         Chunker,
         num_cpus=1,
-        concurrency=settings.INGESTION_WORKERS_PER_JOB,
+        concurrency=4,
     )
     embedded_docs = chunked_docs.map_batches(
         Embedder,
         batch_size=50,
         num_cpus=1,
-        concurrency=settings.INGESTION_WORKERS_PER_JOB,
+        concurrency=4,
     )
 
     # Trigger the data pipeline
@@ -77,3 +78,31 @@ def enqueue_ingestion_job(job_id: str, payload, workflow):
         workflow.run_async(dag=final_dag, workflow_id=job_id)
     except Exception as e:
         logger.exception(e)
+
+
+if __name__ == "__main__":
+    ray.init(address="10.0.0.5:6370")
+    start = time.time()
+    workflow.init(max_running_workflows=1, max_pending_workflows=20)
+    workflow.cancel("6e652539-512c-4df9-a750-053c36d3e378")
+    raise "E"
+    asset_id = str(uuid.uuid4())
+    _data = {
+        "asset_type": "github",
+        "asset_id": asset_id,
+        "collection_name": asset_id,
+        "owner": "shivamsanju",
+        "reader_kwargs": {
+            "repo": "nx",
+            "branch": "main",
+            "owner": "shivamsanju",
+            "github_token": "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",
+        },
+        "extra_metadata": {},
+    }
+    data_model = IngestionPayload.model_validate(_data)
+    docs = read_docs.bind(data_model)
+    embedded_docs = chunk_and_embed_docs.bind(docs)
+    final_dag = store_chunks_in_vector_db.bind(embedded_docs)
+    workflow.run(dag=final_dag, workflow_id=asset_id)
+    print(time.time() - start)
