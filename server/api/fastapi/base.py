@@ -6,7 +6,7 @@ app = FastAPI()
 
 
 @app.get("/")
-def healthcheck(self):
+def healthcheck():
     return "RUNNING"
 
 

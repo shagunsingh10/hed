@@ -20,7 +20,7 @@ def create_ingestion_job():
         },
         "extra_metadata": {},
     }
-    url = "http://localhost:8000/ingest"
+    url = "http://localhost:8080/ingest/ingest"
     response = requests.post(url, json=data)
     print(response)
     return response.json()
@@ -28,7 +28,7 @@ def create_ingestion_job():
 
 # Function to check the status of an ingestion job
 def check_ingestion_status(job_id):
-    url = f"http://localhost:8000/ingest/{job_id}/status"
+    url = f"http://localhost:8080/ingest/ingest/{job_id}/status"
     response = requests.get(url)
     return response.json()
 
