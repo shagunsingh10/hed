@@ -1,16 +1,18 @@
 from typing import List, Tuple
 
 import ray
-from ray import data
-
 from core.chunker import Chunker
 from core.embedder import Embedder
 from core.reader.factory import get_reader
 from core.storage import MinioStorage
 from core.vectorstore import VectorStore
+from ray import data
+
 from schema.base import Document, IngestionPayload
 from settings import settings
 from utils.logger import logger
+
+actual_workers = settings.RAY_INGESTION_WORKERS // settings.NUM_PARALLEL_INGESTION_JOBS
 
 
 def save_docs(documents: List[Document]):
@@ -24,24 +26,24 @@ def read_docs(payload: IngestionPayload):
     documents = reader.load(
         payload.asset_id, payload.collection_name, payload.owner, payload.extra_metadata
     )
-    # save_docs(documents)
+    save_docs(documents)
     return documents
 
 
-@ray.remote(max_retries=0, num_cpus=settings.INGESTION_WORKERS_PER_JOB)
+@ray.remote(max_retries=0, num_cpus=actual_workers)
 def chunk_and_embed_docs(documents: List[Document]):
     # Create a data pipeline
     docs_dataset = data.from_items(documents)
     chunked_docs = docs_dataset.flat_map(
         Chunker,
         num_cpus=1,
-        concurrency=settings.INGESTION_WORKERS_PER_JOB,
+        concurrency=actual_workers,
     )
     embedded_docs = chunked_docs.map_batches(
         Embedder,
         batch_size=50,
         num_cpus=1,
-        concurrency=settings.INGESTION_WORKERS_PER_JOB,
+        concurrency=actual_workers,
     )
 
     # Trigger the data pipeline
@@ -73,7 +75,8 @@ def enqueue_ingestion_job(job_id: str, payload, workflow):
     try:
         docs = read_docs.bind(payload)
         embedded_docs = chunk_and_embed_docs.bind(docs)
-        final_dag = store_chunks_in_vector_db.bind(embedded_docs)
+        store_docs = store_chunks_in_vector_db.bind(embedded_docs)
+        final_dag = handle_errors.bind(store_docs)
         workflow.run_async(dag=final_dag, workflow_id=job_id)
     except Exception as e:
         logger.exception(e)

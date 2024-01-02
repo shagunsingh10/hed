@@ -1,5 +1,6 @@
-from locust import HttpUser, task, between
 import uuid
+
+from locust import HttpUser, between, task
 
 
 class MyUser(HttpUser):

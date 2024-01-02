@@ -25,6 +25,7 @@ class Settings(BaseSettings):
 
     # Model configs
     EMBEDDING_MODEL: str = "BAAI/bge-small-en-v1.5"
+    USE_SENTENCE_TRANSFORMERS: bool = True
     EMBEDDING_DIMENSION: int = 384
     CHUNK_SIZE: int = 1000
     CHUNK_OVERLAP: int = 100
@@ -32,8 +33,10 @@ class Settings(BaseSettings):
 
     # Vector db config
     VECTOR_DB_COLLECTION_NAME: str = "default"
-    QDRANT_BASE_URI: str = "172.17.0.1" if ENV == "docker" else "127.0.0.1"
-    QDRANT_API_KEY: str = "qdrantkey"
+    QDRANT_BASE_URI: str = (
+        "https://dce864fa-dd89-4f51-88cf-8c0eb885094a.us-east4-0.gcp.cloud.qdrant.io"
+    )
+    QDRANT_API_KEY: str = "oc4b9kziV56wDv8mfKX4fPYdFVp1eh_S_x5rcJUbd0bkrjNSRa1bGA"
     QDRANT_PORT: str = "6333"
     QDRANT_GRPC_PORT: str = "6334"
     QDRANT_PREFER_GRPC: str = "0"

@@ -7,12 +7,10 @@ import requests
 # Function to create an ingestion job
 def create_ingestion_job():
     asset_id = str(uuid.uuid4())
-    collection_name = asset_id
 
     data = {
         "asset_type": "github",
-        "asset_id": "jobbs",
-        "collection_name": collection_name,
+        "asset_id": asset_id,
         "owner": "shivamsanju",
         "reader_kwargs": {
             "repo": "nx",
