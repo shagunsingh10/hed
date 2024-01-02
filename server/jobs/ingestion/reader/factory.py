@@ -1,4 +1,4 @@
-from typing import Any, Dict, Literal, Union
+from typing import Any, Dict, Literal
 
 from llama_index.readers import GithubRepositoryReader
 from pydantic import BaseModel

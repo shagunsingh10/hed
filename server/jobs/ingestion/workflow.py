@@ -11,24 +11,28 @@ from ray import workflow
 from stop_words import get_stop_words
 from tqdm import tqdm
 from transformers import AutoModel
+from sentence_transformers import SentenceTransformer
 
+from jobs.ingestion.reader.factory import get_reader
 from schema.base import Chunk, Document, IngestionPayload
+from jobs.utils.batcher import run_actor_paralelly
 from settings import settings
 
-from .core.factory import get_reader
+print(
+    "HERE",
+    settings,
+)
 
 
 ########################## READER ############################
 @ray.remote(
-    concurrency_groups={"readercompute": settings.INGESTION_WORKERS_PER_JOB},
-    num_cpus=0.25,
+    num_cpus=0.5,
     num_gpus=0,
 )
 class Reader:
     def __init__(self):
         pass
 
-    @ray.method(concurrency_group="readercompute")
     def read_docs(self, payload: IngestionPayload):
         reader = get_reader(
             asset_type=payload.asset_type,
@@ -42,8 +46,8 @@ class Reader:
 
 
 ########################## CHUNKER ############################
+# ideal -> 2.5 cpu util (>8 chunks) -> if 3 then reader also there
 @ray.remote(
-    concurrency_groups={"chunkercompute": settings.INGESTION_WORKERS_PER_JOB * 4},
     num_cpus=0.25,
     num_gpus=0,
 )
@@ -101,7 +105,6 @@ class Chunker:
             ".yaml": "yaml",
         }
 
-    @ray.method(concurrency_group="chunkercompute")
     def chunk_doc(
         self,
         doc: Document,
@@ -138,22 +141,24 @@ class Chunker:
 
 
 ########################## EMBEDDER ############################
+# ideal -> 2.5 cpu util (> 2 chunks) -> if 4 (total-2 pending) then chunker
 @ray.remote(
-    concurrency_groups={"embeddercompute": settings.INGESTION_WORKERS_PER_JOB},
     num_cpus=1,
     num_gpus=0,
 )
 class Embedder:
     def __init__(self):
         self.stop_words = get_stop_words("en")
-        self.embed_model = AutoModel.from_pretrained(
-            settings.EMBEDDING_MODEL, trust_remote_code=True
-        )
+        if settings.USE_SENTENCE_TRANSFORMERS:
+            self.embed_model = SentenceTransformer(settings.EMBEDDING_MODEL)
+        else:
+            self.embed_model = AutoModel.from_pretrained(
+                settings.EMBEDDING_MODEL, trust_remote_code=True
+            )
 
     def _remove_stopwords(self, text: str) -> str:
         return " ".join([word for word in text.split() if word not in self.stop_words])
 
-    @ray.method(concurrency_group="embeddercompute")
     def embed_chunks_batch(
         self, chunks: List[Chunk], batch_size: int = 10
     ) -> List[Chunk]:
@@ -170,7 +175,6 @@ class Embedder:
 
 ########################## VECTOR STORE ############################
 @ray.remote(
-    concurrency_groups={"vectorstorecompute": settings.INGESTION_WORKERS_PER_JOB * 4},
     num_cpus=0.25,
     num_gpus=0,
 )
@@ -226,7 +230,6 @@ class VectorStoreClient:
 
         return [ids, payloads, vectors]
 
-    @ray.method(concurrency_group="vectorstorecompute")
     def store_chunks_in_vector_db(self, chunks_batches: List[List[Chunk]]):
         points_batch = self._get_batch_points(chunks_batches)
         self.vectorstore_client.upload_collection(
@@ -247,33 +250,51 @@ def with_tqdm_iterator(obj_ids):
         yield ray.get(done[0])
 
 
+# Please note that setting num_cpus=0 means that the task or actor can run on a node even if no CPUs are available.
+# However, the actual CPU utilization is not controlled or limited by Ray, so the task or actor could still use CPU
+# resources when it runs.
 @workflow.options(catch_exceptions=True)
-@ray.remote
+@ray.remote(num_cpus=0.25)
 def ingest_asset(payload: IngestionPayload):
+    NUM_WORKERS = settings.INGESTION_WORKERS_PER_JOB
+
     # Read documents
     reader = Reader.remote()
     docs = ray.get(reader.read_docs.remote(payload))
+    del reader  # delete actor to free space
 
     # Chunk the docs in parallel
-    chunker = Chunker.remote()
-    chunks_ref = [chunker.chunk_doc.remote(doc) for doc in docs]
-    chunks = [x for x in tqdm(with_tqdm_iterator(chunks_ref), total=len(chunks_ref))]
+    (chunks_refs, actors) = run_actor_paralelly(Chunker, "chunk_doc", docs, NUM_WORKERS)
+    print(chunks_refs, "REFS")
+    chunks = [
+        chunk for chunk in tqdm(with_tqdm_iterator(chunks_refs), total=len(chunks_refs))
+    ]
     flat_chunks = [item for sublist in chunks for item in sublist]
+    # delete actors to free up cpu allocation
+    for actor in actors:
+        ray.kill(actor)
 
     # Embed the chunks again in parallel
-    embedder = Embedder.remote()
-    batch_size, embed_refs = 2, []
+    batch_size, batches = 2, []
     for i in range(0, len(flat_chunks), batch_size):
         batch = flat_chunks[i : i + batch_size]
-        embed_refs.append(embedder.embed_chunks_batch.remote(batch, batch_size))
+        batches.append(batch)
+    (embed_refs, actors) = run_actor_paralelly(
+        Embedder, "embed_chunks_batch", batches, NUM_WORKERS
+    )
     embedded_chunks = [
         chunk for chunk in tqdm(with_tqdm_iterator(embed_refs), total=len(embed_refs))
     ]
+    flat_chunks = [item for sublist in chunks for item in sublist]
+    # delete actors to free up cpu allocation
+    for actor in actors:
+        ray.kill(actor)
 
     # Save the chunk in vectorstore
     vectorstore = VectorStoreClient.remote()
     result = vectorstore.store_chunks_in_vector_db.remote(embedded_chunks)
     ray.get(result)
+    del vectorstore  # delete actor to free space
 
 
 @ray.remote
@@ -288,4 +309,4 @@ def handle_errors(result: Tuple[str, Exception]):
 
 def enqueue_ingestion_job(job_id: str, payload: IngestionPayload, workflow: workflow):
     dag = handle_errors.bind(ingest_asset.bind(payload))
-    workflow.run(dag, workflow_id=job_id)
+    workflow.run_async(dag, workflow_id=job_id)

@@ -25,6 +25,7 @@ class Settings(BaseSettings):
 
     # Model configs
     EMBEDDING_MODEL: str = "BAAI/bge-small-en-v1.5"
+    USE_SENTENCE_TRANSFORMERS: bool = True
     EMBEDDING_DIMENSION: int = 384
     CHUNK_SIZE: int = 1000
     CHUNK_OVERLAP: int = 100
@@ -47,3 +48,5 @@ class Settings(BaseSettings):
 
 
 settings = Settings()
+
+print(settings)
