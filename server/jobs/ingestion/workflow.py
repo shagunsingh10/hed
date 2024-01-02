@@ -18,11 +18,6 @@ from schema.base import Chunk, Document, IngestionPayload
 from jobs.utils.batcher import run_actor_paralelly
 from settings import settings
 
-print(
-    "HERE",
-    settings,
-)
-
 
 ########################## READER ############################
 @ray.remote(
