@@ -176,9 +176,9 @@ class Embedder:
 class VectorStoreClient:
     def __init__(self):
         self.vectorstore_client = QdrantClient(
-            base_url=settings.QDRANT_BASE_URI,
+            url=settings.QDRANT_BASE_URI,
             api_key=settings.QDRANT_API_KEY,
-            https=False,
+            https=True,
         )
         self._dim = settings.EMBEDDING_DIMENSION
         self._collection_name = settings.VECTOR_DB_COLLECTION_NAME
