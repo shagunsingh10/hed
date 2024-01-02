@@ -1,28 +1,54 @@
-from typing import List, Tuple
-import time
-import ray
+import json
 import uuid
-from core.reader.factory import get_reader
-from core.vectorstore import VectorStore
-from schema.base import Document, IngestionPayload, Chunk
-from settings import settings
-from utils.logger import logger
-from stop_words import get_stop_words
-from transformers import AutoModel
+from typing import List, Tuple
+
+import ray
 from llama_index.text_splitter import CodeSplitter, SentenceSplitter
 from qdrant_client import QdrantClient
 from qdrant_client.http import models
 from qdrant_client.http.exceptions import UnexpectedResponse
-import json
+from ray import workflow
+from stop_words import get_stop_words
+from tqdm import tqdm
+from transformers import AutoModel
+
+from schema.base import Chunk, Document, IngestionPayload
+from settings import settings
+
+from .core.factory import get_reader
 
 
-@ray.remote(concurrency_groups={"compute": 4, "io": 4}, num_cpus=1, num_gpus=0)
-class IngestionActor:
+########################## READER ############################
+@ray.remote(
+    concurrency_groups={"readercompute": settings.INGESTION_WORKERS_PER_JOB},
+    num_cpus=0.25,
+    num_gpus=0,
+)
+class Reader:
     def __init__(self):
-        self.stop_words = get_stop_words("en")
-        self.embed_model = AutoModel.from_pretrained(
-            settings.EMBEDDING_MODEL, trust_remote_code=True
+        pass
+
+    @ray.method(concurrency_group="readercompute")
+    def read_docs(self, payload: IngestionPayload):
+        reader = get_reader(
+            asset_type=payload.asset_type,
+            asset_id=payload.asset_id,
+            owner=payload.owner,
+            kwargs=payload.reader_kwargs,
+            extra_metadata=payload.extra_metadata,
         )
+        documents = reader.load()
+        return documents
+
+
+########################## CHUNKER ############################
+@ray.remote(
+    concurrency_groups={"chunkercompute": settings.INGESTION_WORKERS_PER_JOB * 4},
+    num_cpus=0.25,
+    num_gpus=0,
+)
+class Chunker:
+    def __init__(self):
         self.supported_languages = {
             ".bash": "bash",
             ".c": "c",
@@ -74,27 +100,8 @@ class IngestionActor:
             ".ts": "typescript",
             ".yaml": "yaml",
         }
-        self.vectorstore_client = QdrantClient(
-            base_url=settings.QDRANT_BASE_URI,
-            api_key=settings.QDRANT_API_KEY,
-            https=False,
-        )
-        self._dim = settings.EMBEDDING_DIMENSION
-        self._collection_name = settings.VECTOR_DB_COLLECTION_NAME
-        self._create_collection_if_not_exists()
 
-    @ray.method(concurrency_group="io")
-    def read_docs(self, payload: IngestionPayload):
-        reader = get_reader(payload.asset_type, **payload.reader_kwargs)
-        documents = reader.load(
-            payload.asset_id,
-            payload.collection_name,
-            payload.owner,
-            payload.extra_metadata,
-        )
-        return documents
-
-    @ray.method(concurrency_group="compute")
+    @ray.method(concurrency_group="chunkercompute")
     def chunk_doc(
         self,
         doc: Document,
@@ -129,23 +136,54 @@ class IngestionActor:
             for text in text_splits
         ]
 
+
+########################## EMBEDDER ############################
+@ray.remote(
+    concurrency_groups={"embeddercompute": settings.INGESTION_WORKERS_PER_JOB},
+    num_cpus=1,
+    num_gpus=0,
+)
+class Embedder:
+    def __init__(self):
+        self.stop_words = get_stop_words("en")
+        self.embed_model = AutoModel.from_pretrained(
+            settings.EMBEDDING_MODEL, trust_remote_code=True
+        )
+
     def _remove_stopwords(self, text: str) -> str:
         return " ".join([word for word in text.split() if word not in self.stop_words])
 
-    @ray.method(concurrency_group="compute")
+    @ray.method(concurrency_group="embeddercompute")
     def embed_chunks_batch(
-        self,
-        chunks: List[Chunk],
+        self, chunks: List[Chunk], batch_size: int = 10
     ) -> List[Chunk]:
         chunk_texts = [self._remove_stopwords(chunk.text) for chunk in chunks]
         embeddings = self.embed_model.encode(
             chunk_texts,
-            batch_size=50,
+            batch_size=batch_size,
         ).tolist()
         assert len(chunk_texts) == len(embeddings)
         for chunk, embedding in zip(chunks, embeddings):
             chunk.embeddings = embedding
         return chunks
+
+
+########################## VECTOR STORE ############################
+@ray.remote(
+    concurrency_groups={"vectorstorecompute": settings.INGESTION_WORKERS_PER_JOB * 4},
+    num_cpus=0.25,
+    num_gpus=0,
+)
+class VectorStoreClient:
+    def __init__(self):
+        self.vectorstore_client = QdrantClient(
+            base_url=settings.QDRANT_BASE_URI,
+            api_key=settings.QDRANT_API_KEY,
+            https=False,
+        )
+        self._dim = settings.EMBEDDING_DIMENSION
+        self._collection_name = settings.VECTOR_DB_COLLECTION_NAME
+        self._create_collection_if_not_exists()
 
     def _create_collection_if_not_exists(self):
         try:
@@ -159,11 +197,12 @@ class IngestionActor:
                 on_disk_payload=True,
                 hnsw_config=models.HnswConfigDiff(payload_m=16, m=0, on_disk=True),
             )
+            self._create_asset_id_index()
 
-    def _create_asset_id_index(self, asset_id):
+    def _create_asset_id_index(self):
         self.vectorstore_client.create_payload_index(
             collection_name=self._collection_name,
-            field_name=asset_id,
+            field_name="asset_id",
             field_schema=models.PayloadSchemaType.KEYWORD,
         )
 
@@ -187,7 +226,7 @@ class IngestionActor:
 
         return [ids, payloads, vectors]
 
-    @ray.method(concurrency_group="io")
+    @ray.method(concurrency_group="vectorstorecompute")
     def store_chunks_in_vector_db(self, chunks_batches: List[List[Chunk]]):
         points_batch = self._get_batch_points(chunks_batches)
         self.vectorstore_client.upload_collection(
@@ -198,63 +237,55 @@ class IngestionActor:
             parallel=20,
             wait=True,
         )
-        return {"success": True}
-
-    @ray.method(concurrency_group="io")
-    def ingest(self, chunks_batches: List[List[Chunk]]):
-        docs = ray.get(self.read_docs(data_model))
-        chunks = ray.get([ingestor.chunk_doc.remote(doc) for doc in docs])
-        flat_chunks = [item for sublist in chunks for item in sublist]
-        batch_size = 50
-        embed_refs = []
-        for i in range(0, len(flat_chunks), batch_size):
-            batch = flat_chunks[i : i + batch_size]
-            embed_refs.append(ingestor.embed_chunks_batch.remote(batch))
-        embedded_chunks = ray.get(embed_refs)
+        return True
 
 
-# @ray.remote(concurrency_groups={"io": 2}, num_cpus=1, num_gpus=0)
-# class ReaderActor:
-#     @ray.method(concurrency_group="io")
-#     def read_docs(self, payload: IngestionPayload):
-#         reader = get_reader(payload.asset_type, **payload.reader_kwargs)
-#         documents = reader.load(
-#             payload.asset_id,
-#             payload.collection_name,
-#             payload.owner,
-#             payload.extra_metadata,
-#         )
-#         return documents
+########################## DAGS & WORKFLOWS ########################
+def with_tqdm_iterator(obj_ids):
+    while obj_ids:
+        done, obj_ids = ray.wait(obj_ids)
+        yield ray.get(done[0])
 
 
-if __name__ == "__main__":
-    ray.init(address="10.0.0.5:6370")
-    start = time.time()
-    asset_id = str(uuid.uuid4())
-    _data = {
-        "asset_type": "github",
-        "asset_id": asset_id,
-        "collection_name": asset_id,
-        "owner": "shivamsanju",
-        "reader_kwargs": {
-            "repo": "nx",
-            "branch": "main",
-            "owner": "shivamsanju",
-            "github_token": "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",
-        },
-        "extra_metadata": {},
-    }
-    data_model = IngestionPayload.model_validate(_data)
-    ingestor = IngestionActor.remote()
-    docs = ray.get(ingestor.read_docs.remote(data_model))
-    chunks = ray.get([ingestor.chunk_doc.remote(doc) for doc in docs])
+@workflow.options(catch_exceptions=True)
+@ray.remote
+def ingest_asset(payload: IngestionPayload):
+    # Read documents
+    reader = Reader.remote()
+    docs = ray.get(reader.read_docs.remote(payload))
+
+    # Chunk the docs in parallel
+    chunker = Chunker.remote()
+    chunks_ref = [chunker.chunk_doc.remote(doc) for doc in docs]
+    chunks = [x for x in tqdm(with_tqdm_iterator(chunks_ref), total=len(chunks_ref))]
     flat_chunks = [item for sublist in chunks for item in sublist]
-    batch_size = 50
-    embed_refs = []
+
+    # Embed the chunks again in parallel
+    embedder = Embedder.remote()
+    batch_size, embed_refs = 2, []
     for i in range(0, len(flat_chunks), batch_size):
         batch = flat_chunks[i : i + batch_size]
-        embed_refs.append(ingestor.embed_chunks_batch.remote(batch))
-    embedded_chunks = ray.get(embed_refs)
-    x = ingestor.store_chunks_in_vector_db.remote(embedded_chunks)
-    print(ray.get(x))
-    print(time.time() - start)
+        embed_refs.append(embedder.embed_chunks_batch.remote(batch, batch_size))
+    embedded_chunks = [
+        chunk for chunk in tqdm(with_tqdm_iterator(embed_refs), total=len(embed_refs))
+    ]
+
+    # Save the chunk in vectorstore
+    vectorstore = VectorStoreClient.remote()
+    result = vectorstore.store_chunks_in_vector_db.remote(embedded_chunks)
+    ray.get(result)
+
+
+@ray.remote
+def handle_errors(result: Tuple[str, Exception]):
+    err = result[1]
+    if err:
+        print(f"There was an error in workflow: {err}")
+        return (False, err)
+    else:
+        return (True, None)
+
+
+def enqueue_ingestion_job(job_id: str, payload: IngestionPayload, workflow: workflow):
+    dag = handle_errors.bind(ingest_asset.bind(payload))
+    workflow.run(dag, workflow_id=job_id)

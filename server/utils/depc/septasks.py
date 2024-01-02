@@ -1,20 +1,23 @@
-from typing import List, Tuple
+import json
 import time
-import ray
 import uuid
+from typing import List, Tuple
+
+import ray
 from core.reader.factory import get_reader
 from core.vectorstore import VectorStore
-from schema.base import Document, IngestionPayload, Chunk
-from settings import settings
-from utils.logger import logger
-from stop_words import get_stop_words
-from transformers import AutoModel
 from llama_index.text_splitter import CodeSplitter, SentenceSplitter
 from qdrant_client import QdrantClient
 from qdrant_client.http import models
 from qdrant_client.http.exceptions import UnexpectedResponse
-import json
+from ray import workflow
+from stop_words import get_stop_words
 from tqdm import tqdm
+from transformers import AutoModel
+
+from schema.base import Chunk, Document, IngestionPayload
+from settings import settings
+from utils.logger import logger
 
 
 @ray.remote(concurrency_groups={"embedder": 4}, num_cpus=1, num_gpus=0)
@@ -233,22 +236,7 @@ def tqdm_iterator(obj_ids):
 
 
 @ray.remote
-def create_asset():
-    asset_id = str(uuid.uuid4())
-    _data = {
-        "asset_type": "github",
-        "asset_id": asset_id,
-        "collection_name": asset_id,
-        "owner": "shivamsanju",
-        "reader_kwargs": {
-            "repo": "nx",
-            "branch": "main",
-            "owner": "shivamsanju",
-            "github_token": "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",
-        },
-        "extra_metadata": {},
-    }
-    print(asset_id)
+def create_asset(_data):
     data_model = IngestionPayload.model_validate(_data)
     reader = ReaderActor.remote()
     docs = ray.get(reader.read_docs.remote(data_model))
@@ -275,21 +263,20 @@ def create_asset():
 if __name__ == "__main__":
     ray.init(address="10.0.0.5:6370")
     start = time.time()
-
-    refdict = {}
-    for i in range(3):
-        x = create_asset.remote()
-        refdict[i] = x
-
-    time.sleep(10)
-    for i in range(100):
-        pending = 0
-        for x in list(refdict.values()):
-            finished, p = ray.wait([x], timeout=0.1)
-            print("Num pending: ", len(p))
-            pending = len(p)
-        if pending == 0:
-            break
-
-            # ray.cancel(x)
-        time.sleep(1)
+    workflow.init(max_running_workflows=1, max_pending_workflows=20)
+    asset_id = str(uuid.uuid4())
+    _data = {
+        "asset_type": "github",
+        "asset_id": asset_id,
+        "owner": "shivamsanju",
+        "reader_kwargs": {
+            "repo": "nx",
+            "branch": "main",
+            "owner": "shivamsanju",
+            "github_token": "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",
+        },
+        "extra_metadata": {},
+    }
+    dag = create_asset.bind(_data)
+    x = workflow.run(dag)
+    print(x)

@@ -9,7 +9,7 @@ from sentence_transformers import CrossEncoder
 from stop_words import get_stop_words
 from transformers import AutoModel
 
-from jobs.ingestion import enqueue_ingestion_job
+from jobs.ingestion.workflow import enqueue_ingestion_job
 from schema.base import Context, IngestionPayload, RetrievalPayload
 from settings import settings
 
@@ -28,7 +28,9 @@ class ServeDeployment:
             settings.EMBEDDING_MODEL, trust_remote_code=True
         )
         self.vector_store_client = QdrantClient(
-            base_url=settings.QDRANT_BASE_URI, api_key=settings.QDRANT_API_KEY
+            base_url=settings.QDRANT_BASE_URI,
+            api_key=settings.QDRANT_API_KEY,
+            https=False,
         )
 
     def _remove_stopwords(self, text: str) -> str:
@@ -103,9 +105,9 @@ class ServeDeployment:
         relevant_contexts.sort(key=lambda x: x.score, reverse=True)
         return relevant_contexts
 
-    @app.get("/health")
+    @app.get("/")
     def healthcheck(self):
-        return True
+        return "RUNNING"
 
     @app.post("/retrieve")
     def get_contexts(self, request: RetrievalPayload) -> List[Context]:
@@ -119,27 +121,25 @@ class ServeDeployment:
         return reranked_contexts
 
     @app.post("/ingest")
-    async def submit_ingestion_task(
+    async def submit_ingestion_job(
         self, payload: IngestionPayload, workflow=Depends(get_workflow_manager)
     ):
         enqueue_ingestion_job(payload.asset_id, payload, workflow)
         return JSONResponse(status_code=200, content={"job_id": payload.asset_id})
 
     @app.get("/ingest/{job_id}/status")
-    async def get_task_status(
-        self, job_id: str, workflow=Depends(get_workflow_manager)
-    ):
+    async def get_job_status(self, job_id: str, workflow=Depends(get_workflow_manager)):
         status = workflow.get_status(job_id)
         return JSONResponse(status_code=200, content={"status": status})
 
     @app.get("/ingest/{job_id}/metadata")
-    async def get_workflow_metadata(
+    async def get_job_metadata(
         self, job_id: str, workflow=Depends(get_workflow_manager)
     ):
         metadata = workflow.get_metadata(job_id)
         return JSONResponse(status_code=200, content={"metadata": metadata})
 
     @app.get("/ingest/{job_id}/output")
-    async def get_output(self, job_id: str, workflow=Depends(get_workflow_manager)):
+    async def get_job_output(self, job_id: str, workflow=Depends(get_workflow_manager)):
         metadata = workflow.get_output(job_id)
         return JSONResponse(status_code=200, content={"output": metadata})
