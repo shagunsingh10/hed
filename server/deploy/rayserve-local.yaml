@@ -75,24 +75,21 @@ spec:
       # See https://docs.ray.io/en/latest/cluster/cli.html#ray-start for all available options in `rayStartParams`.
       rayStartParams:
         dashboard-host: "0.0.0.0"
-        storage: "https://storage.googleapis.com/ray-storage-bucket"
+        storage: "s3://raystoragebucket?endpoint_override=https://storage.googleapis.com"
       #pod template
       template:
         spec:
-          serviceAccountName: ray-ksa
-          nodeSelector:
-            iam.gke.io/gke-metadata-server-enabled: "true"
           containers:
             - name: ray-head
               image: rayproject/ray:2.9.0
               resources:
                 limits:
                   cpu: "1"
-                  memory: "10Gi"
+                  memory: "8Gi"
                   ephemeral-storage: "30Gi"
                 requests:
                   cpu: "1"
-                  memory: "10Gi"
+                  memory: "8Gi"
                   ephemeral-storage: "30Gi"
               env:
                 - name: RAY_ADDRESS
@@ -113,18 +110,6 @@ spec:
                   value: "6334"
                 - name: QDRANT_PREFER_GRPC
                   value: "0"
-                - name: POSTGRES_HOST
-                  value: "172.17.0.1"
-                - name: POSTGRES_PORT
-                  value: "5434"
-                - name: POSTGRES_USER
-                  value: postgres
-                - name: POSTGRES_PASSWORD
-                  value: postgres
-                - name: POSTGRES_DATABASE_NAME
-                  value: postgres
-                - name: HTTP_PORT
-                  value: "8080"
                 - name: ENV
                   value: development
               ports:
@@ -140,20 +125,17 @@ spec:
       # the pod replicas in this group typed worker
       - replicas: 0
         minReplicas: 0
-        maxReplicas: 3
+        maxReplicas: 2
         # logical group name, for this called small-group, also can be functional
         groupName: worker-group
         # The `rayStartParams` are used to configure the `ray start` command.
         # See https://github.com/ray-project/kuberay/blob/master/docs/guidance/rayStartParams.md for the default settings of `rayStartParams` in KubeRay.
         # See https://docs.ray.io/en/latest/cluster/cli.html#ray-start for all available options in `rayStartParams`.
         rayStartParams:
-          storage: "https://storage.googleapis.com/ray-storage-bucket"
+          storage: "s3://raystoragebucket?endpoint_override=https://storage.googleapis.com"
         #pod template
         template:
           spec:
-            serviceAccountName: ray-ksa
-            nodeSelector:
-              iam.gke.io/gke-metadata-server-enabled: "true"
             containers:
               - name: ray-worker # must consist of lower case alphanumeric characters or '-', and must start and end with an alphanumeric character (e.g. 'my-name',  or '123-abc'
                 image: rayproject/ray:2.9.0
@@ -164,17 +146,19 @@ spec:
                 resources:
                   limits:
                     cpu: "2"
-                    memory: "6Gi"
+                    memory: "3Gi"
                     ephemeral-storage: "15Gi"
                   requests:
                     cpu: "2"
-                    memory: "6Gi"
+                    memory: "3Gi"
                     ephemeral-storage: "15Gi"
                 env:
                   - name: OPENAI_API_KEY
                     value: Your key
                   - name: EMBEDDING_MODEL
                     value: jinaai/jina-embeddings-v2-base-en
+                  - name: USE_SENTENCE_TRANSFORMERS
+                    value: "True"
                   - name: EMBEDDING_DIMENSION
                     value: "768"
                   - name: CHUNK_SIZE

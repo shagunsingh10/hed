@@ -52,28 +52,30 @@ spec:
             max_concurrent_queries: 20
             ray_actor_options:
               num_cpus: 1
-  
+
   rayClusterConfig:
-    rayVersion: '2.9.0' # should match the Ray version in the image of the containers
+    rayVersion: "2.9.0" # should match the Ray version in the image of the containers
     ## raycluster autoscaling config
     enableInTreeAutoscaling: true
     autoscalerOptions:
       upscalingMode: Default
       resources:
         limits:
-          cpu: "1"
+          cpu: "500m"
           memory: "1Gi"
+          ephemeral-storage: "1Gi"
         requests:
-          cpu: "1"
-          memory: "1Gi"
+          cpu: "500m"
+          memory: "512Mi"
+          ephemeral-storage: "1Gi"
     ######################headGroupSpecs#################################
     headGroupSpec:
       # The `rayStartParams` are used to configure the `ray start` command.
       # See https://github.com/ray-project/kuberay/blob/master/docs/guidance/rayStartParams.md for the default settings of `rayStartParams` in KubeRay.
       # See https://docs.ray.io/en/latest/cluster/cli.html#ray-start for all available options in `rayStartParams`.
       rayStartParams:
-        dashboard-host: '0.0.0.0'
-        storage: "file:///tmp/ray_storage/"
+        dashboard-host: "0.0.0.0"
+        storage: "s3://raystoragebucket?endpoint_override=https://storage.googleapis.com"
       #pod template
       template:
         spec:
@@ -84,9 +86,32 @@ spec:
                 limits:
                   cpu: "1"
                   memory: "10Gi"
+                  ephemeral-storage: "30Gi"
                 requests:
                   cpu: "1"
                   memory: "10Gi"
+                  ephemeral-storage: "30Gi"
+              env:
+                - name: RAY_ADDRESS
+                  value: "auto"
+                - name: MAX_INGESTION_JOB_WORKERS
+                  value: "4"
+                - name: PARALLEL_INGESTION_JOBS
+                  value: "2"
+                - name: VECTOR_DB_COLLECTION_NAME
+                  value: default
+                - name: QDRANT_BASE_URI
+                  value: "https://dce864fa-dd89-4f51-88cf-8c0eb885094a.us-east4-0.gcp.cloud.qdrant.io"
+                - name: QDRANT_API_KEY
+                  value: "oc4b9kziV56wDv8mfKX4fPYdFVp1eh_S_x5rcJUbd0bkrjNSRa1bGA"
+                - name: QDRANT_PORT
+                  value: "6333"
+                - name: QDRANT_GRPC_PORT
+                  value: "6334"
+                - name: QDRANT_PREFER_GRPC
+                  value: "0"
+                - name: ENV
+                  value: development
               ports:
                 - containerPort: 6379
                   name: gcs-server
@@ -100,14 +125,14 @@ spec:
       # the pod replicas in this group typed worker
       - replicas: 0
         minReplicas: 0
-        maxReplicas: 4
+        maxReplicas: 3
         # logical group name, for this called small-group, also can be functional
         groupName: worker-group
         # The `rayStartParams` are used to configure the `ray start` command.
         # See https://github.com/ray-project/kuberay/blob/master/docs/guidance/rayStartParams.md for the default settings of `rayStartParams` in KubeRay.
         # See https://docs.ray.io/en/latest/cluster/cli.html#ray-start for all available options in `rayStartParams`.
         rayStartParams:
-          storage: "file:///tmp/ray_storage/"
+          storage: "s3://raystoragebucket?endpoint_override=https://storage.googleapis.com"
         #pod template
         template:
           spec:
@@ -117,11 +142,48 @@ spec:
                 lifecycle:
                   preStop:
                     exec:
-                      command: ["/bin/sh","-c","ray stop"]
+                      command: ["/bin/sh", "-c", "ray stop"]
                 resources:
                   limits:
-                    cpu: "1"
-                    memory: "2Gi"
+                    cpu: "2"
+                    memory: "6Gi"
+                    ephemeral-storage: "15Gi"
                   requests:
-                    cpu: "1"
-                    memory: "2Gi"
+                    cpu: "2"
+                    memory: "6Gi"
+                    ephemeral-storage: "15Gi"
+                env:
+                  - name: OPENAI_API_KEY
+                    value: Your key
+                  - name: EMBEDDING_MODEL
+                    value: jinaai/jina-embeddings-v2-base-en
+                  - name: USE_SENTENCE_TRANSFORMERS
+                    value: "True"
+                  - name: EMBEDDING_DIMENSION
+                    value: "768"
+                  - name: CHUNK_SIZE
+                    value: "1000"
+                  - name: CHUNK_OVERLAP
+                    value: "100"
+                  - name: RERANKER_MODEL
+                    value: cross-encoder/ms-marco-TinyBERT-L-2-v2
+                  - name: RAY_ADDRESS
+                    value: "auto"
+                  - name: S3_ENDPOINT
+                    value: "172.17.0.1:9000"
+                  - name: S3_ACCESS_KEY
+                    value: minioadmin
+                  - name: S3_SECRET_KEY
+                    value: minioadmin
+                  - name: VECTOR_DB_COLLECTION_NAME
+                    value: default
+                  - name: QDRANT_BASE_URI
+                    value: "https://dce864fa-dd89-4f51-88cf-8c0eb885094a.us-east4-0.gcp.cloud.qdrant.io"
+                  - name: QDRANT_API_KEY
+                    value: "oc4b9kziV56wDv8mfKX4fPYdFVp1eh_S_x5rcJUbd0bkrjNSRa1bGA"
+                  - name: QDRANT_PORT
+                    value: "6333"
+                  - name: QDRANT_GRPC_PORT
+                    value: "6334"
+                  - name: QDRANT_PREFER_GRPC
+                    value: "0"
