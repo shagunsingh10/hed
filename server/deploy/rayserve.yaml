@@ -94,39 +94,39 @@ spec:
                   cpu: "1"
                   memory: "10Gi"
                   ephemeral-storage: "30Gi"
-                env:
-                  - name: RAY_ADDRESS
-                    value: "auto"
-                  - name: MAX_INGESTION_JOB_WORKERS
-                    value: "4"
-                  - name: PARALLEL_INGESTION_JOBS
-                    value: "2"
-                  - name: VECTOR_DB_COLLECTION_NAME
-                    value: default
-                  - name: QDRANT_BASE_URI
-                    value: "https://dce864fa-dd89-4f51-88cf-8c0eb885094a.us-east4-0.gcp.cloud.qdrant.io"
-                  - name: QDRANT_API_KEY
-                    value: "oc4b9kziV56wDv8mfKX4fPYdFVp1eh_S_x5rcJUbd0bkrjNSRa1bGA"
-                  - name: QDRANT_PORT
-                    value: "6333"
-                  - name: QDRANT_GRPC_PORT
-                    value: "6334"
-                  - name: QDRANT_PREFER_GRPC
-                    value: "0"
-                  - name: POSTGRES_HOST
-                    value: "172.17.0.1"
-                  - name: POSTGRES_PORT
-                    value: "5434"
-                  - name: POSTGRES_USER
-                    value: postgres
-                  - name: POSTGRES_PASSWORD
-                    value: postgres
-                  - name: POSTGRES_DATABASE_NAME
-                    value: postgres
-                  - name: HTTP_PORT
-                    value: "8080"
-                  - name: ENV
-                    value: development
+              env:
+                - name: RAY_ADDRESS
+                  value: "auto"
+                - name: MAX_INGESTION_JOB_WORKERS
+                  value: "4"
+                - name: PARALLEL_INGESTION_JOBS
+                  value: "2"
+                - name: VECTOR_DB_COLLECTION_NAME
+                  value: default
+                - name: QDRANT_BASE_URI
+                  value: "https://dce864fa-dd89-4f51-88cf-8c0eb885094a.us-east4-0.gcp.cloud.qdrant.io"
+                - name: QDRANT_API_KEY
+                  value: "oc4b9kziV56wDv8mfKX4fPYdFVp1eh_S_x5rcJUbd0bkrjNSRa1bGA"
+                - name: QDRANT_PORT
+                  value: "6333"
+                - name: QDRANT_GRPC_PORT
+                  value: "6334"
+                - name: QDRANT_PREFER_GRPC
+                  value: "0"
+                - name: POSTGRES_HOST
+                  value: "172.17.0.1"
+                - name: POSTGRES_PORT
+                  value: "5434"
+                - name: POSTGRES_USER
+                  value: postgres
+                - name: POSTGRES_PASSWORD
+                  value: postgres
+                - name: POSTGRES_DATABASE_NAME
+                  value: postgres
+                - name: HTTP_PORT
+                  value: "8080"
+                - name: ENV
+                  value: development
               ports:
                 - containerPort: 6379
                   name: gcs-server
