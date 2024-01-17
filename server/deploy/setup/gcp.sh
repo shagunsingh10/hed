@@ -1,5 +1,23 @@
-# Step 1: Get credentials for the cluster
+# Step 1: Get credentials for the cluster (Create cluster from console)
 gcloud container clusters get-credentials cluster-name --zone us-east1-c
+
+# Step 2: Create an IAM
+gcloud iam service-accounts create ray-iam
+
+# Step 3: Create a kubernetees service account
+kubectl create serviceaccount ray-ksa
+
+# Step 4: Get project id
+gcloud projects list
+
+
+# Step 5: Link kubernetees service account with IAM
+gcloud iam service-accounts add-iam-policy-binding ray-iam@project-id.iam.gserviceaccount.com \
+    --role roles/iam.workloadIdentityUser \
+    --member "serviceAccount:project-id.svc.id.goog[default/ray-ksa]"
+
+# Step 6: Link IAM to storage bucket (Create storage from console)
+gsutil iam ch serviceAccount:ray-iam@project-id.iam.gserviceaccount.com:roles/storage.admin gs://ray-storage-bucket
 
 # Add Helm repo
 helm repo add kuberay https://ray-project.github.io/kuberay-helm/

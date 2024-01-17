@@ -2,7 +2,7 @@ from typing import List, Tuple
 
 import ray
 from ray import data
-
+import uuid
 from core.chunker import Chunker
 from core.embedder import Embedder
 from core.reader.factory import get_reader
@@ -11,6 +11,7 @@ from core.vectorstore import VectorStore
 from schema.base import Document, IngestionPayload
 from settings import settings
 from utils.logger import logger
+from ray import workflow
 
 
 def save_docs(documents: List[Document]):
@@ -77,3 +78,26 @@ def enqueue_ingestion_job(job_id: str, payload, workflow):
         workflow.run_async(dag=final_dag, workflow_id=job_id)
     except Exception as e:
         logger.exception(e)
+
+
+if __name__ == "__main__":
+    ray.init(address="localhost:6379")
+    workflow.init(max_running_workflows=1, max_pending_workflows=20)
+    asset_id = str(uuid.uuid4())
+    _data = {
+        "asset_type": "github",
+        "asset_id": asset_id,
+        "collection_name": asset_id,
+        "owner": "shivamsanju",
+        "reader_kwargs": {
+            "repo": "nx",
+            "branch": "main",
+            "owner": "shivamsanju",
+            "github_token": "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",
+        },
+        "extra_metadata": {},
+    }
+    docs = read_docs.bind(_data)
+    embedded_docs = chunk_and_embed_docs.bind(docs)
+    final_dag = store_chunks_in_vector_db.bind(embedded_docs)
+    workflow.run(dag=final_dag, workflow_id=asset_id)
