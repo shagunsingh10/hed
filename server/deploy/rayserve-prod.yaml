@@ -17,7 +17,7 @@ spec:
         import_path: main:app
         route_prefix: /
         runtime_env:
-          working_dir: "https://dl.cloudsmith.io/public/workspace-for-shivam-4ky/herahs/raw/names/server/files/server.zip"
+          working_dir: "workingdir/server.zip"
           pip:
             - requests
             - python-dotenv
@@ -75,11 +75,7 @@ spec:
       # See https://docs.ray.io/en/latest/cluster/cli.html#ray-start for all available options in `rayStartParams`.
       rayStartParams:
         dashboard-host: "0.0.0.0"
-<<<<<<<< HEAD:server/deploy/serve.yaml
-        storage: "s3://raystoragebucket/sub-path?endpoint_override=https://storage.googleapis.com"
-========
         storage: "s3://raystoragebucket?endpoint_override=https://storage.googleapis.com"
->>>>>>>> 4f13d95b2215c703f06297a2589720c8af7d3e92:server/deploy/rayserve-prod.yaml
       #pod template
       template:
         spec:
@@ -108,16 +104,15 @@ spec:
                 - name: VECTOR_DB_COLLECTION_NAME
                   value: default
                 - name: QDRANT_BASE_URI
-                  value: "https://dce864fa-dd89-4f51-88cf-8c0eb885094a.us-east4-0.gcp.cloud.qdrant.io"
+                  value: "qdrant-uri"
                 - name: QDRANT_API_KEY
-                  value: "oc4b9kziV56wDv8mfKX4fPYdFVp1eh_S_x5rcJUbd0bkrjNSRa1bGA"
+                  value: "api-key"
                 - name: QDRANT_PORT
                   value: "6333"
                 - name: QDRANT_GRPC_PORT
                   value: "6334"
                 - name: QDRANT_PREFER_GRPC
                   value: "0"
-<<<<<<<< HEAD:server/deploy/serve.yaml
                 - name: POSTGRES_HOST
                   value: "172.17.0.1"
                 - name: POSTGRES_PORT
@@ -130,8 +125,6 @@ spec:
                   value: postgres
                 - name: HTTP_PORT
                   value: "8080"
-========
->>>>>>>> 4f13d95b2215c703f06297a2589720c8af7d3e92:server/deploy/rayserve-prod.yaml
                 - name: ENV
                   value: development
               ports:
@@ -153,12 +146,8 @@ spec:
         # The `rayStartParams` are used to configure the `ray start` command.
         # See https://github.com/ray-project/kuberay/blob/master/docs/guidance/rayStartParams.md for the default settings of `rayStartParams` in KubeRay.
         # See https://docs.ray.io/en/latest/cluster/cli.html#ray-start for all available options in `rayStartParams`.
-<<<<<<<< HEAD:server/deploy/serve.yaml
-        rayStartParams: {}
-========
         rayStartParams:
           storage: "s3://raystoragebucket?endpoint_override=https://storage.googleapis.com"
->>>>>>>> 4f13d95b2215c703f06297a2589720c8af7d3e92:server/deploy/rayserve-prod.yaml
         #pod template
         template:
           spec:
@@ -186,11 +175,8 @@ spec:
                     value: Your key
                   - name: EMBEDDING_MODEL
                     value: jinaai/jina-embeddings-v2-base-en
-<<<<<<<< HEAD:server/deploy/serve.yaml
-========
                   - name: USE_SENTENCE_TRANSFORMERS
                     value: "True"
->>>>>>>> 4f13d95b2215c703f06297a2589720c8af7d3e92:server/deploy/rayserve-prod.yaml
                   - name: EMBEDDING_DIMENSION
                     value: "768"
                   - name: CHUNK_SIZE
@@ -210,9 +196,9 @@ spec:
                   - name: VECTOR_DB_COLLECTION_NAME
                     value: default
                   - name: QDRANT_BASE_URI
-                    value: "https://dce864fa-dd89-4f51-88cf-8c0eb885094a.us-east4-0.gcp.cloud.qdrant.io"
+                    value: "qdrant-uri"
                   - name: QDRANT_API_KEY
-                    value: "oc4b9kziV56wDv8mfKX4fPYdFVp1eh_S_x5rcJUbd0bkrjNSRa1bGA"
+                    value: "api-key"
                   - name: QDRANT_PORT
                     value: "6333"
                   - name: QDRANT_GRPC_PORT
