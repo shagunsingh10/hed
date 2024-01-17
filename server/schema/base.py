@@ -1,6 +1,6 @@
-from typing import Any, Dict, List, Optional
+from typing import Any, Dict, List, Literal, Optional, Union
 
-from pydantic import BaseModel
+from pydantic import BaseModel, validator
 
 
 class Document(BaseModel):
@@ -31,13 +31,39 @@ class Context(BaseModel):
     score: float = 0
 
 
-class IngestionPayload(BaseModel):
-    asset_type: str
-    asset_id: str
-    collection_name: str
+class GithubReader(BaseModel):
     owner: str
-    reader_kwargs: Dict[str, Any] = {}
+    repo: str
+    branch: str = "main"
+    github_token: str
+
+
+class S3Reader(BaseModel):
+    bucket_name: str
+    access_key: str
+    secret_key: str
+    endpoint: str = None
+
+
+AllowedAssetTypes = Literal["github", "s3"]
+AllowedReaderKwargs = Union[S3Reader, GithubReader]
+
+
+class IngestionPayload(BaseModel):
+    asset_type: AllowedAssetTypes
+    asset_id: str
+    owner: str
+    reader_kwargs: AllowedReaderKwargs
     extra_metadata: Dict[str, Any] = {}
+
+    @validator("reader_kwargs", pre=True, always=True)
+    def validate_reader_kwargs(cls, value, values):
+        asset_type = values.get("asset_type")
+        if asset_type == "github":
+            GithubReader.model_validate(value)
+        elif asset_type == "s3":
+            S3Reader.model_validate(value)
+        return value
 
 
 class RetrievalPayload(BaseModel):

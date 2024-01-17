@@ -1,6 +1,6 @@
 import ray
 
-from api.base import ServeDeployment
+from api.serve.base import ServeDeployment
 from settings import settings
 
 if not ray.is_initialized():
