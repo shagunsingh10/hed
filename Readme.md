@@ -1,19 +1,27 @@
 ### Start backend
 
-```bash
-docker compose -f docker-compose.dev.yml up --build
-```
+1. Add openai api key in server/.env file
+
+2. Run in terminal
+
+   ```bash
+   docker compose -f docker-compose.dev.yml up --build
+   ```
 
 ### For frontend
 
-```bash
-cd web
+1. Add client id and client secret in web/.env
 
-yarn install
+2. Run these step by step
 
-npx prisma db push
+   ```bash
+   cd web
 
-yarn seed
+   yarn install
 
-yarn dev
-```
+   npx prisma db push
+
+   yarn seed
+
+   yarn dev
+   ```
