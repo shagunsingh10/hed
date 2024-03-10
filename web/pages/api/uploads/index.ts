@@ -58,10 +58,10 @@ export default async (
   res: NextApiResponse<ApiRes<UploadApiResponse>>
 ) => {
   if (req.method === 'POST') {
-    const kgId = req.query.kgId as string
+    const projectId = req.query.projectId as string
 
     const uniqueId = createId()
-    const bucketName = `${kgId}-${uniqueId}`
+    const bucketName = `${projectId}-${uniqueId}`
 
     const form = formidable({})
     const parsedForm = await form.parse(req)

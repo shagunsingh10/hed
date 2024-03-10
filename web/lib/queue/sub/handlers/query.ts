@@ -7,7 +7,7 @@ export const handleChatResponse = async (message: any) => {
     apiKey: 'RE8k4z6rpCVk9y2EmEWAFR0gf',
     chatId: message.chatId,
     user: message.user,
-    complete: true,
+    complete: message.complete,
     sources: [],
   }
 

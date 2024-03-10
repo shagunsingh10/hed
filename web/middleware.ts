@@ -12,7 +12,7 @@ export async function middleware(request: NextRequest) {
   if (!sessionToken) {
     return NextResponse.json<ApiRes<string>>({
       success: false,
-      error: 'Unautheticated',
+      error: 'Unauthenticated',
     })
   }
 

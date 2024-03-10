@@ -14,8 +14,8 @@ export const sendAssetStatusNotification = async (
 ) => {
   emitSocketEventToUser<IAssetStatusNotification>(
     io,
-    ASSET_STATUS_EVENT,
     userId,
+    ASSET_STATUS_EVENT,
     payload
   )
 }

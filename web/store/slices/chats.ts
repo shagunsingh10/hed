@@ -44,7 +44,6 @@ export const createMessagesSlice: StateCreator<
   addMessage: (m) => {
     if (get().activeChat?.id == m.chatId) {
       const messages = get().messages || []
-
       // if we are streaming and the message is complete -> replace last message with the final message
       // we recieve the full response in final message
       if (m.complete) {
@@ -82,7 +81,7 @@ export const createMessagesSlice: StateCreator<
       set({
         waitingForResponse: false,
       })
-    }, 5000)
+    }, 15000)
   },
   setMessages: (messages) => {
     set({

@@ -117,7 +117,7 @@ export const raiseAssetCreationRequest = async (
       assetTypeId: body.assetTypeId,
       readerKwargs: JSON.stringify(body.readerKwargs),
       extraMetadata: body?.extraMetadata as any,
-      status: ASSET_APPROVAL_PENDING,
+      status: ASSET_INGESTION_IN_QUEUE,
       logs: {
         createMany: {
           data: [{ content: `Asset creation request added by ${user?.email}` }],
@@ -130,6 +130,17 @@ export const raiseAssetCreationRequest = async (
         },
       },
     },
+    include: {
+      assetType: true,
+    },
+  })
+
+  enqueueIngestionJob({
+    asset_id: newAsset.id,
+    asset_type: newAsset.assetType.key,
+    user: newAsset.createdBy as string,
+    reader_kwargs: body.readerKwargs,
+    extra_metadata: body?.extraMetadata as any,
   })
 
   return res.status(201).json({

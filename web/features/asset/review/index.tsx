@@ -30,11 +30,6 @@ const AssetReviewList = () => {
       setLoading(true)
       try {
         await approveAssetApi(projectId, assetId, status)
-        console.log({
-          assetsToReview,
-          assetId,
-          filtered: assetsToReview.filter((e) => e.id !== assetId),
-        })
         setAssetsToReview(assetsToReview.filter((e) => e.id !== assetId))
       } catch (e: any) {
         showNotification({ message: e?.message?.toString(), color: 'red' })

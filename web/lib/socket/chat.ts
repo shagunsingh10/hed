@@ -18,8 +18,8 @@ export const sendChatQueryResponse = async (
 ) => {
   emitSocketEventToUser<IChatQueryReply>(
     io,
-    CHAT_QUERY_REPLY_EVENT,
     userId,
+    CHAT_QUERY_REPLY_EVENT,
     payload
   )
 }

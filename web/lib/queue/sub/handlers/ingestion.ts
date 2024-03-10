@@ -1,4 +1,5 @@
 import { prisma } from '@/lib/prisma'
+import axios from 'axios'
 
 // ******************** Handle Events ******************* //
 export const handleDocStatus = async (message: any) => {
@@ -37,6 +38,17 @@ export const handleAssetStatus = async (message: any) => {
     },
     where: {
       id: message.asset_id,
+    },
+  })
+
+  axios({
+    url: `http://localhost:3000/api/webhooks/update-asset-status`,
+    method: 'put',
+    data: {
+      status: message.status,
+      apiKey: 'RE8k4z6rpCVk9y2EmEWAFR0gf',
+      assetId: message.asset_id,
+      user: message.user,
     },
   })
 }

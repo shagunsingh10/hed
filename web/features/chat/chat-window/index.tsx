@@ -122,11 +122,11 @@ const ChatWindow = () => {
               <div className={styles.chatHeader}>
                 {m.isResponse ? (
                   <Avatar
-                    size="xs"
+                    size="s"
                     src="https://api.dicebear.com/7.x/bottts-neutral/svg?seed=Sugar"
                   />
                 ) : (
-                  <Avatar size="xs" src={userAvatarSrc} />
+                  <Avatar size="s" src={userAvatarSrc} />
                 )}
               </div>
               <div className={styles.chatBody}>

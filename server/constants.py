@@ -1,6 +1,3 @@
-INGESTION_QUEUE = "ingestionqueue"
-QUERY_QUEUE = "queryqueue"
-
 # *************** Doc Status ****************** //
 READ_SUCCESSFULLY = "Read"
 CHUNKED_SUCCESSFULLY = "Chunked"

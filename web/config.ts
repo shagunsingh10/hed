@@ -21,6 +21,10 @@ type configType = {
   ingestionResultQueue: string
   queryResultQueue: string
   serviceApiKey: string
+  s3Endpoint: string
+  s3AccessKey: string
+  s3SecretKey: string
+  s3Port: string
 }
 
 export const config: configType = {
@@ -32,4 +36,8 @@ export const config: configType = {
   ingestionResultQueue: getEnv('INGESTION_RESULT_QUEUE'),
   queryResultQueue: getEnv('QUERY_RESULT_QUEUE'),
   serviceApiKey: getEnv('SERVICE_API_KEY'),
+  s3Endpoint: getEnv('S3_ENDPOINT'),
+  s3AccessKey: getEnv('S3_ACCESS_KEY'),
+  s3SecretKey: getEnv('S3_SECRET_KEY'),
+  s3Port: getEnv('S3_PORT', false, '9000'),
 }

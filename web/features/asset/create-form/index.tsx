@@ -31,6 +31,10 @@ const CreateAssetForm: FC<CreateAssetFormProps> = ({
   const setAssetType = useStore((state) => state.setAssetTypes)
   const users = useStore((state) => state.users)
   const setUsers = useStore((state) => state.setUsers)
+  const assetsToReviewCount = useStore((state) => state.assetsToReviewCount)
+  const setAssetsToReviewCount = useStore(
+    (state) => state.setAssetsToReviewCount
+  )
 
   const form = useForm({
     initialValues: {
@@ -103,6 +107,7 @@ const CreateAssetForm: FC<CreateAssetFormProps> = ({
           message: 'Asset created successfully.',
           color: 'green',
         })
+        setAssetsToReviewCount(assetsToReviewCount + 1)
         handleReset()
       })
       .catch((e: Error) => {
@@ -161,7 +166,7 @@ const CreateAssetForm: FC<CreateAssetFormProps> = ({
           </Grid.Col>
           <Grid.Col span={6}>
             {getAssetTypeFromId(form.values.assetType) === 'files' && (
-              <FilesAssetUploader form={form} />
+              <FilesAssetUploader form={form} projectId={projectId} />
             )}
             {getAssetTypeFromId(form.values.assetType) === 'github' && (
               <GithubForm form={form} />

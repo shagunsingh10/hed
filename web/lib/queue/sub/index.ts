@@ -23,19 +23,18 @@ export const processMessageFromQueue = async (
 
   // eslint-disable-next-line no-constant-condition
   while (true) {
-    const result = await redis.blpop(queue, 1)
-
+    const result = await redis.blpop(queue, 0.05)
     if (result) {
       const message = JSON.parse(result[1])
       const callback = topics[message.topic]
       if (callback) {
-        await callback(message.data)
+        callback(message.data)
       }
     }
   }
 }
 
-const startConsuming = () => {
+export const startConsuming = () => {
   const ingestionTopicsHandlers = {
     [DOC_STATUS]: handleDocStatus,
     [ASSET_INGESTION_STATUS]: handleAssetStatus,

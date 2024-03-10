@@ -1,5 +1,5 @@
 # Use the official Python image from Docker Hub as the base image
-FROM rayproject/ray
+FROM python:3.11-slim
 
 # Set environment variables
 ENV PYTHONUNBUFFERED 1
@@ -12,19 +12,11 @@ ADD requirements.txt /app/requirements.txt
 
 # Install dependencies from requirements.txt
 RUN pip install -r requirements.txt
-
+RUN pip install langchain-community
 # Copy the contents of the current directory (where Dockerfile is located) into the container at /app
 ADD . /app
 
 EXPOSE 8000
 
-# Deploy serve app
-ENTRYPOINT [ "serve", "run", "main:app" ]
-
-
-# # Build serve app
-# RUN serve build api.base:app -o serve_config.yaml
-
-# ray start --head --port=6379  --dashboard-host=0.0.0.0 --dashboard-port=8265 & 
-# ray start --head --port=6380 --dashboard-host=0.0.0.0 --dashboard-port=8265 --storage=s3://GOOG1ETTLEIHZB3RPBLUMPEHSU5GLGW6KWK4T22L64P7OT36LJNQBPFXAMJQV:xWIgoQQuhLr%2B%2FJAgXNLljggFcW1NTD6y%2BwRpxE0S@ray-storage-bucket/sub-path?endpoint_override=https://storage.googleapis.com
-# chmod 777 -R /tmp/ray/*
+# Run the specified commands when the container launches
+CMD python main.py

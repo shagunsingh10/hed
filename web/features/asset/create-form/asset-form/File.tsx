@@ -16,6 +16,7 @@ import styles from './assetsform.module.scss'
 
 type UploaderProps = {
   form: UseFormReturnType<any>
+  projectId: string
 }
 
 const iconMap: any = {
@@ -46,7 +47,7 @@ const noDuplicateFilenames = (files: FileWithPath[]) => {
   return fileNames.length === new Set(fileNames).size
 }
 
-const FilesAssetUploader: FC<UploaderProps> = ({ form }) => {
+const FilesAssetUploader: FC<UploaderProps> = ({ form, projectId }) => {
   const [loading, setLoading] = useState<boolean>(false)
   const [files, setFiles] = useState<FileWithPath[]>()
   const [fileStatus, setFileStatus] = useState<Record<string, string>>({})
@@ -81,7 +82,10 @@ const FilesAssetUploader: FC<UploaderProps> = ({ form }) => {
       setFileStatus(fileObj)
 
       try {
-        const { bucketName, uploadStatus } = await uploadFileApi(files)
+        const { bucketName, uploadStatus } = await uploadFileApi(
+          files,
+          projectId
+        )
         setFileStatus(uploadStatus)
         form.setFieldValue('bucketName', bucketName)
       } catch {
