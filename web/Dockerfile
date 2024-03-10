@@ -4,7 +4,9 @@ WORKDIR /app
 COPY ./package.json yarn.lock ./
 RUN yarn install --frozen-lockfile
 COPY . .
+RUN npx prisma db push
 RUN npx prisma generate
+RUN yarn seed
 RUN yarn build
 
 FROM node:18-alpine as runner

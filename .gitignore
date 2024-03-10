@@ -62,7 +62,7 @@ env/
 *.log
 
 # Environment variables
-.env
+# .env
 .env.local
 .env.*.local
 
@@ -138,7 +138,7 @@ ipython_config.py
 /__pypackages__/
 
 # dotenv
-.env
+# .env
 
 # Spyder project settings
 .spyderproject
@@ -232,7 +232,7 @@ celerybeat-schedule
 *.sage.py
 
 # Environments
-/.env
+# /.env
 /.env.local
 /.env.development
 /.env.test

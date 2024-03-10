@@ -24,15 +24,12 @@ services:
   backend:
     build:
       context: ./server
-    ports:
-      - "8000:8000"
     environment:
       LOGURU_COLORIZE: "true"
     volumes:
       - ./.etc/llama_index/:/tmp/llama_index/
       - ./.etc/nltk/:/root/nltk_data/
       - ./.etc/ray/:/tmp/ray/
-      - ./.env:/.env
     depends_on:
       qdrant:
         condition: service_healthy
@@ -40,3 +37,14 @@ services:
         condition: service_healthy
       redis:
         condition: service_healthy
+
+  # web:
+  #   build:
+  #     context: ./web
+  #   ports:
+  #     - "3000:3000"
+  #   depends_on:
+  #     postgres:
+  #       condition: service_healthy
+  #     redis:
+  #       condition: service_healthy
